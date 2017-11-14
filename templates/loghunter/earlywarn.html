@@ -1,0 +1,144 @@
+{% extends 'loghunter/base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/static/dist/section/css/styles.css">
+{% endblock %}
+{% block body %}
+
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            <h3 class="box-title">服务器异常主动上报</h3>
+          <div class="box">
+              <div>
+                  <section class="model-11" style="float: left;margin-right: 2px;margin-left: 10px">
+                    <span style=" text-align:center;">开启通知：</span>
+			  <div class="checkbox" >
+{#			    <input type="checkbox"/>#}
+                  <input id="shouyezhanshi" type="checkbox" value="" onclick="inradio()">
+			    <label></label>
+			  </div></section>
+              </div>
+
+            <div class="box-header">
+
+
+                <a href="#" style="margin-left: 2px;float: right;" class="btn btn-sm btn-danger " onclick="del_all();"><span class="glyphicon glyphicon-remove"></span> 删除所有日志 </a>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example2" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>机器IP</th>
+                  <th>汇报次数</th>
+                  <th>上次汇报时间</th>
+                  <th>最新故障标识</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+<script>
+var csrftoken = $.cookie('csrftoken');
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+    $(document).ready(function() {
+    $('#example2').DataTable( {
+        "ajax": "{% url 'get_list' %}",
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "scrollX": true,
+        "pagingType": "full_numbers",
+        "stateSave": true,
+        "columns": [
+
+            { "data": "ipaddress" ,"sClass": "text-center"},
+            { "data": "num" ,"sClass": "text-center"},
+            { "data": "datatime" ,"sClass": "text-center"},
+            { "data": "mark" ,"sClass": "text-center"}
+        ],
+        "columnDefs": [
+        {
+          targets: 0 ,//targets last column, use 0 for first column
+          className: 'btn-link pointer',
+         "data": "download_link",
+            "sClass": "text-center",
+         "render": function ( data, type, full, meta ) {
+          return '<a class="btn-link" href="'+'{% url 'detail_list' %}?ip='+data+'" target="_blank">'+ data +'</a>';
+          }
+        }
+      ]
+    } );
+} );
+</script>
+    <script>
+    function del_all() {
+            if(confirm("确认要删除全部日志，删除后无法恢复哦？")){
+                    $.ajax({
+                        url:'{% url 'deldevall' %}',
+                        type:'POST',
+                        success:function (arg) {
+                            window.location.reload();
+                        },
+                        error:function () {
+                            console.log('failed');
+                        }
+                    });
+                }
+	};
+    </script>
+        <script type="text/javascript">
+			$(document).ready(function(){
+				$('#early').addClass("active");
+		});
+    </script>
+        <script>
+function inradio() {
+    var id = $(" #shouyezhanshi ").val();
+        $.ajax({
+			url:'/inradio/',
+			type:'POST',
+			data:{modify:id},
+			success:function (arg) {
+                window.location.reload();
+                console.log('true');
+			},
+			error:function () {
+				console.log('failed');
+
+			}
+		});
+	};
+	</script>
+{% endblock %}

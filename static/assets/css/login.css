@@ -1,0 +1,13 @@
+#beijing {
+  background: url(/static/img/landscape.jpg) no-repeat center center fixed;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/static/images/bgs/landscape.jpg', sizingMethod='scale');
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/static/images/landscape.jpg', sizingMethod='scale')";
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover; }
+
+.cls-containerss {
+    color: #fff;
+    text-align: center;
+}

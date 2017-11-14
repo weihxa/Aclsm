@@ -1,0 +1,77 @@
+    {% extends 'loghunter/base.html' %}
+
+{% block body %}
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div id="containerd" ></div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/highcharts.js"></script>
+        <script type="text/javascript">
+			$(document).ready(function(){
+				$('#indexs').addClass("active");
+		});
+    </script>
+    <script>
+		$(function () {
+    $('#containerd').highcharts({
+
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: '系统整体情况概览图'
+        },
+        subtitle: {
+            text: 'form：数据来源于数据库'
+        },
+
+        xAxis: {
+            categories: ['预警上报机器', 'salt管理机器', '配置文件总数', '任务执行总数']
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '数量'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.0f} 个</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            series: {
+                colorByPoint: true
+            }
+        },
+
+        series: [{
+        	name:'数量',
+
+            data: [{{ containerd.early }},{{ containerd.group }},{{ containerd.file }},{{ containerd.task }}]
+        }]
+    });
+});
+	</script>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'loghunter/base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
+{% endblock %}
+{% block body %}
+    <!--添加机器弹窗-->
+    <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">详细日志</h4>
+          </div>
+          <div class="modal-body" id="xianshi">
+            <pre id="logs"></pre>
+          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--弹窗结束-->
+   <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">汇报详情：<span id="test1" style="color: #FF0000">{{ ipaddress }}</span></h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <table id="example3" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>汇报时间</th>
+                  <th>故障标识</th>
+                  <th>详细日志</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+{% endblock %}
+{% block javascript %}
+     <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+    		<script src="/static/dist/js/jquery.cookie.js"></script>
+		<script>
+			var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+		</script>
+<script>
+    $(document).ready(function() {
+    $('#example3').DataTable( {
+{#        "ajax": "{% url 'getdeatil' %}",#}
+         "ajax": {
+            "url": "{% url 'getdeatil' %}",
+            "type": "POST",
+            "data": {modify:$('#test1').text()}
+                },
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true,
+        "scrollX": true,
+        "pagingType": "full_numbers",
+        "stateSave": true,
+        "bProcessing" : true,
+        "bAutoWidth" : true,
+        "columns": [
+
+            { "data": "datatime" ,"sClass": "text-center"},
+            { "data": "mark" ,"sClass": "text-center"},
+            { "data": "id" ,"sClass": "text-center"},
+        ],
+        "columnDefs": [
+        {
+          targets: 2 ,//targets last column, use 0 for first column
+          className: 'btn-link pointer',
+         "data": "download_link",
+            "sClass": "text-center",
+         "render": function ( data, type, full, meta ) {
+{#          return '<a class="btn-link" href="'+'{% url 'detail_list' %}?ip='+data+'" target="_blank">'+ '点击查看' +'</a>';#}
+          return '<a class="btn-link" href="#" onclick="logshow(this,'+data+');">'+ '点击查看' +'</a>';
+          }
+        }
+      ]
+    } );
+} );
+</script>
+        <script>
+        function logshow(doc,id) {
+        $.ajax({
+			url:'{% url 'detaillogs' %}',
+			type:'GET',
+			data:{modify:id},
+			success:function (arg) {
+                var obj = jQuery.parseJSON(arg);
+                $('#logs').text(obj);
+                $('#myModal2').modal({show:true});
+
+			},
+			error:function () {
+				console.log('failed');
+                $('#logs').text('日志获取失败，请联系管理员！');
+                $('#myModal2').modal({show:true});
+			}
+		});
+	}
+    </script>
+        <script type="text/javascript">
+			$(document).ready(function(){
+				$('#early').addClass("active");
+                $("body").addClass("sidebar-collapse");
+		});
+    </script>
+{% endblock %}

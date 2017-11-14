@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<!--
+This is a starter template page. Use this page to start your new project from
+scratch. This page gets rid of all links and provides the needed markup only.
+-->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% block titel %}XBMAN | 日志、故障收集展示系统{% endblock %}</title>
+  <link rel="icon" href="/static/dist/img/icon.png" mce_href="dist/img/icon.png" type="image/x-icon">
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="/static/vendor/bootstrap/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">-->
+  	<!--<link rel="stylesheet" href="dist/css/font-awesome.min.css">-->
+  <!-- Ionicons -->
+  <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">-->
+  <!-- Theme style -->
+  <link rel="stylesheet" href="/static/dist/css/AdminLTE.css">
+   <link rel="stylesheet" href="/static/dist/css/all-skins.min.css">
+<link rel="stylesheet" type="text/css" href="/static/dist/css/nprogress.css" />
+<style>
+    #scroll-top{background-color:#404449;color:#fff;cursor:pointer;position:fixed;bottom:55px;font-size:20px;right:5px;border-radius:2px;opacity:0;z-index:999;-webkit-transition:opacity .3s;transition:opacity .3s}
+#scroll-top.in{opacity:.5;transition:opacity .3s;display: none;}
+#scroll-top:hover{opacity:1;-webkit-transition:opacity .3s;transition:opacity .3s}
+</style>
+    {% block link %}{% endblock %}
+
+  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body class="hold-transition skin-black-light sidebar-mini">
+
+<div class="wrapper">
+
+  <!-- Main Header -->
+  <header class="main-header">
+
+    <!-- Logo -->
+    <a href="/loghunter/index/" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <!--<span class="logo-mini"><b>XBMAN</b></span>-->
+      <img class="logo-mini" style="width: 45px;height: 45px;" src="/static/dist/img/logo.png" alt="User Image">
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><img  style="width: 35px;height: 35px;" src="/static/dist/img/logo.png" alt="User Image"><b>XBMAN</b>-日志收集</span>
+    </a>
+
+    <!-- Header Navbar -->
+    <nav class="navbar navbar-static-top" role="navigation">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle glyphicon glyphicon-list " data-toggle="offcanvas" role="button">
+        <!--<span class="sr-only">Toggle navigation</span>-->
+      </a>
+      <!-- Navbar Right Menu -->
+{#      <div class="navbar-custom-menu">#}
+{#        <ul class="nav navbar-nav">#}
+{##}
+{##}
+{#          <!-- User Account Menu -->#}
+{#          <li class="dropdown user user-menu">#}
+{#            <!-- Menu Toggle Button -->#}
+{#            <a href="#" class="dropdown-toggle" data-toggle="dropdown">#}
+{#              <!-- The user image in the navbar-->#}
+{#              <img src="/static/dist/img/avatar04.png" class="user-image" alt="User Image">#}
+{#              <!-- hidden-xs hides the username on small devices so only the image appears. -->#}
+{#              <span class="hidden-xs">{{ request.user.name }}</span>#}
+{#            </a>#}
+{#            <ul class="dropdown-menu">#}
+{#              <!-- The user image in the menu -->#}
+{#              <li class="user-header">#}
+{#                <img src="/static/dist/img/avatar04.png" class="img-circle" alt="User Image">#}
+{#                <p>#}
+{#                    {% if request.user.is_admin   %}#}
+{#                        <span>管理员</span>#}
+{#                        {% else %}#}
+{#                        <span>普通用户</span>#}
+{#                    {% endif %}#}
+{#                  <small>Member since Nov. 2017</small>#}
+{#                </p>s#}
+{#              </li>#}
+{#              <!-- Menu Footer-->#}
+{#              <li class="user-footer">#}
+{#                <div class="pull-left">#}
+{#                  <a href="#myModal1" class="btn btn-default btn-flat" data-toggle="modal" data-placement="bottom">修改密码</a>#}
+{#                </div>#}
+{#                <div class="pull-right">#}
+{#                  <a href="/logout/" class="btn btn-default btn-flat">退出登陆</a>#}
+{#                </div>#}
+{#              </li>#}
+{#            </ul>#}
+{#          </li>#}
+{#        </ul>#}
+{#      </div>#}
+    </nav>
+  </header>
+
+
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+      <!-- Sidebar user panel (optional) -->
+{#      <div class="user-panel">#}
+{#        <div class="pull-left image">#}
+{#          <img src="/static/dist/img/avatar04.png" class="img-circle" alt="User Image">#}
+{#        </div>#}
+{#        <div class="pull-left info">#}
+{#          <p>{{ request.user }}</p>#}
+{#          <!-- Status -->#}
+{#          <a href="#"><i class="glyphicon glyphicon-record text-success"></i> {{ request.user.department }}</a>#}
+{#        </div>#}
+{#      </div>#}
+
+
+      <!-- /.search form -->
+
+      <!-- Sidebar Menu -->
+      <ul class="sidebar-menu">
+        <li class="header">HEADER</li>
+        <!-- Optionally, you can add icons to the links -->
+        <li id="indexs"><a href="/loghunter/index/"><i class="glyphicon glyphicon-home"></i> <span>图表展示</span></a></li>
+        <li id="early"><a href="/loghunter/earlywarn/"><i class="glyphicon glyphicon-cloud-upload"></i> <span>预警上报</span></a></li>
+          <li class="treeview" id="userli">
+          <a href="#"><i class="glyphicon glyphicon-paperclip"></i> <span>信息展示</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu" id="userul">
+            <li id="disks" style="margin-left: 40px"><a href="/loghunter/disks/">磁盘空间</a></li>
+            <li id="page" style="margin-left: 40px"><a href="/loghunter/softversion/">软件版本</a></li>
+          </ul>
+        </li>
+        <li><a href="/index/"><i class="glyphicon glyphicon-share"></i> <span>返回首页</span></a></li>
+
+      </ul>
+      <!-- /.sidebar-menu -->
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+
+      {% block body %}{% endblock %}
+<button id="scroll-top" class="btn in "><i class="fa fa-chevron-up glyphicon glyphicon-chevron-up"></i></button>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <!-- To the right -->
+
+    <!-- Default to the left -->
+    <strong>xbman &copy; 2016 <a href="#">Company</a>.</strong> 版权所有.
+  </footer>
+
+
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED JS SCRIPTS -->
+
+<!-- jQuery 2.2.3 -->
+<script src="/static/vendor/jquery/jquery.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/static/dist/js/app.min.js"></script>
+<script src="/static/dist/js/nprogress.js"></script>
+<script>
+        NProgress.start();
+    </script>
+    <script type="text/javascript">
+            $(document).ready(function(){
+                NProgress.done();
+            });
+        </script>
+<script>
+    function myEvent(obj,ev,fn){
+	if(obj.attachEvent){
+		obj.attachEvent('on'+ev,fn);
+	}else{
+		obj.addEventListener(ev,fn,false);
+	}
+}
+    myEvent(window,'load',function(){
+	var oRTT=document.getElementById('scroll-top');
+	var pH=document.documentElement.clientHeight;
+	var timer=null;
+	var scrollTop;
+	window.onscroll=function(){
+		scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
+		if(scrollTop>=pH){
+			oRTT.style.display='block';
+		}else{
+			oRTT.style.display='none';
+		}
+		return scrollTop;
+	};
+	oRTT.onclick=function(){
+		clearInterval(timer);
+		timer=setInterval(function(){
+			var now=scrollTop;
+			var speed=(0-now)/10;
+			speed=speed>0?Math.ceil(speed):Math.floor(speed);
+			if(scrollTop==0){
+				clearInterval(timer);
+			}
+			document.documentElement.scrollTop=scrollTop+speed;
+			document.body.scrollTop=scrollTop+speed;
+		}, 30);
+	}
+});
+</script>
+{% block javascript %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,18 @@
+.jgtable {
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-bottom-width: 1px;
+    border-left-width: 0px;
+    border-bottom-style: solid;
+    border-bottom-color: #999999;
+    veritical-align: bottom;
+}
+.containerjifang {
+    width: 100%;
+}
+
+@media (max-width: 992px){
+    #jiguih4 {
+        margin-top: 40px;
+    }
+}

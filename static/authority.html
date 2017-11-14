@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/css/customizes/users.css">
+    <link href="/static/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+    <div class="content">
+        <!--添加权限弹窗-->
+        <div class="modal fade bs-example-modal-sm" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加权限</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" action="/authority/" method="post" id="creategroup">{% csrf_token %}
+                    <div class="form-group">
+                    <label class="col-lg-3 control-label" for="username">姓名:</label>
+                        <div class="col-lg-8">
+                                <select id="username"  class="form-control" name="username">
+                                    {% for item in  user_list%}
+                                        <option value="{{item.name}}" >{{item.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-lg-3 control-label" for="Configuration1">系统:</label>
+                            <div class="col-lg-8">
+                                <select id="system"  class="form-control" name="system">
+                                        <option value="cmdb" >cmdb</option>
+                                        <option value="jenkins" >jenkins</option>
+                                        <option value="ansible" >ansible</option>
+                                </select>
+                            </div>
+                    </div>
+
+                </form>
+              </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="creategroup" class="btn btn-primary" value="submit">提交</button>
+            </div>
+            </div>
+        </div>
+    </div>
+        <!--弹窗结束-->
+    	<div class="row">
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                      <h3 class="box-title">权限管理</h3>
+                        <a href="#myModal2" style="float: right" class="btn btn-sm btn-primary " data-toggle="modal" data-placement="bottom"><span class="glyphicon-plus"></span> 添加权限 </a>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                      <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                          <th class="text-center">用户名</th>
+                          <th class="text-center">访问权限</th>
+                          <th class="text-center">编辑</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for topic in topics %}
+                                <tr>
+                                  <td class="text-center">{{ topic.user_name }}</td>
+                                  <td class="text-center">{{ topic.Auth_name }}</td>
+                                  <td class="text-center">
+                                        <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_auth(this,'{{ topic.id }}');" >删除</button>
+                                  </td>
+                                </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                <!-- /.box-body -->
+                </div>
+            </div>
+            <div id="fenye" class="pagination">
+                    <nav>
+                      <ul class="pagination">
+                        {% if topics.has_previous %}
+                            <li><a href="?page={{ topics.previous_page_number }}">&laquo;</a></li>
+                            {% else %}
+                            <li class="disabled"><a href="#">&laquo;</a></li>
+                          {% endif %}
+                          {% for page_number in topics.paginator.page_range %}
+                            {% ifequal page_number  topics.number %}
+                                <li class="active"><a>{{ page_number }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+                            {% endifequal %}
+                          {% endfor %}
+                        {% if topics.has_next %}
+                            <li><a href="?page={{ topics.next_page_number }}">&raquo;</a></li>
+                            {% else %}
+                            <li class="disabled"><a href="#">&raquo;</a></li>
+                        {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+			$(document).ready(function(){
+				$('#userul').addClass("menu-open");
+				$('#page').addClass("active");
+				$('#userli').addClass("active");
+		});
+    </script>
+    <script>
+		var csrftoken = $.cookie('csrftoken');
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+		function del_auth(doc,id) {
+            if(confirm("确认要删除此权限？")){
+                    $.ajax({
+                        url:'/delauth/',
+                        type:'POST',
+                        data:{modify:id},
+                        success:function (arg) {
+                            window.location.reload();
+                        },
+                        error:function () {
+                            console.log('failed');
+                        }
+                    });
+                }
+	};
+	</script>
+{% endblock %}

@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/css/customizes/users.css">
+    <link href="/static/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+    <div class="content">
+        <!--添加机器弹窗-->
+        <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加用户</h4>
+                  <span style="color: red;margin-left: 40px;font-size: 13px">*用户详细信息，请添加后编辑。</span>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" action="/users/" method="post" id="creategroup">{% csrf_token %}
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="email">email:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="email" class="form-control" name="email" placeholder="请输入email" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="username">姓名:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="username" class="form-control" name="username" placeholder="请输入用户姓名" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="password">密码:</label>
+                        <div class="col-lg-9">
+                            <input type="password" id="password" class="form-control" name="password" placeholder="请输入密码" />
+                        </div>
+                </div>
+                        <div class="form-group">
+                    <label class="col-lg-2 control-label" for="admin">管理员:</label>
+                        <div class="col-lg-9">
+                                <input style="margin-top: 10px" type="checkbox" id="admin" name="admin" value="True">
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="creategroup" class="btn btn-primary" value="submit">提交</button>
+              </div>
+              </div>
+                </form>
+              </div>
+
+            </div>
+        </div>
+        </div>
+        <!--弹窗结束-->
+        <!--编辑弹窗-->
+        <div class="modal fade bs-example-modal-lg" id="myModaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">编辑用户</h4>
+                  <span style="color: red;margin-left: 40px">*email不可修改</span>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" action="/gemail/" method="post" id="editgroup">{% csrf_token %}
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="e_email">Email:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="e_email" class="form-control" name="e_email" placeholder="Email" readonly/>
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="e_name">姓名:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="e_name" class="form-control" name="e_name" placeholder="请输入姓名" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="e_password">密码:</label>
+                        <div class="col-lg-9">
+                            <input type="password" id="e_password" class="form-control" name="e_password" placeholder="请输入密码,不修改密码不填写。" />
+                        </div>
+                </div>
+
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="e_department">部门:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="e_department" class="form-control" name="e_department" placeholder="请输入部门" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="e_mobile">手机:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="e_mobile" class="form-control" name="e_mobile" placeholder="请输入手机号码" />
+                        </div>
+                </div>
+                    <div class="form-group" id="dis_admin">
+                    <label class="col-lg-2 control-label" for="e_admin">管理员:</label>
+                        <div class="col-lg-9">
+                                <input style="margin-top: 10px" type="checkbox" id="e_admin" name="e_admin" value="True">
+                        </div>
+                </div>
+                    <div class="form-group" id="dis_active">
+                    <label class="col-lg-2 control-label" for="e_active">禁用:</label>
+                        <div class="col-lg-9">
+                                <input style="margin-top: 10px" type="checkbox" id="e_active" name="e_active" value="True">
+                                <span style="margin-left: 10px;color: #999999">ps:禁用后账号将不能登陆，但ftp可以使用</span>
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="editgroup" class="btn btn-primary" value="submit">提交</button>
+              </div>
+              </div>
+                </form>
+              </div>
+
+            </div>
+        </div>
+        </div>
+        <!--弹窗结束-->
+    	<div class="row">
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                      <h3 class="box-title">用户管理</h3>
+                        <a href="#myModal2" style="float: right" class="btn btn-sm btn-primary " data-toggle="modal" data-placement="bottom"><span class="glyphicon-plus"></span> 添加用户 </a>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                      <table id="example2" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                          <th class="text-center">用户名</th>
+                          <th class="text-center">姓名</th>
+                          <th class="text-center">类型</th>
+                          <th class="text-center">部门</th>
+                          <th class="text-center">编辑</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for topic in topics %}
+                                <tr>
+                                  <td class="text-center">{{ topic.email }}</td>
+                                  <td class="text-center">{{ topic.username }}</td>
+                                    {% if topic.is_admin %}
+                                    <td class="text-center">
+                                    <span class="badge badge-span">管理员</span>
+                                    </td>
+                                    {% else %}
+                                    <td class="text-center">
+                                    <span class="badge badge-success">普通用户</span>
+                                    </td>
+                                    {% endif %}
+                                  <td class="text-center">{{ topic.department }}</td>
+                                  <td class="text-center">
+                                      {% if request.user.email == topic.email %}
+                                        <button  type="button" class="btn btn-xs btn-info " onclick="edit_users('{{ topic.email }}')">编辑</button>
+{#                                        <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_users(this,'{{ topic.email }}');" >删除</button>#}
+                                      {% else %}
+                                          <button  type="button" class="btn btn-xs btn-info " onclick="edit_users('{{ topic.email }}')">编辑</button>
+                                        <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_users(this,'{{ topic.email }}');" >删除</button>
+                                      {% endif %}
+                                  </td>
+                                </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                <!-- /.box-body -->
+                </div>
+            </div>
+            <div id="fenye" class="pagination">
+                    <nav>
+                      <ul class="pagination">
+                        {% if topics.has_previous %}
+                            <li><a href="?page={{ topics.previous_page_number }}">&laquo;</a></li>
+                            {% else %}
+                            <li class="disabled"><a href="#">&laquo;</a></li>
+                          {% endif %}
+                          {% for page_number in topics.paginator.page_range %}
+                            {% ifequal page_number  topics.number %}
+                                <li class="active"><a>{{ page_number }}</a></li>
+                            {% else %}
+                                <li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+                            {% endifequal %}
+                          {% endfor %}
+                        {% if topics.has_next %}
+                            <li><a href="?page={{ topics.next_page_number }}">&raquo;</a></li>
+                            {% else %}
+                            <li class="disabled"><a href="#">&raquo;</a></li>
+                        {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
+    <script type="text/javascript">
+			$(document).ready(function(){
+				$('#userul').addClass("menu-open");
+				$('#users').addClass("active");
+				$('#userli').addClass("active");
+		});
+    </script>
+    <script>
+		var csrftoken = $.cookie('csrftoken');
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+		function del_users(doc,id) {
+            if(confirm("确认要删除此用户？")){
+                    $.ajax({
+                        url:'/deluser/',
+                        type:'POST',
+                        data:{modify:id},
+                        success:function (arg) {
+                            window.location.reload();
+                        },
+                        error:function () {
+                            console.log('failed');
+                        }
+                    });
+                }
+	};
+    function edit_users(id) {
+        $.ajax({
+			url:'/gemail/',
+			type:'GET',
+			data:{modify:id},
+			success:function (arg) {
+                var obj = jQuery.parseJSON(arg);
+                var texxt = $("#firstusername").text();
+                $("#e_email").attr("value",obj.pk);
+                $("#e_name").attr("value",obj.fields.username);
+                $("#e_department").attr("value",obj.fields.department);
+                $("#e_mobile").attr("value",obj.fields.mobile);
+                if (texxt==obj.fields.username){
+                     $("#dis_active").css('display','none');
+                     $("#dis_admin").css('display','none');
+                }else{
+                    $("#dis_admin").css('display','');
+                    $("#dis_active").css('display','');
+                }
+                if (obj.fields.is_admin) {
+                    $("#e_admin").attr("checked", true);
+                }else{
+                    $("#e_admin").attr("checked", false);
+                }
+                if (obj.fields.is_active) {
+                    $("#e_active").attr("checked", false);
+                }else{
+                    $("#e_active").attr("checked", true);
+                };
+                $('#myModaledit').modal({show:true});
+			},
+			error:function () {
+				console.log('failed');
+			}
+		});
+	};
+	</script>
+    <script>
+$(document).ready(function() {
+    $('#creategroup')
+        .bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                email: {
+                    validators: {
+                        notEmpty: {
+                        message: 'Email不得为空！'
+                        },
+                        emailAddress: {
+                        message: '您输入的Email不合法,请重新输入'
+                    }
+                    }
+                },
+                username: {
+                    validators: {
+                        notEmpty: {
+                        message: '姓名不得为空！'
+                        },
+                    }
+                },
+                password: {
+                    validators: {
+                        notEmpty: {
+                        message: 'password不得为空！'
+                        },
+                    }
+                },
+            }
+        });
+});
+    $(document).ready(function() {
+    $('#editgroup')
+        .bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                 e_mobile: {
+                     message: 'The phone is not valid',
+                     validators: {
+                         stringLength: {
+                             min: 11,
+                             max: 11,
+                             message: '请输入11位手机号码'
+                         },
+                         regexp: {
+                             regexp: /^1[3|5|8|7]{1}[0-9]{9}$/,
+                             message: '请输入正确的手机号码'
+                         }
+                     }
+                 }
+            }
+        });
+});
+</script>
+{% endblock %}

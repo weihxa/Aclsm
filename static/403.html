@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>XBMAN| 403 Forbidden</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="/static/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="icon" href="/static/dist/img/icon.png" mce_href="dist/img/icon.png" type="image/x-icon">
+  <style type="text/css">
+  	.content {
+    min-height: 250px;
+    padding: 15px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    }
+    .error-page {
+        width: 600px;
+        margin: 20px auto 0 auto;
+    }
+    .error-page>.headline {
+        float: left;
+        font-size: 100px;
+        font-weight: 300;
+    }
+    .text-yellow {
+        color: #f39c12 !important;
+    }
+    .error-page>.error-content {
+        margin-left: 190px;
+        display: block;
+    }
+    .text-yellow {
+        color: #f39c12 !important;
+    }
+    #wenzi{
+        font-size: 20px;
+    }
+  </style>
+</head>
+<body class="">
+  <div>
+    <section class="content">
+      <div class="error-page">
+        <h2 class="headline text-yellow"> 403</h2>
+
+        <div class="error-content" style="margin-top: 90px;">
+          <h3><i class="glyphicon glyphicon-warning-sign text-yellow" style="margin-top: 10px;"></i> Oops! Forbidden.</h3>
+
+          <p id="wenzi">
+            	您没有权限访问此页面.<span style="margin-left:4px;color: red;font-size: 23px;font-weight:bold;" id="xianshi">3</span> 秒后将自动跳回主页，或点击 <a href="/index/">返回主页</a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+<script type="text/javascript">
+onload=function(){
+setInterval(go, 1000);
+};
+var x=3; //利用了全局变量来执行
+function go(){
+x--;
+if(x>0){
+document.getElementById("xianshi").innerHTML=x; //每次设置的x的值都不一样了。
+}else{
+location.href='/index/';
+};
+};
+</script>
+</html>

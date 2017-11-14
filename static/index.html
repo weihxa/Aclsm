@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    <div class="content">
+    	<h2>选择系统</h2>
+        <div class="row wenzi">
+        {% if Authority.jenkins %}
+          <div class="col-xs-6 col-md-2">
+            <a href="/releases/index/" class="thumbnail">
+              <img src="/static/dist/img/jenkins2.png" >
+              <span>发布管理系统</span>
+            </a>
+          </div>
+        {% endif %}
+{#            {% if Authority.cmdb %}#}
+{#          <div class="col-xs-6 col-md-2">#}
+{#            <a href="#" class="thumbnail">#}
+{#              <img src="/static/dist/img/cmdb.png">#}
+{#              <span>CMDB</span>#}
+{#            </a>#}
+{#          </div>#}
+{#            {% endif %}#}
+        {% if Authority.ansible %}
+          <div class="col-xs-6 col-md-2">
+            <a href="/scms/index/" class="thumbnail">
+              <img src="/static/dist/img/ansible2.png">
+              <span>配置管理系统</span>
+            </a>
+          </div>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+			$(document).ready(function(){
+				$('#indexs').addClass("active");
+		});
+    </script>
+{% endblock %}

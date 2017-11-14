@@ -1,0 +1,79 @@
+    {% extends 'loghunter/base.html' %}
+
+{% block body %}
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <!-- /.box-header -->
+              <div class="box-header">
+              <h3 class="box-title">磁盘空间汇总展示</h3>
+                  <span style="float:right">最新更新时间：<b>{{ datetime }}</b></span>
+            </div>
+            <div class="box-body">
+		<div class="col-md-6">
+			<div class="panel-group" id="accordion1">
+                {% for i in normal %}
+					<div class="panel panel-default">
+				        	<div class="panel-heading">
+							<h4 class="panel-title p1">
+								<a data-toggle="collapse" data-parent="#accordion1" href="#{{ i.id }}">
+									{{ i.name }}
+                						</a>
+            						</h4>
+        					</div>
+        					<div id="{{ i.id }}" class="panel-collapse collapse">
+            						<div class="panel-body">
+								<pre>{{ i.mark }}</pre>
+						        </div>
+					        </div>
+					</div>
+                {% endfor %}
+			</div>
+		</div>
+		<div class="col-md-6">
+            <div class="panel-group" id="accordion2">
+                {% for i in unusual %}
+                <div class="panel panel-default">
+                        <div class="panel-heading">
+                                <h4 class="panel-title " style="color: red;">
+                                        <a data-toggle="collapse" data-parent="#accordion2" href="#{{ i.id }}">
+                                    {{ i.name }}
+                                        </a>
+                                </h4>
+                        </div>
+                        <div id="{{ i.id }}" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                        <pre>{{ i.mark }}</pre>
+                                </div>
+                        </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+</div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+
+{% endblock %}
+{% block javascript %}
+        <script type="text/javascript">
+			$(document).ready(function(){
+                $('#userul').addClass("menu-open");
+				$('#disks').addClass("active");
+				$('#userli').addClass("active");
+		});
+    </script>
+{% endblock %}

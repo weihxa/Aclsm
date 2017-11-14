@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block body %}
+
+    <div class="content">
+        <h3>快速进入</h3>
+            <div class="row wenzi" style="margin: 10px">
+                <div style="display: inline;margin: 2px">
+                    <button type="button" class="btn btn-primary">
+                        <a href="/loghunter/disks/" target="_blank">
+                          <span style="color: #fff;">磁盘空间</span>
+                        </a>
+                    </button>
+                </div>
+                <div style="display: inline;margin: 2px">
+                    <button type="button" class="btn btn-warning">
+                        <a href="/loghunter/earlywarn/" target="_blank" >
+                          <span style="color: #fff;">预警查看</span>
+                        </a>
+                    </button>
+                </div>
+            </div>
+    	<h3>选择系统</h3>
+        <div class="row wenzi">
+        {% if Authority.logs %}
+          <div class="col-xs-6 col-md-2">
+            <a href="/loghunter/index/" class="thumbnail">
+              <img src="/static/dist/img/logs.png">
+              <span>系统信息及预警系统</span>
+            </a>
+          </div>
+        {% endif %}
+        {% if Authority.cmdb %}
+          <div class="col-xs-6 col-md-2">
+            <a href="/asset/index/" class="thumbnail">
+              <img src="/static/dist/img/cmdb.png">
+              <span>资产管理平台</span>
+            </a>
+          </div>
+        {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+			$(document).ready(function(){
+				$('#indexs').addClass("active");
+		});
+    </script>
+{% endblock %}
