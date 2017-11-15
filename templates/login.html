@@ -57,12 +57,12 @@
                                 <div class="form-group">
                                     {{ form.password}}
                                 </div>
-                                <h6 style="color: red;" align="center"><b>{{ login_err }}</b></h6>
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="remember" type="checkbox" value="Remember Me">记住我
-                                    </label>
+                                <div class="form-group">
+                                    <input class="form-control" style="width: 50%;display: inline-block" placeholder="验证码" name="code" type="text" value="">
+                                    <img class="" id="check_code_img" src="{% url 'create_code' %}" style="cursor:pointer;width: 40%;display: inline-block;margin: 0 10px 0 10px;float: right" onclick="refresh_check_code(this)">
                                 </div>
+                                <h6 style="color: red;" align="center"><b>{{ login_err }}</b></h6>
+
                                 <!-- Change this to a button or input when using this as a form -->
                                 <button class="btn btn-lg btn-success btn-block" type="submit">
                                     <span>登 录</span>
@@ -120,11 +120,29 @@ $(document).ready(function() {
                         message: '您输入的Email不合法,请重新输入'
                     }
                 }
+            },
+            code: {
+                validators: {
+                    notEmpty: {
+                        message: '请输入正确的验证码！'
+                    },
+                    stringLength:{
+                        min:4,
+                        max:4,
+                        message:'正确的验证码为4个字符！'
+                    },
+                }
             }
         }
     });
 });
 
+</script>
+<script>
+    function refresh_check_code(ths) {
+        ths.src += '?';
+        //src后面加问好会自动刷新验证码img的src
+}
 </script>
 </body>
 

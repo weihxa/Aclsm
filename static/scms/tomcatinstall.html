@@ -1,0 +1,157 @@
+{% extends 'scms/base.html' %}
+{% block link %}
+    <link href="/static/scms/dist/css/nginxts.css" rel="stylesheet" type="text/css">
+    <link href="/static/scms/dist/css/multi-select.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block body %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+			    <div class="row">
+			        <div class="col-lg-12">
+                        {% if zhuangtai %}
+							<div id="zhuangtai2" class="alert alert-info alert-dismissible" role="alert">
+						{% else %}
+							<div style="display: none"  id="zhuangtai2" class="alert alert-info alert-dismissible" role="alert">
+						{% endif %}
+							  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>
+							  <strong>任务创建成功！</strong>
+							</div>
+			            <div class="ibox float-e-margins" id="all">
+			                <div class="ibox-title shezhiye">
+			                    <h3> tomcat安装页</h3>
+			                    <h5> *单机，组推送软件安装</h5>
+			                </div>
+			            </div>
+			        </div>
+			        <div class="biaoqianye">
+			        <ul class="nav nav-tabs" role="tablist">
+					  <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">单机推送</a></li>
+					  <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">组推送</a></li>
+					</ul>
+
+					<!-- Tab panes -->
+					<div class="tab-content">
+					  <div role="tabpanel" class="tab-pane active" id="home">
+					  	<div class="col-lg-12">
+					  		<div class="col-lg-2  pull-left">
+					  		</div>
+							<div class="col-lg-4 pull-left selecteds ">
+							    <form class="form-horizontal" action="/scms/tomcatinstall/" method="post" id="devfrom">{% csrf_token %}
+                                <input class="form-control"  style="display: none;" name="mark"  value="1" type="text" readonly/>
+							    	<div class="kuangkuang">
+							    		<div class="spans">
+							    		<span class="spans">请选择主机：</span>
+							    		</div>
+									    <select name="pclist" id="optgroup" multiple="multiple">
+									        {% for item in contacts %}
+                                                <option value="{{ item.id }}">{{ item.ipaddress }}</option>
+                                            {% endfor %}
+									    </select>
+								    </div>
+								    <div class="kuangkuang">
+								    	<div class="spans">
+								    		<span class="spans" >请选择配置文件:</span>
+								    	</div>
+
+								    	<select name="file" class="form-control">
+										  {% for item in config %}
+                                                <option value="{{ item.id }}">{{ item.file_name }}</option>
+                                            {% endfor %}
+
+										</select>
+								    </div>
+							    </form>
+							    	<button type="submit" form="devfrom" class="btn btn-primary pull-right" value="submit">提交任务</button>
+							</div>
+							<div class="col-lg-4  pull-right">
+								<div class="helpme">
+									<div class="alert alert-info" role="alert">
+										<span class="glyphicon glyphicon-alert">
+												请慎重安装前，请先进行配置文件设置，语法为ansible语法！
+										</span>
+									</div>
+								</div>
+							</div>
+					    </div>
+					    </div>
+					  <div role="tabpanel" class="tab-pane" id="profile">
+					  	<div class="col-lg-12">
+					  		<div class="col-lg-2  pull-left">
+					  		</div>
+							<div class="col-lg-4 pull-left selecteds ">
+							    <form class="form-horizontal" action="/scms/tomcatinstall/" method="post" id="groupfrom">{% csrf_token %}
+                                <input class="form-control"  style="display: none;" name="mark"  value="2" type="text" readonly/>
+							    	<div class="kuangkuang">
+							    		<div class="spans">
+							    		<span class="spans">请选择组：</span>
+							    		</div>
+									    <select name="group" class="form-control">
+										  {% for item in group %}
+                                                <option value="{{ item.id }}">{{ item.group_name }}</option>
+                                            {% endfor %}
+										</select>
+								    </div>
+								    <div class="kuangkuang">
+								    	<div class="spans">
+								    		<span class="spans" >请选择配置文件:</span>
+								    	</div>
+
+								    	<select name="file" class="form-control">
+										  {% for item in config %}
+                                                <option value="{{ item.id }}">{{ item.file_name }}</option>
+                                            {% endfor %}
+										</select>
+								    </div>
+							    </form>
+							    	<button type="submit" form="groupfrom" class="btn btn-primary pull-right" value="submit">提交任务</button>
+							</div>
+							<div class="col-lg-4  pull-right">
+								<div class="helpme">
+									<div class="alert alert-info" role="alert">
+										<span class="glyphicon glyphicon-alert">
+												请慎重安装前，请先进行配置文件设置，语法为ansible语法！
+										</span>
+									</div>
+								</div>
+							</div>
+					    </div>
+					  </div>
+					</div>
+			        </div>
+			    </div>
+			</div>
+{% endblock %}
+{% block javascript %}
+<script src="/static/scms/dist/js/jquery.cookie.js"></script>
+<script src="/static/scms/dist/js/jquery.multi-select.js"></script>
+    <script>
+    var csrftoken = $.cookie('csrftoken');
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+    </script>
+    <script type="text/javascript">
+		  // 初始化
+		$('#optgroup').multiSelect({
+		    selectableHeader: "<div class='custom-header'>可选主机</div>",
+		    selectionHeader: "<div class='custom-header'>已选主机</div>",
+		    selectableOptgroup: true,
+		    afterSelect: function (values) {
+		        select.modifyselectNum('#optgroup');
+		    },
+		    afterDeselect: function (values) {
+		        select.modifyselectNum('#optgroup');
+		    }
+		});
+
+  </script>
+
+{% endblock %}

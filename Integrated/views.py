@@ -16,6 +16,19 @@ from django.contrib.auth.hashers import make_password
 from plugins.Decorators import admin_Auth,system_Auth
 from froms import LoginForm
 import datetime
+import gvcode,random
+from io import BytesIO
+
+def create_code():
+    img, code = gvcode.generate(fg_color=(random.randint(10,300),random.randint(50,150),random.randint(50,150)))
+    return img,code
+
+def create_code_img(request):
+    f = BytesIO()
+    img,code = create_code()
+    request.session['check_code'] = code
+    img.save(f,'PNG')
+    return HttpResponse(f.getvalue())
 
 def login(request):
     if request.method == 'GET':
@@ -26,6 +39,11 @@ def login(request):
         if form.is_valid():
             username = request.POST.get('email', '')
             password = request.POST.get('password', '')
+            code = request.POST.get('code', '')
+            if code.lower() != request.session.get('check_code', 'error').lower():
+                return render_to_response('login.html',
+                                          RequestContext(request, {'form': form,
+                                                                   'login_err': '您输入的验证码错误,请重新输入！'}))
             user = auth.authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 auth.login(request, user)
@@ -35,19 +53,18 @@ def login(request):
                 else:
                     return HttpResponseRedirect('/index/')
             elif user is None:
-                form = LoginForm()
-                return render_to_response('login.html', RequestContext(request, {'form': form,'login_err': '您输入的用户名或密码错误,！'}))
+                return render_to_response('login.html', RequestContext(request,
+                                                                       {'form': form,
+                                                                        'login_err': '您输入的用户名或密码错误,！'}))
             elif not user.is_active:
-                form = LoginForm()
                 return render_to_response('login.html',
-                                          RequestContext(request, {'form': form, 'login_err': '账户被禁用！'}))
+                                          RequestContext(request, {'form': LoginForm(), 'login_err': '账户被禁用！'}))
             else:
-                form = LoginForm()
                 return render_to_response('login.html',
-                                          RequestContext(request, {'form': form, 'login_err': '未知异常，请联系管理员！'}))
+                                          RequestContext(request, {'form': LoginForm(),
+                                                                   'login_err': '未知异常，请联系管理员！'}))
         else:
-            form = LoginForm()
-            return render_to_response('login.html', RequestContext(request, {'form': form,}))
+            return render_to_response('login.html', RequestContext(request, {'form': LoginForm(),}))
 
 
 @login_required
@@ -83,9 +100,14 @@ def users(request):
     if request.method == "POST":
         try:
             if request.POST.get('admin'):
-                user = user_models.UserProfile.objects.create_user(email=request.POST.get('email'),username=request.POST.get('username'),password=request.POST.get('password'),admin=True)
+                user = user_models.UserProfile.objects.create_user(email=request.POST.get('email'),
+                                                                   username=request.POST.get('username'),
+                                                                   password=request.POST.get('password'),
+                                                                   admin=True)
             else:
-                user = user_models.UserProfile.objects.create_user(email=request.POST.get('email'),username=request.POST.get('username'),password=request.POST.get('password'))
+                user = user_models.UserProfile.objects.create_user(email=request.POST.get('email'),
+                                                                   username=request.POST.get('username'),
+                                                                   password=request.POST.get('password'))
             user.save()
             return HttpResponseRedirect("/users/")
         except Exception,e:

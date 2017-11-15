@@ -21,6 +21,14 @@
             </div>
     	<h3>选择系统</h3>
         <div class="row wenzi">
+            {% if Authority.ansible %}
+          <div class="col-xs-6 col-md-2">
+            <a href="/scms/index/" class="thumbnail">
+              <img src="/static/dist/img/ansible2.png">
+              <span>Ansible管理系统</span>
+            </a>
+          </div>
+        {% endif %}
         {% if Authority.logs %}
           <div class="col-xs-6 col-md-2">
             <a href="/loghunter/index/" class="thumbnail">
@@ -33,7 +41,7 @@
           <div class="col-xs-6 col-md-2">
             <a href="/asset/index/" class="thumbnail">
               <img src="/static/dist/img/cmdb.png">
-              <span>资产管理平台</span>
+              <span>CMDB资产管理</span>
             </a>
           </div>
         {% endif %}

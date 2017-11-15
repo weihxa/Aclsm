@@ -1,0 +1,162 @@
+{% extends 'scms/base.html' %}
+{% block body %}
+    <div id="containerd" style="min-width: 310px; height: 400px; padding: 20px 0 0 0 "></div>
+<div class="row" style="margin-top: 10px" >
+  <div class="col-md-6">
+      <div id="mainnn" style=" min-width: 152px; height: 400px; margin: 0 auto"></div>
+  </div>
+  <div class="col-md-6">
+      <div id="business" style=" min-width: 153px; height: 400px; margin: 0 auto"></div>
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+    <script>
+		$(function () {
+    $('#containerd').highcharts({
+
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: '系统整体情况概览图'
+        },
+        subtitle: {
+            text: 'form：数据来源于数据库'
+        },
+
+        xAxis: {
+            categories: ['管理机器数', '组数量', '配置文件总数', '任务执行总数']
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '数量'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.0f} 个</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            series: {
+                colorByPoint: true
+            }
+        },
+
+        series: [{
+        	name:'数量',
+
+            data: [{{ containerd.dev }},{{ containerd.group }},{{ containerd.file }},{{ containerd.task }}]
+        }]
+    });
+});
+	</script>
+	<script type="text/javascript">
+$(function () {
+    $('#mainnn').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            backgroundColor: 'rgba(0,0,0,0)'
+        },
+        credits: {
+          enabled:false
+        },
+        title: {
+            text: '任务执行结果概览'
+        },
+        subtitle: {
+            text: 'form：根据任务执行结果绘制'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        exporting: { enabled:false },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                innerSize:'70%',
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [{
+                name: '成功',
+                y: {{ mainnn.success }},
+                color : "rgb(144, 237, 125)",
+                sliced: true,
+                selected: true
+            }, {
+                name: '失败',
+                y: {{ mainnn.fail }},
+                color : "#A52A2A"
+
+            }, {
+                name: '执行中',
+                y: {{ mainnn.proces }},
+                color : "rgb(124, 181, 236)"
+            }]
+        }]
+    });
+});
+		</script>
+		<script>
+$(function () {
+    $('#business').highcharts({
+
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '配置文件数量概览'
+        },
+        subtitle: {
+            text: 'form：根据数据库记录绘制'
+        },
+        xAxis: {
+            categories: ['nginx', 'tomcat', 'nginx安装', 'tomcat安装']
+        },
+          yAxis: {
+            min: 0,
+            title: {
+                text: '数量'
+            }
+        },
+        plotOptions: {
+            series: {
+                colorByPoint: true,
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.0f} 个</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        series: [{
+        	name:'数量',
+            data: [{{ business.nginx }},{{ business.tomcat }},{{ business.ninstall }},{{ business.tinstall }}]
+        }]
+    });
+});
+		</script>
+    <script src="/static/scms/dist/js/highcharts.js"></script>
+{% endblock %}

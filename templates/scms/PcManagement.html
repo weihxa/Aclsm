@@ -1,0 +1,296 @@
+{% extends 'scms/base.html' %}
+{% block link %}
+    <link href="/static/scms/dist/css/pcmanager.css" rel="stylesheet" type="text/css">
+    <link href="/static/scms/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+			    <div class="row">
+			        <div class="col-lg-12">
+						{% if zhuangtai %}
+							<div id="zhuangtai2" class="alert alert-danger alert-dismissible" role="alert">
+						{% else %}
+							<div style="display: none"  id="zhuangtai2" class="alert alert-danger alert-dismissible" role="alert">
+						{% endif %}
+							  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>
+							  <strong>新机器添加失败,IP地址重复！</strong>
+							</div>
+			            <div class="ibox float-e-margins" id="all">
+			                <div class="ibox-title shezhiye">
+			                    <h3> 机器管理页</h3>
+			                    <h5> *添加及删除机器推送key</h5>
+			                </div>
+							<div class="col-lg-12">
+			                <div class="ibox-content">
+			                        <div class="col-sm-6 ibox-title" style="padding-left: 0">
+			                            <a href="#myModal2" class="btn btn-sm btn-primary " data-toggle="modal" data-placement="bottom"><span class="glyphicon-plus"></span> 添加资产 </a>
+{#                                        <button class="btn btn-primary" data-toggle="modal" data-target="#myModal2"><span class="glyphicon-plus"></span> 添加资产</button>#}
+			                            <a href="#" class="btn btn-sm btn-warning " data-toggle="modal" data-placement="bottom" onclick="generate(this,1);"><span class="glyphicon glyphicon-check"></span> 生成配置 </a>
+			                        </div>
+			                        <!--添加机器弹窗-->
+						            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+									  <div class="modal-dialog">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+									        <h4 class="modal-title" id="myModalLabel">添加机器</h4>
+									      </div>
+									      <div class="modal-body">
+									        <form class="form-horizontal" action="/scms/pcmanager/" method="post" id="pcconfig">{% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label" for="description">描述:</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" id="description" class="form-control" name="description" placeholder="请输入描述信息" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">IP:</label><span style="color: red">*</span>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" class="form-control" name="ipAddress" placeholder="请输入服务器IP地址" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">root密码:</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="password" class="form-control" name="password" placeholder="请输入root密码" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label" for="Configuration1">配置信息:</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" id="Configuration1" class="form-control" name="Configuration" placeholder="请输入配置信息" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label" for="Configuration1">选择组:</label>
+                                                    <div class="col-lg-8">
+                                                        <select id="group" multiple class="form-control" name="group">
+                                                            {% for item in  group_list%}
+                                                                <option value="{{item.group_name}}" >{{item.group_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                  <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                    <button type="submit" form="pcconfig" class="btn btn-primary" value="submit">提交</button>
+                                                  </div>
+										    </div>
+									        </form>
+									      </div>
+                                        </div>
+									</div>
+									</div>
+						            <!--弹窗结束-->
+                            <!--添加机器弹窗-->
+						            <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+									  <div class="modal-dialog">
+									    <div class="modal-content">
+									      <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+									        <h4 class="modal-title" id="myModalLabel">编辑机器</h4>
+									      </div>
+									      <div class="modal-body">
+									        <form class="form-horizontal" action="/scms/editpcmanagent/" method="post" id="pcconfig2">{% csrf_token %}
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label" for="description2">描述:</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" id="description2" class="form-control" name="description2" placeholder="请输入描述信息" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">IP:</label><span style="color: red">*</span>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" class="form-control" name="ipAddress2" placeholder="请输入服务器IP地址" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label">root密码:</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="password" class="form-control" name="password2" placeholder="请输入root密码" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label" for="Configuration12">配置信息:</label>
+                                                    <div class="col-lg-8">
+                                                        <input type="text" id="Configuration12" class="form-control" name="Configuration2" placeholder="请输入配置信息" />
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-lg-2 control-label" for="Configuration2">选择组:</label>
+                                                    <div class="col-lg-8">
+                                                        <select id="group2" multiple class="form-control" name="group2">
+                                                            {% for item in  group_list%}
+                                                                <option value="{{item.group_name}}" >{{item.group_name}}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                            </div>
+                                            <div class="form-group">
+                                                  <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                                    <button type="submit" form="pcconfig2" class="btn btn-primary" value="submit">提交</button>
+                                                  </div>
+										    </div>
+									        </form>
+									      </div>
+                                        </div>
+									</div>
+									</div>
+						            <!--弹窗结束-->
+			                        <div id="export"></div>
+			                        <table class=" table table-striped table-bordered table-hover " id="editable" name="editable">
+			                            <thead>
+			                                <tr>
+			                                    <th class="text-center"> 序号 </th>
+			                                    <th class="text-center"> 描述 </th>
+			                                    <th class="text-center" name="ip"> IP地址 </th>
+			                                    <th class="text-center"> 所属主机组 </th>
+			                                    <th class="text-center"> 配置信息 </th>
+			                                    <th class="text-center"> 操作 </th>
+			                                </tr>
+			                            </thead>
+			                            <tbody>
+											{% for topic in topics %}
+												<tr class="gradeX">
+													<td class="text-center">{{ topic.id }}</td>
+													<td class="text-center">{{ topic.description }}</td>
+													<td class="text-center">{{ topic.ipaddress }}</td>
+													<td class="text-center">
+													{% for i in topic.group.select_related %}
+
+														<span class="badge badge-span">{{i.group_name}}</span>
+														{% endfor %}
+													</td>
+													<td class="text-center">{{ topic.memo }}</td>
+													<td class="text-center fenge" data-editable='false'>
+{#														<button id="{{ topic.id }}" type="button" class="btn btn-xs btn-info" onclick="edit_device(this,{{ topic.id }});"  >编辑</button>#}
+														<button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_device(this,{{ topic.id }});" >删除</button>
+
+													</td>
+												</tr>
+											{% endfor %}
+			                            </tbody>
+			                        </table>
+			                </div>
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+
+			<div id="fenye" class="pagination">
+			    <nav>
+					<ul class="pagination">
+					{% if topics.has_previous %}
+						<li><a href="?page={{ topics.previous_page_number }}">&laquo;</a></li>
+						{% else %}
+						<li class="disabled"><a href="#">&laquo;</a></li>
+					  {% endif %}
+					  {% for page_number in topics.paginator.page_range %}
+						{% ifequal page_number  topics.number %}
+							<li class="active"><a>{{ page_number }}</a></li>
+						{% else %}
+							<li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+						{% endifequal %}
+					  {% endfor %}
+					{% if topics.has_next %}
+						<li><a href="?page={{ topics.next_page_number }}">&raquo;</a></li>
+						{% else %}
+						<li class="disabled"><a href="#">&raquo;</a></li>
+					{% endif %}
+					</ul>
+				</nav>
+			</div>
+        </div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="/static/scms/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
+		<script src="/static/scms/dist/js/jquery.cookie.js"></script>
+		<script>
+			var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+            // these HTTP methods do not require CSRF protection
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            }
+        });
+			function Doajax(doc,id) {
+{#				$("#devid").attr("value",id);#}
+{#				$('#myModal3').modal({show:true});#}
+        };
+            function generate(doc,id) {
+            $.ajax({
+                url:'/scms/generate/',
+                type:'POST',
+                data:{modify:id},
+                success:function (arg) {
+                    $(doc).attr("disabled","disabled");
+                    var obj = jQuery.parseJSON(arg);
+                    console.log(obj.status);
+                },
+                error:function () {
+                   console.log('failed');
+                }
+            });
+        };
+			function del_device(doc,id) {
+				$("#devid").attr("value",id);
+            $.ajax({
+                url:'/scms/deldevice/',
+                type:'POST',
+                data:{modify:id},
+                success:function (arg) {
+					window.location.reload();
+                    var obj = jQuery.parseJSON(arg);
+                    var this_id = $(doc).attr('id');
+                    console.log(this_id);
+                    console.log(obj.status);
+                },
+                error:function () {
+                    console.log('failed');
+                }
+            });
+        };
+        function edit_device(doc,id) {
+{#            var select = document.getElementById("group2");#}
+{#            select[0].options["cc"].selected = true;#}
+            $("#group2").val("cc");
+				$('#myModal3').modal({show:true});
+        };
+		</script>
+{#    <script src="http://cdn.bootcss.com/jquery.mask/1.14.8/jquery.mask.js"></script>#}
+    <script src="/static/scms/dist/js/jquery.mask.js"></script>
+    <script>
+$(document).ready(function() {
+    $('#pcconfig')
+        .bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                ipAddress: {
+                    validators: {
+                        notEmpty: {
+                        message: 'ip地址不得为空！'
+                        },
+                        ip: {
+                            message: '您输入的IP地址不合法！'
+                        }
+                    }
+                }
+            }
+        })
+        .find('[name="ipAddress"]').mask('099.099.099.099');
+});
+</script>
+
+{% endblock %}

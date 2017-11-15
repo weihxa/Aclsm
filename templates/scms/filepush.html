@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% block link %}
+    <link href="/static/dist/css/nginxts.css" rel="stylesheet" type="text/css">
+    <link href="/static/dist/css/multi-select.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block body %}
+<div class="wrapper wrapper-content animated fadeInRight">
+			    <div class="row">
+			        <div class="col-lg-12">
+			            <div class="ibox float-e-margins" id="all">
+			                <div class="ibox-title shezhiye">
+			                    <h3> 文件推送页</h3>
+			                    <h5> *组或者主机进行文件推送</h5>
+			                </div>
+			            </div>
+			        </div>
+			    	<ul class="nav nav-tabs" role="tablist">
+					  <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">单机推送</a></li>
+					  <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">组推送</a></li>
+					</ul>
+					<div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+									        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+									        <h4 class="modal-title" id="myModalLabel">执行结果</h4>
+									      </div>
+                            <div class="xianshiqi">
+                                <pre id="xianshi">正在执行，请稍后。。。</pre>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+
+					<!-- Tab panes -->
+					<div class="tab-content">
+					  <div role="tabpanel" class="tab-pane active" id="home">
+					  	<div class="col-lg-12">
+					  		<div class="col-lg-2  pull-left">
+					  		</div>
+                                    <div class="col-lg-4 pull-left selecteds ">
+							   <form class="form-horizontal" action="/cmdrun/" method="post" id="nameform22">{% csrf_token %}
+                                    <input class="form-control"  style="display: none;" name="mark"  value="1" type="text" readonly/>
+							    	<div class="kuangkuang">
+							    		<div class="spans">
+							    		<span class="spans">请选择主机：</span>
+							    		</div>
+									    <select name="pclist" id="optgroup" multiple="multiple">
+                                                {% for item in contacts %}
+                                                <option value="{{ item.id }}">{{ item.ipaddress }}</option>
+                                            {% endfor %}
+									    </select>
+								    </div>
+								    <div class="kuangkuang">
+								    	<div class="spans">
+								    		<span class="spans" >请输入命令:</span>
+								    	</div>
+
+								    	<textarea id="textrarval" class="form-control" rows="3" name="cmd" placeholder="命令"></textarea>
+								    </div>
+							    </form>
+							    	<button type="button" class="btn btn-primary pull-right" onclick="del_device(this,1);">执行</button>
+							</div>
+
+
+
+							<div class="col-lg-3  pull-right">
+								<div class="helpme">
+									<div class="alert alert-info" role="alert">
+										<span class="glyphicon glyphicon-alert">
+											此功能已经屏蔽reboot，shutdown，init6，init0命令。
+										</span>
+									</div>
+								</div>
+							</div>
+                            </div>
+					  </div>
+					  <div role="tabpanel" class="tab-pane" id="profile">
+					  	<div class="col-lg-12">
+					  		<div class="col-lg-2  pull-left">
+					  		</div>
+							<div class="col-lg-4 pull-left selecteds ">
+							    <form class="form-horizontal" action="/cmdrun/" method="post" id="nameform3">{% csrf_token %}
+                                    <input class="form-control"  style="display: none;" name="mark"  value="2" type="text" readonly/>
+							    	<div class="kuangkuang">
+							    		<div class="spans">
+							    		<span class="spans">请选择组：</span>
+							    		</div>
+									    <select name="group" class="form-control">
+										  {% for item in group %}
+                                                <option value="{{ item.id }}">{{ item.group_name }}</option>
+                                            {% endfor %}
+										</select>
+								    </div>
+								    <div class="kuangkuang">
+								    	<div class="spans">
+								    		<span class="spans" >请输入命令:</span>
+								    	</div>
+
+								    	<textarea id="textrarval" class="form-control" rows="3" name="gcmd" placeholder="命令"></textarea>
+								    </div>
+							    </form>
+{#							    	<button type="submit" form="nameform3" class="btn btn-primary pull-right" value="submit">执行</button>#}
+                                    <button type="button" class="btn btn-primary pull-right" onclick="group(this,1);">执行</button>
+							</div>
+							<div class="col-lg-4  pull-right">
+								<div class="helpme">
+									<div class="alert alert-info" role="alert">
+										<span class="glyphicon glyphicon-alert">
+												此功能已经屏蔽reboot，shutdown，init6，init0命令。
+										</span>
+									</div>
+								</div>
+							</div>
+					    </div>
+					  </div>
+					</div>
+				</div>
+			</div>
+
+{% endblock %}
+
+
+{% block javascript %}
+<script src="/static/dist/js/jquery.cookie.js"></script>
+<script src="/static/dist/js/jquery.multi-select.js"></script>
+    <script>
+    var csrftoken = $.cookie('csrftoken');
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+
+    function del_device(doc,id) {
+        $("#xianshi").text('正在执行，请稍后。。。');
+        $('#myModal2').modal({show:true});
+				$.ajax({
+                type: "POST",
+                url:/cmdrun/,
+                data:$('#nameform22').serialize(),
+                error: function(request) {
+                    $("#xianshi").text('请求失败！');
+                    $('#myModal2').modal({show:true});
+                },
+                success: function(arg) {
+                    var obj = jQuery.parseJSON(arg);
+                    $("#xianshi").text(obj.data);
+
+                }
+            });
+        };
+    function group(doc,id) {
+        $("#xianshi").text('正在执行，请稍后。。。');
+        $('#myModal2').modal({show:true});
+				$.ajax({
+                type: "POST",
+                url:/cmdrun/,
+                data:$('#nameform3').serialize(),
+                error: function(request) {
+                    $("#xianshi").text('请求失败！');
+                    $('#myModal2').modal({show:true});
+                },
+                success: function(arg) {
+                    var obj = jQuery.parseJSON(arg);
+                    $("#xianshi").text(obj.data);
+
+                }
+            });
+        };
+    </script>
+    <script type="text/javascript">
+		  // 初始化
+		$('#optgroup').multiSelect({
+		    selectableHeader: "<div class='custom-header'>可选主机</div>",
+		    selectionHeader: "<div class='custom-header'>已选主机</div>",
+		    selectableOptgroup: true,
+		    afterSelect: function (values) {
+		        select.modifyselectNum('#optgroup');
+		    },
+		    afterDeselect: function (values) {
+		        select.modifyselectNum('#optgroup');
+		    }
+		});
+
+  </script>
+
+{% endblock %}

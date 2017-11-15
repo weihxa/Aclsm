@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^login/$', views.login,name='login'),
     url(r'^index/$', views.index,name='index'),
     url(r'^checkpasswork/', views.checkpasswork,name='checkpasswork'),
+    url(r'^create_code/$',views.create_code_img,name='create_code'),
     url(r'^logout/', views.logout,name='logout'),
     url(r'^users/', views.users,name='uses'),
     url(r'^deluser/', views.del_user,name='deluser'),
@@ -35,9 +36,9 @@ urlpatterns = [
     url(r'^delweekly/', views.delweekly,name='delweekly'),
     url(r'^editweekly/', views.editweekly,name='editweekly'),
     url(r'^deparweekly/', views.deparweekly,name='deparweekly'),
-    # url(r'^releases/', include('releases.urls')),
-    # url(r'^scms/', include('SCMS.urls')),
+    url(r'^scms/', include('SCMS.urls')),
     url(r'^loghunter/', include('loghunter.urls')),
     url(r'^asset/',include('asset.urls')),
+
 
 ]

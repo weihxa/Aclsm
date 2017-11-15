@@ -48,6 +48,7 @@ INSTALLED_APPS = (
     'Integrated',
     'loghunter',
     'asset',
+    'SCMS',
     # 'gunicorn',
 )
 

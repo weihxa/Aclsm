@@ -1,0 +1,263 @@
+{% extends 'scms/base.html' %}
+{% block link %}
+    <link href="/static/scms/dist/css/config.css" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" href="/static/scms/dist/css/codemirror.css">
+    <link href="/static/scms/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<div class="wrapper wrapper-content animated fadeInRight">
+			    <div class="row">
+			        <div class="col-lg-12">
+						{% if zhuangtai %}
+							<div id="zhuangtai2" class="alert alert-danger alert-dismissible" role="alert">
+						{% else %}
+							<div style="display: none"  id="zhuangtai2" class="alert alert-danger alert-dismissible" role="alert">
+						{% endif %}
+							  <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>
+							  <strong>创建失败，显示名重复！</strong>
+							</div>
+			            <div class="ibox float-e-margins" id="all">
+			                <div class="ibox-title shezhiye">
+			                    <h3> 配置文件管理页</h3>
+			                    <h5> *添加修改配置文件</h5>
+			                </div>
+			            </div>
+			        </div>
+			        <div class="biaoqianye">
+			        <ul class="nav nav-tabs" role="tablist">
+					  <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">nginx配置</a></li>
+					  <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">tomcat配置</a></li>
+					  <li role="presentation"><a href="#nginx" role="tab" data-toggle="tab">nginx安装</a></li>
+					  <li role="presentation"><a href="#tomcat" role="tab" data-toggle="tab">tomcat安装</a></li>
+					</ul>
+
+					<!-- Tab panes -->
+					<div class="tab-content">
+					  <div role="tabpanel" class="tab-pane active" id="home">
+					  	<div class="container containerjifang">
+								{% for item in contacts %}
+										<div class="btn col-lg-2 file-conf" >
+											<button class="glyphicon glyphicon-remove text-center guanbi" onclick="del_conf(this,{{ item.id }})"></button>
+											<span class=" text-center chakan" data-toggle="modal" data-placement="bottom" onclick="edit_conf($(this),{{ item.id }},{{ item.file_name }})">{{ item.file_name }}</span>
+                                            <textarea id="{{ item.file_name }}" style="display: none">{{ item.file_content }}</textarea>
+										</div>
+								{% endfor %}
+						        <div class="btn col-lg-1 file-conf">
+						        	<span class="glyphicon glyphicon-plus text-center tianjia" onclick="newajax(this,1);" ></span>
+						        </div>
+					         </div>
+					  </div>
+					  <div role="tabpanel" class="tab-pane" id="profile">
+					  	<div class="container containerjifang">
+					        {% for item in profile_list %}
+										<div class="btn col-lg-2 file-conf" >
+											<button class="glyphicon glyphicon-remove text-center guanbi" onclick="del_conf(this,{{ item.id }})"></button>
+											<span class=" text-center chakan"  data-toggle="modal" data-placement="bottom" onclick="edit_conf($(this),{{ item.id }},{{ item.file_name }})">{{ item.file_name }}</span>
+                                            <textarea id="{{ item.file_name }}" style="display: none">{{ item.file_content }}</textarea>
+										</div>
+								{% endfor %}
+					        <div class="btn col-lg-1 file-conf">
+					        	<span class="glyphicon glyphicon-plus text-center tianjia" onclick="newajax(this,2);"></span>
+					        </div>
+				     	</div>
+					  </div>
+					  <div role="tabpanel" class="tab-pane" id="nginx">
+					  	<div class="container containerjifang">
+					        {% for item in nginx_list %}
+										<div class="btn col-lg-2 file-conf" >
+											<button class="glyphicon glyphicon-remove text-center guanbi" onclick="del_conf(this,{{ item.id }})"></button>
+											<span class=" text-center chakan" data-toggle="modal" data-placement="bottom" onclick="edit_conf($(this),{{ item.id }},{{ item.file_name }})">{{ item.file_name }}</span>
+                                        <textarea id="{{ item.file_name }}" style="display: none">{{ item.file_content }}</textarea>
+										</div>
+								{% endfor %}
+					        <div class="btn col-lg-1 file-conf">
+					        	<span class="glyphicon glyphicon-plus text-center tianjia" onclick="newajax(this,3);"></span>
+					        </div>
+				     	</div>
+					  </div>
+					  <div role="tabpanel" class="tab-pane" id="tomcat">
+					  	<div class="container containerjifang">
+					        {% for item in tomcat_list %}
+										<div class="btn col-lg-2 file-conf" >
+											<button class="glyphicon glyphicon-remove text-center guanbi" onclick="del_conf(this,{{ item.id }})"></button>
+											<span class=" text-center chakan"  data-toggle="modal" data-placement="bottom" onclick="edit_conf($(this),{{ item.id }},{{ item.file_name }})">{{ item.file_name }}</span>
+                                        <textarea id="{{ item.file_name }}" style="display: none">{{ item.file_content }}</textarea>
+										</div>
+								{% endfor %}
+					        <div class="btn col-lg-1 file-conf">
+					        	<span class="glyphicon glyphicon-plus text-center tianjia" onclick="newajax(this,4);"></span>
+					        </div>
+				     	</div>
+					  </div>
+					</div>
+			        </div>
+			    </div>
+			</div>
+			<!--编辑配置文件弹窗-->
+            <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="myModalLabel">编辑配置文件</h4>
+					  </div>
+					  <div class="modal-body">
+						<form class="form-horizontal" action="/scms/editconf/" method="post" id="conflist">{% csrf_token %}
+                            <div class="control-group">
+								<label class="control-label" for="confids">ID：</label>
+								<div class="controls">
+									<input class="form-control" id="confids" name="confid" placeholder="ID" type="text" readonly/>
+								</div>
+							</div>
+							<div class="control-group">
+								<label class="control-label" for="confnams">显示名：</label>
+								<div class="controls">
+									<input class="form-control" id="confnams" name="confnams" placeholder="请输入显示名，不可重复" type="text" />
+								</div>
+							</div>
+							<div class="control-group ">
+								<label class="control-label" for="editor" >配置文件：</label>
+								<div>
+									<textarea class="textcss" id="editor" name="editor" ></textarea>
+								</div>
+							</div>
+						</form>
+					  </div>
+					  <div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="submit" form="conflist" class="btn btn-primary" value="submit">提交</button>
+					  </div>
+					</div>
+				</div>
+			</div>
+            <!--编辑配置文件弹窗结束-->
+			<!--新建配置文件弹窗-->
+            <div class="modal fade" id="newmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+				  <div class="modal-dialog">
+					<div class="modal-content">
+					  <div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title">添加配置文件</h4>
+					  </div>
+					  <div class="modal-body">
+						<form class="form-horizontal" role="form" action="/scms/confile/" method="post" id="newconfig">{% csrf_token %}
+							<div class="form-group">
+								<label class="col-lg-2 control-label" for="devid">标识:</label>
+								<div class="col-lg-9">
+									<input class="form-control" id="devid" name="description"  placeholder="标识" type="text" readonly/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-lg-2 control-label" for="confname">显示名:</label><span style="color: red">*</span>
+								<div class="col-lg-9">
+									<input class="form-control" id="confname" name="confname" placeholder="请输入显示名，不可重复" type="text" />
+								</div>
+							</div>
+                            <label class="col-lg-4 " >配置文件：</label>
+							<div class="form-group">
+
+								<div class="col-lg-12">
+									<textarea id="neweditor" name="neweditor"></textarea>
+								</div>
+							</div>
+                            <div class="form-group">
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="submit" form="newconfig" class="btn btn-primary" value="submit">提交</button>
+                                  </div>
+                            </div>
+						</form>
+					  </div>
+					</div>
+				</div>
+			</div>
+            <!--新建配置文件弹窗结束-->
+        </div>
+{% endblock %}
+{% block javascript %}
+	<script src="/static/scms/dist/js/codemirror.js"></script>
+	<script src="/static/scms/dist/js/matchbrackets.js"></script>
+	<script src="/static/scms/dist/js/shell.js"></script>
+	<script src="/static/scms/dist/js/jquery.cookie.js"></script>
+    <script src="/static/scms/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
+	<script>
+		var csrftoken = $.cookie('csrftoken');
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+		function newajax(doc,id) {
+			$("#devid").attr("value",id);
+			$('#newmodal').modal({show:true});
+	};
+		function del_conf(doc,id) {
+			$("#devid").attr("value",id);
+		$.ajax({
+			url:'/scms/delconf/',
+			type:'POST',
+			data:{modify:id},
+			success:function (arg) {
+				window.location.reload();
+			},
+			error:function () {
+				console.log('failed');
+			}
+		});
+	};
+    function edit_conf(doc,id,aa) {
+		$("#confids").attr("value",id);
+		$("#confnams").attr("value",doc.text());
+		$('#editor').val($(aa).text());
+			$('#myModal2').modal({show:true});
+	};
+	</script>
+	<script>
+{#	  var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {#}
+{#		mode: 'shell',#}
+{#		lineNumbers: true,#}
+{#		matchBrackets: true#}
+{#	  });#}
+		var neweditor = CodeMirror.fromTextArea(document.getElementById('neweditor'), {
+		mode: 'shell',
+		lineNumbers: true,
+		matchBrackets: true
+	  });
+	</script>
+<script>
+$(document).ready(function() {
+    $('#newconfig')
+        .bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                confname: {
+                    validators: {
+                        notEmpty: {
+                        message: '显示名不得为空！'
+                        },
+                        regexp: {
+                        regexp: /^[a-zA-Z0-9_]+$/,
+                        message: '抱歉，显示名只能输入英文和数字'
+                    },
+                        stringLength:{
+                        min:0,
+                        max:15,
+                        message:'组名应小于15个字符.'
+                    },
+                    }
+                },
+            }
+        });
+});
+</script>
+{% endblock %}
