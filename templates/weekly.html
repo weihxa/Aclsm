@@ -4,7 +4,6 @@
     <link href="/static/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
 {% endblock %}
 {% block body %}
-
     <div class="content">
         <!--添加工作事项弹窗-->
         <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -13,7 +12,6 @@
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title" id="myModalLabel">添加工作计划</h4>
-{#                  <span style="color: red;margin-left: 40px;font-size: 13px">*用户详细信息，请添加后编辑。</span>#}
               </div>
               <div class="modal-body">
                 <form class="form-horizontal" action="/weekly/" method="post" id="creategroup">{% csrf_token %}
@@ -66,7 +64,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="myModalLabel">编辑工作计划</h4>
+                <h4 class="modal-title" id="myModalLabe2">编辑工作计划</h4>
               </div>
               <div class="modal-body">
                 <form class="form-horizontal" action="/editweekly/" method="post" id="editgroup">{% csrf_token %}
@@ -163,7 +161,7 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                      <table id="example2" class="table table-bordered table-hover">
+                      <table id="example3" class="table table-bordered table-hover">
                         <thead>
                         <tr>
                           <th class="text-center">重点工作事项</th>
@@ -199,98 +197,5 @@
 {% block javascript %}
     <script src="/static/dist/js/jquery.cookie.js"></script>
     <script src="/static/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
-    <script type="text/javascript">
-			$(document).ready(function(){
-				$('#weeklyul').addClass("menu-open");
-				$('#weekly').addClass("active");
-				$('#weeklyli').addClass("active");
-		});
-    </script>
-    <script>
-		var csrftoken = $.cookie('csrftoken');
-	function csrfSafeMethod(method) {
-		// these HTTP methods do not require CSRF protection
-		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-	}
-	$.ajaxSetup({
-		beforeSend: function(xhr, settings) {
-			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-				xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			}
-		}
-	});
-		function del_users(doc,id) {
-            if(confirm("确认要删除此条计划？")){
-                    $.ajax({
-                        url:'/delweekly/',
-                        type:'POST',
-                        data:{modify:id},
-                        success:function (arg) {
-                            window.location.reload();
-                        },
-                        error:function () {
-                            console.log('failed');
-                        }
-                    });
-                }
-	};
-    function edit_users(id) {
-                $("#eweeklyid").attr("value",id);
-                $("#eweeklys").attr("value",$('#tweeklys'+id).text());
-                $("#eworkplan").attr("value",$('#tworkplan'+id).text());
-                $("#ecompletion").attr("value",$('#tcompletion'+id).text());
-                $("#ecoordination").attr("value",$('#tcoordination'+id).text());
-                $("#enextweek").attr("value",$('#tnextweek'+id).text());
-                $('#myModaledit').modal({show:true});
-
-	};
-    function copy_weekly(id) {
-        $("#weeklys").attr("value",$('#copyweeklys'+id).text());
-        $("#workplan").attr("value",$('#copyworkplan'+id).text());
-        $("#completion").attr("value",$('#copycompletion'+id).text());
-        $("#coordination").attr("value",$('#copycoordination'+id).text());
-        $("#nextweek").attr("value",$('#copynextweek'+id).text());
-        $('#myModal2').modal({show:true});
-    }
-	</script>
-    <script>
-$(document).ready(function() {
-    $('#creategroup')
-        .bootstrapValidator({
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                weeklys: {
-                    validators: {
-                        notEmpty: {
-                        message: '兄弟至少要写个计划吧！'
-                        },
-                    }
-                },
-            }
-        });
-});
-    $(document).ready(function() {
-    $('#editgroup')
-        .bootstrapValidator({
-            feedbackIcons: {
-                valid: 'glyphicon glyphicon-ok',
-                invalid: 'glyphicon glyphicon-remove',
-                validating: 'glyphicon glyphicon-refresh'
-            },
-            fields: {
-                eweeklys: {
-                    validators: {
-                        notEmpty: {
-                        message: '兄弟至少要写个计划吧！'
-                        },
-                    }
-                },
-            }
-        });
-});
-</script>
+    <script src="/static/dist/js/weekly.js"></script>
 {% endblock %}
