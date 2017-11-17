@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^index/$', views.index, name='index'),
     url(r'^help/$', views.help, name='help'),
     url(r'^pcmanager/', views.pcmanager, name='pcmanager'),
+    url(r'^adddevice/', views.adddevice, name='adddevice'),
     url(r'^deldevice/', views.deldevice, name='deldevice'),
     url(r'^groupmodify/', views.groupmodify, name='groupmodify'),
     url(r'^delgroup/', views.delgroup, name='delgroup'),

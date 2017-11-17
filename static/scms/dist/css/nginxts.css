@@ -1,0 +1,72 @@
+.ibox-title{
+	display: block;
+	margin:20px 0px 20px 5px;
+}
+.ibox-title h5{
+	margin-left: 40px;
+}
+.custom-header{
+	text-align:center;
+	color: #C0C0C0;
+}
+.shezhiye {
+	margin-bottom: 30px;
+}
+.shezhiye h5{
+	color: #CCCCCC;
+}
+.biaoqianye {
+	margin: 50px 10px 0px 10px;
+}
+.biaoqianye ul {
+	margin-bottom: 10px;
+}
+.biaoqianye ul li {
+	margin-right: 5px;
+}
+.helpme{
+	margin-top: 90px;
+	 height: 300px;
+	 width: 320px;
+	 border-left-width: 1px;
+	 border-left-style: solid;
+	 border-left-color: #D2CBCB;
+	 padding: 20px;
+	 line-height: 150%;
+	 
+}
+.helpme span{
+	line-height: 150%;
+	display: inline
+}
+.selecteds{
+	margin: 20px 0 20px 50px
+}
+.selecteds button{
+	margin-top: 20px;
+}
+.kuangkuang {
+	width: 370px;
+}
+.spans{
+	padding: 20px 0;
+	font-weight:bold;
+}
+#zhuangtai2 {
+	margin: 5px auto;
+	width: 170px;
+}
+@media screen and (max-width: 1200px) {
+    .helpme {
+        display: none;
+    }
+}
+.redxsq {
+	border:2px #FF0000 solid;
+}
+.xianshiqi pre{
+	margin: 5px;
+	padding: 20px;
+	font-size: 20px;
+	min-height:250px;overflow-y:auto;max-height:420px;
+}

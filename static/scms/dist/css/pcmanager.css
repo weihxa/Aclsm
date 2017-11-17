@@ -1,0 +1,43 @@
+.ibox-title{
+	display: block;
+	margin:20px 0px 20px 5px;
+}
+.ibox-title h5{
+	margin-left: 40px;
+}
+.fenge a{
+	margin: 1px;
+}
+#fenye{
+	float: right;
+  margin: 0 50px 0 0;
+}
+.shezhiye {
+	margin-bottom: 30px;
+}
+.shezhiye h5{
+	color: #CCCCCC;
+}
+#zhuangtai2 {
+	margin: 5px auto;
+	width: 270px;
+}
+.badge-span{
+	background-color: #4B0082;
+}
+.badge-success{
+	background-color: #5CB85C;
+}
+.badge-danger{
+	background-color: #D9534F;
+}
+.badge-primary{
+	background-color: #F0AD4E;
+}
+#xianshi{
+	padding: 1px;
+}
+#logs {
+	margin: 1px;
+	min-height:250px;overflow-y:auto;max-height:520px;
+}

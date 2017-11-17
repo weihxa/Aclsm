@@ -30,15 +30,15 @@ def help(request):
 
 @login_required
 @Perm_verification(perm='ansible')
-def pcmanager(request):
+def adddevice(request):
     if request.method == "POST":
-        if code.pcmanage_post(request):
-            return HttpResponseRedirect("/scms/pcmanager/")
-        else:
-            contacts, group_list = code.pcmamage_get(request)
-            return render(request,'scms/PcManagement.html',{"topics": contacts,'group_list':group_list,'zhuangtai':True},
-                          context_instance=RequestContext(request))
-    elif request.method == 'GET':
+        data = code.pcmanage_post(request)
+        return HttpResponse(json.dumps(data))
+
+@login_required
+@Perm_verification(perm='ansible')
+def pcmanager(request):
+    if request.method == 'GET':
         contacts,group_list = code.pcmamage_get(request)
         return render(request,'scms/PcManagement.html', {"topics": contacts,'group_list':group_list},
                       context_instance=RequestContext(request))

@@ -30,18 +30,25 @@ def index(request):
     return containerd,mainnn,business
 def pcmanage_post(request):
     if  models.device_config.objects.filter(ipaddress=request.POST.get('ipAddress')):
-        return False
+        return (False,'IP地址重复！请检查！')
     else:
-        dev = models.device_config(description=request.POST.get('description'),
-                                                   ipaddress=request.POST.get('ipAddress'),
-                                                   memo=request.POST.get('Configuration'),
-                                                   password=request.POST.get('password'))
-        dev.save()
-        for i in  request.POST.getlist('group'):
-            grou = models.group_config.objects.get(group_name=i)
-            dev.group.add(grou)
+        mark = ansible_api.MyRunner().deploy_key(server=request.POST.get('ipAddress'),
+                                          username='root',
+                                          password=request.POST.get('password')
+        )
+        if mark[0]:
+            dev = models.device_config(description=request.POST.get('description'),
+                                                       ipaddress=request.POST.get('ipAddress'),
+                                                       memo=request.POST.get('Configuration'),
+                                                       password='')
             dev.save()
-        return True
+            for i in  request.POST.getlist('group'):
+                grou = models.group_config.objects.get(group_name=i)
+                dev.group.add(grou)
+                dev.save()
+            return (True,'添加成功')
+        else:
+            return mark
 
 def pcmamage_get(request):
     group_list = models.group_config.objects.all()
