@@ -1,0 +1,16 @@
+#fenye{
+	float: right;
+  margin: 0 50px 0 0;
+}
+.badge-span{
+	background-color: #4B0082;
+}
+.badge-success{
+	background-color: #5CB85C;
+}
+.badge-danger{
+	background-color: #D9534F;
+}
+.badge-primary{
+	background-color: #F0AD4E;
+}
