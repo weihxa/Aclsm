@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import froms
 import os
 import tasks
-# import ansible_api
+import ansible_api
 
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -29,26 +29,29 @@ def index(request):
     business['tinstall'] = models.configuration_file.objects.filter(mark='4').count()
     return containerd,mainnn,business
 def pcmanage_post(request):
-    if  models.device_config.objects.filter(ipaddress=request.POST.get('ipAddress')):
-        return (False,'IP地址重复！请检查！')
-    else:
-        mark = ansible_api.MyRunner().deploy_key(server=request.POST.get('ipAddress'),
-                                          username='root',
-                                          password=request.POST.get('password')
-        )
-        if mark[0]:
-            dev = models.device_config(description=request.POST.get('description'),
-                                                       ipaddress=request.POST.get('ipAddress'),
-                                                       memo=request.POST.get('Configuration'),
-                                                       password='')
-            dev.save()
-            for i in  request.POST.getlist('group'):
-                grou = models.group_config.objects.get(group_name=i)
-                dev.group.add(grou)
-                dev.save()
-            return (True,'添加成功')
+    try:
+        if  models.device_config.objects.filter(ipaddress=request.POST.get('ipAddress')):
+            return (False,'IP地址重复！请检查！')
         else:
-            return mark
+            mark = ansible_api.MyRunner().deploy_key(server=request.POST.get('ipAddress'),
+                                              username='root',
+                                              password=request.POST.get('password')
+            )
+            if mark[0]:
+                dev = models.device_config(description=request.POST.get('description'),
+                                                           ipaddress=request.POST.get('ipAddress'),
+                                                           memo=request.POST.get('Configuration'),
+                                        )
+                dev.save()
+                for i in  request.POST.getlist('group'):
+                    grou = models.group_config.objects.get(group_name=i)
+                    dev.group.add(grou)
+                    dev.save()
+                return (True,'添加成功')
+            else:
+                return mark
+    except Exception,e:
+        print e
 
 def pcmamage_get(request):
     group_list = models.group_config.objects.all()
@@ -242,14 +245,14 @@ def cmdrun(request):
         for i in request.POST.getlist('pclist'):
             item = models.device_config.objects.get(id=i)
             iplist.append(item.ipaddress)
-            date = ansible_api.MyRunner(become_pass=item.password).cmdrun(pattern=item.ipaddress,module_args=request.POST.get('cmd'))['contacted']
+            date = ansible_api.MyRunner().cmdrun(pattern=item.ipaddress,module_args=request.POST.get('cmd'))['contacted']
             log.append(item.ipaddress+':')
             log.append(date[item.ipaddress]['stdout'] + '\n')
         data = {'status': 0, 'msg': '请求成功', 'data': '\n'.join(log)}
         return data
     elif request.POST.get('mark') == '2':
         for i in models.device_config.objects.filter(group=request.POST.get('group')):
-            date = ansible_api.MyRunner(become_pass=i.password).cmdrun(pattern=i.ipaddress,
+            date = ansible_api.MyRunner().cmdrun(pattern=i.ipaddress,
                                                                      module_args=request.POST.get('gcmd'))['contacted']
             log.append(i.ipaddress + ':')
             log.append(date[i.ipaddress]['stdout'] + '\n')

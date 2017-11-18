@@ -10,7 +10,6 @@ class device_config(models.Model):
 
     description = models.CharField(u'描述', max_length=64,blank=True)
     ipaddress = models.GenericIPAddressField(u'IP', blank=True, null=True)
-    password = models.CharField(u'密码',max_length=128,blank=True)
     group = models.ManyToManyField('group_config', verbose_name=u'属组',blank=True)
     memo = models.CharField(u'配置',max_length=64, null=True,blank=True)
     create_date = models.DateTimeField(auto_now_add=True)

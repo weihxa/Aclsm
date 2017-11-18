@@ -151,7 +151,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(unique=True, max_length=64, verbose_name='\u540d\u79f0')),
                 ('Intranet_ip', models.GenericIPAddressField(null=True, verbose_name='\u5185\u7f51IP', blank=True)),
                 ('Outside_ip', models.GenericIPAddressField(null=True, verbose_name='\u5916\u7f51IP', blank=True)),
-                ('memo', models.TextField(null=True, verbose_name='\u5907\u6ce8', blank=True)),
+                ('memo', models.CharField(max_length=64, null=True, verbose_name='\u5907\u6ce8')),
                 ('create_date', models.DateTimeField(auto_now_add=True)),
                 ('update_date', models.DateTimeField(null=True, blank=True)),
                 ('asset', models.ForeignKey(to='asset.Asset')),

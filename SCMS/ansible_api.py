@@ -17,13 +17,14 @@ class MyRunner(object):
         pass
         # self.__become_pass = become_pass
 
-    def cmdrun(self,module_name='shell', module_args='', timeout=30, forks=10,
+    def cmdrun(self,module_name='shell', module_args='', timeout=30, forks=1,
             pattern='*',become=False, become_user='root', transport='paramiko'):
         '''
         执行命令
         :return:
         '''
         hoc = Runner(
+             host_list=os.path.join(project_dir, 'temp', 'hosts'),
              module_name=module_name,
              module_args=module_args,
              timeout=timeout,
@@ -57,6 +58,13 @@ class MyRunner(object):
         return pb.run()
 
     def deploy_key(self,server, username, password):
+        '''
+        添加KEY
+        :param server: ip
+        :param username: root?
+        :param password: ??
+        :return:
+        '''
         try:
             key = open(os.path.expanduser('~/.ssh/id_rsa.pub')).read()
             client = paramiko.SSHClient()
@@ -75,4 +83,4 @@ class MyRunner(object):
 
 
 if __name__ == "__main__":
-    MyRunner().cmdrun(module_args='ls')
+    print MyRunner().deploy_key(server='192.168.56.102',username='root',password='123123')

@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -32,7 +31,6 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('description', models.CharField(max_length=64, verbose_name='\u63cf\u8ff0', blank=True)),
                 ('ipaddress', models.GenericIPAddressField(null=True, verbose_name='IP', blank=True)),
-                ('password', models.CharField(max_length=128, verbose_name='\u5bc6\u7801', blank=True)),
                 ('memo', models.CharField(max_length=64, null=True, verbose_name='\u914d\u7f6e', blank=True)),
                 ('create_date', models.DateTimeField(auto_now_add=True)),
                 ('update_date', models.DateTimeField(null=True, blank=True)),
@@ -47,7 +45,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('group_name', models.CharField(max_length=64, verbose_name='\u7ec4\u540d', blank=True)),
-                ('group_pc_num', models.IntegerField(null=True, verbose_name='\u7ec4\u5185\u673a\u5668\u6570', blank=True)),
+                ('tomcat_puth', models.CharField(max_length=128, null=True, verbose_name='\u63a8\u9001tomcat\u8def\u5f84', blank=True)),
+                ('nginx_puth', models.CharField(max_length=128, null=True, verbose_name='\u63a8\u9001nginx\u8def\u5f84', blank=True)),
                 ('description', models.TextField(max_length=64, verbose_name='\u5907\u6ce8', blank=True)),
                 ('create_date', models.DateTimeField(auto_now_add=True)),
                 ('update_date', models.DateTimeField(null=True, blank=True)),
@@ -98,30 +97,6 @@ class Migration(migrations.Migration):
             options={
                 'verbose_name': '\u64cd\u4f5c\u8bb0\u5f55\u8868',
                 'verbose_name_plural': '\u64cd\u4f5c\u8bb0\u5f55\u8868',
-            },
-        ),
-        migrations.CreateModel(
-            name='UserProfile',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(null=True, verbose_name='last login', blank=True)),
-                ('email', models.EmailField(unique=True, max_length=255, verbose_name=b'\xe9\x82\xae\xe7\xae\xb1')),
-                ('name', models.CharField(max_length=32)),
-                ('is_active', models.BooleanField(default=True)),
-                ('is_admin', models.BooleanField(default=False)),
-                ('token', models.CharField(default=None, max_length=128, null=True, verbose_name='token', blank=True)),
-                ('department', models.CharField(default=None, max_length=32, null=True, verbose_name='\u90e8\u95e8', blank=True)),
-                ('tel', models.CharField(default=None, max_length=32, null=True, verbose_name='\u5ea7\u673a', blank=True)),
-                ('mobile', models.CharField(default=None, max_length=32, null=True, verbose_name='\u624b\u673a', blank=True)),
-                ('memo', models.TextField(default=None, null=True, verbose_name='\u5907\u6ce8', blank=True)),
-                ('date_joined', models.DateTimeField(auto_now_add=True)),
-                ('valid_begin_time', models.DateTimeField(default=django.utils.timezone.now)),
-                ('valid_end_time', models.DateTimeField(null=True, blank=True)),
-            ],
-            options={
-                'verbose_name': '\u7528\u6237\u4fe1\u606f\u8868',
-                'verbose_name_plural': '\u7528\u6237\u4fe1\u606f\u8868',
             },
         ),
         migrations.AddField(
