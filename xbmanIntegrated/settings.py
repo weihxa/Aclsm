@@ -143,7 +143,7 @@ CELERYBEAT_SCHEDULE = {
 }
 GRAPPELLI_INDEX_DASHBOARD = 'xbmanIntegrated.dashboard.CustomIndexDashboard'
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
-GRAPPELLI_ADMIN_TITLE='XBMAN管理后台'
+GRAPPELLI_ADMIN_TITLE='ACLMS管理后台'
 
 #是否发送短信通知
 Notice = True

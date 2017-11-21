@@ -39,16 +39,7 @@
             <a data-toggle="tab" href="#tab-hardware-info" aria-expanded="false">硬件</a>
         </li>
         <li class="">
-            <a data-toggle="tab" href="#tab-software-info" aria-expanded="false">软件</a>
-        </li>
-        <li class="">
             <a data-toggle="tab" href="#tab-Knifebox-info" aria-expanded="false">刀箱详情</a>
-        </li>
-        <li class="">
-            <a data-toggle="tab" href="#tab-event-record" aria-expanded="false">变更纪录</a>
-        </li>
-        <li class="">
-            <a data-toggle="tab" href="#tab-flow-record" aria-expanded="false">流程纪录</a>
         </li>
         <li class="">
             <a data-toggle="tab" href="#tab-contract-info" aria-expanded="false">合同/财务</a>
@@ -119,13 +110,13 @@
                </tr>
                <tr>
                    <td class="col-md-2 bold">总内存(MB)</td>
-                   <td class="col-md-4">: {{ asset_obj.ram_set.select_related | sum_size }}</td>
+                   <td class="col-md-4">: {{ asset_obj.mem_total }}</td>
                    <td class="col-md-2 bold">CPU核数</td>
                    <td class="col-md-4">: {{ asset_obj.cpu.cpu_core_count }}</td>
                </tr>
                <tr>
                    <td class="col-md-2 bold">总硬盘大小(GB)</td>
-                   <td class="col-md-4">: {{ asset_obj.disk_set.select_related | sum_size }}</td>
+                   <td class="col-md-4">: {{ asset_obj.disk_total  }}</td>
                    <td class="col-md-2 bold">状态</td>
                    <td class="col-md-4">:
                        {% if asset_obj.get_status_display == '在用'%}
@@ -316,31 +307,6 @@
 
 
         </div>
-        <div id="tab-software-info" class="tab-pane fade">
-            <h4 class="text-thin">software</h4>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
-        </div>
-        <div id="tab-event-record"  class="tab-pane fade">
-
-            <table id="event_log_list" class="display table  table-hover">
-              <thead >
-                    <tr class="btn-info">
-                        <th>事件ID</th>
-                        <th>事件类型</th>
-                        <th>名称</th>
-                        <th>涉及对象</th>
-                        <th>详情</th>
-                        <th>事件触发用户</th>
-                        <th>日期</th>
-                    </tr>
-              </thead>
-            </table>
-
-
-
-
-
-        </div>
 
         <div id="tab-Knifebox-info"  class="tab-pane fade">
 
@@ -360,10 +326,6 @@
 
 
 
-        </div>
-        <div id="tab-flow-record" class="tab-pane fade">
-            <h4 class="text-thin">flow</h4>
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</p>
         </div>
         <div id="tab-contract-info" class="tab-pane fade">
 
@@ -411,53 +373,6 @@
             if (active_node.parent().parent().hasClass("collapse")){
                 active_node.parent().parent().addClass("in");
             }
-
-
-
-
-            $('#event_log_list').DataTable( {
-                "bAutoWidth": true,
-                initComplete: function () {
-                    this.api().columns().every( function () {
-                        var column = this;
-                        var select = $('<select><option value=""></option></select>')
-                            .appendTo( $(column.footer()).empty() )
-                            .on( 'change', function () {
-                                var val = $.fn.dataTable.util.escapeRegex(
-                                    $(this).val()
-                                );
-
-                                column
-                                    .search( val ? '^'+val+'$' : '', true, false )
-                                    .draw();
-                            } );
-
-                        column.data().unique().sort().each( function ( d, j ) {
-                            select.append( '<option value="'+d+'">'+d+'</option>' )
-                        } );
-                    } );
-                },
-
-
-
-
-                "ajax": "{% url 'asset_event_logs' asset_obj.id %}",
-                "scrollX": true,
-                "pagingType": "full_numbers",
-                 "stateSave": true,
-                "columns": [
-                    { "data": "id" },
-                    { "data": "event_type" },
-                    { "data": "name" },
-                    { "data": "component" },
-                    { "data": "detail" },
-                    { "data": "user" },
-                    { "data": "date" },
-
-                ],
-
-
-            } ); //end datatables
         $('#event_Knifebox_list').DataTable( {
 {#                "bAutoWidth": true,#}
                 initComplete: function () {

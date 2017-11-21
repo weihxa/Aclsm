@@ -27,26 +27,20 @@ class Asset(models.Model):
     name = models.CharField(max_length=64,unique=True)
     sn = models.CharField(u'资产SN号',max_length=128, unique=True)
     manufactory = models.ForeignKey('Manufactory',verbose_name=u'制造商',null=True, blank=True)
-    #model = models.ForeignKey('ProductModel', verbose_name=u'型号')
     management_ip = models.GenericIPAddressField(u'管理IP',blank=True,null=True)
-
     contract = models.ForeignKey('Contract', verbose_name=u'合同',null=True, blank=True)
     trade_date = models.DateField(u'购买时间',null=True, blank=True)
     expire_date = models.DateField(u'过保修期',null=True, blank=True)
     price = models.FloatField(u'价格',null=True, blank=True)
+    disk_total = models.FloatField(u'硬盘总量(G)',null=True, blank=True)
+    mem_total = models.FloatField(u'内存总量(G)',null=True, blank=True)
     business_unit = models.ForeignKey('BusinessUnit', verbose_name=u'所属业务线',null=True, blank=True)
     tags = models.ManyToManyField('Tag' ,blank=True)
-    # admin = models.ForeignKey('UserProfile', verbose_name=u'资产管理员',null=True, blank=True)
     idc = models.ForeignKey('IDC', verbose_name=u'IDC机房',null=True, blank=True)
     cabinet = models.ForeignKey('Cabinet', verbose_name=u'所在机柜',null=True, blank=True)
     cabinet_begin = models.IntegerField(verbose_name=u'开始槽位',null=True, blank=True)
     cabinet_end = models.IntegerField(verbose_name=u'结束槽位',null=True, blank=True)
-
-
-    #status = models.ForeignKey('Status', verbose_name = u'设备状态',default=1)
     status = models.CharField(choices=statuss,verbose_name=u'状态',max_length=64, default='start')
-    #Configuration = models.OneToOneField('Configuration',verbose_name='配置管理',blank=True,null=True)
-
     memo = models.TextField(u'备注', null=True, blank=True)
     create_date = models.DateTimeField(blank=True, auto_now_add=True)
     update_date = models.DateTimeField(blank=True, auto_now=True)
@@ -65,31 +59,15 @@ class Server(models.Model):
     )
     created_by = models.CharField(choices=created_by_choices,max_length=32,default='auto') #auto: auto created,   manual:created manually
     hosted_on = models.ForeignKey('self',related_name='hosted_on_server',blank=True,null=True) #for vitural server
-    #sn = models.CharField(u'SN号',max_length=128)
-    #management_ip = models.CharField(u'管理IP',max_length=64,blank=True,null=True)
-    #manufactory = models.ForeignKey(verbose_name=u'制造商',max_length=128,null=True, blank=True)
     model = models.CharField(u'型号',max_length=128,null=True, blank=True )
-    # 若有多个CPU，型号应该都是一致的，故没做ForeignKey
-
-    #nic = models.ManyToManyField('NIC', verbose_name=u'网卡列表')
-    #disk
-    raid_type = models.CharField(u'raid类型',max_length=512, blank=True,null=True)
-    #physical_disk_driver = models.ManyToManyField('Disk', verbose_name=u'硬盘',blank=True,null=True)
-    #raid_adaptor = models.ManyToManyField('RaidAdaptor', verbose_name=u'Raid卡',blank=True,null=True)
-    #memory
-    #ram_capacity = models.IntegerField(u'内存总大小GB',blank=True)
-    #ram = models.ManyToManyField('Memory', verbose_name=u'内存配置',blank=True,null=True)
-
     os_type  = models.CharField(u'操作系统类型',max_length=64, blank=True,null=True)
     os_distribution =models.CharField(u'发型版本',max_length=64, blank=True,null=True)
     os_release  = models.CharField(u'操作系统版本',max_length=64, blank=True,null=True)
-
     create_date = models.DateTimeField(blank=True, auto_now_add=True)
     update_date = models.DateTimeField(blank=True,null=True)
     class Meta:
         verbose_name = '服务器'
         verbose_name_plural = "服务器"
-        #together = ["sn", "asset"]
 
     def __unicode__(self):
         return '%s sn:%s' %(self.asset.name,self.asset.sn)
@@ -102,7 +80,6 @@ class NetworkDevice(models.Model):
     sn = models.CharField(u'SN号',max_length=128,unique=True)
     #manufactory = models.CharField(verbose_name=u'制造商',max_length=128,null=True, blank=True)
     model = models.CharField(u'型号',max_length=128,null=True, blank=True )
-    firmware = models.ForeignKey('Software',blank=True,null=True)
     port_num = models.SmallIntegerField(u'端口个数',null=True, blank=True )
     device_detail = models.TextField(u'设置详细配置',null=True, blank=True )
     create_date = models.DateTimeField(auto_now_add=True)
@@ -111,30 +88,6 @@ class NetworkDevice(models.Model):
     class Meta:
         verbose_name = '网络设备'
         verbose_name_plural = "网络设备"
-class Software(models.Model):
-    #sn = models.CharField(u'SN号',max_length=64, unique=True)
-    os_types_choice = (
-        ('linux', 'Linux'),
-        ('windows', 'Windows'),
-        ('network_firmware', 'Network Firmware'),
-        ('software', 'Softwares'),
-    )
-    os_distribution_choices = (('windows','Windows'),
-                               ('centos','CentOS'),
-                               ('ubuntu', 'Ubuntu'))
-    type = models.CharField(u'系统类型', choices=os_types_choice, max_length=64,help_text=u'eg. GNU/Linux',default=1)
-    distribution = models.CharField(u'发型版本', choices=os_distribution_choices,max_length=32,default='windows')
-    version = models.CharField(u'软件/系统版本', max_length=64, help_text=u'eg. CentOS release 6.5 (Final)', unique=True)
-    language_choices = (('cn',u'中文'),
-                        ('en',u'英文'))
-    language = models.CharField(u'系统语言',choices = language_choices, default='cn',max_length=32)
-    #version = models.CharField(u'版本号', max_length=64,help_text=u'2.6.32-431.3.1.el6.x86_64' )
-
-    def __unicode__(self):
-        return self.version
-    class Meta:
-        verbose_name = '软件/系统'
-        verbose_name_plural = "软件/系统"
 
 
 class CPU(models.Model):
@@ -215,7 +168,6 @@ class NIC(models.Model):
     class Meta:
         verbose_name = u'网卡'
         verbose_name_plural = u"网卡"
-        #unique_together = ("asset_id", "slot")
     auto_create_fields = ['name','sn','model','macaddress','ipaddress','netmask','bonding']
 
 class RaidAdaptor(models.Model):
@@ -307,85 +259,9 @@ class Cabinet(models.Model):
         verbose_name_plural = "机柜表"
 
 
-
-
-
 class Tag(models.Model):
     name = models.CharField('Tag name',max_length=32,unique=True )
     # creater = models.ForeignKey('UserProfile')
     create_date = models.DateField(auto_now_add=True)
     def __unicode__(self):
         return self.name
-
-class EventLog(models.Model):
-    name = models.CharField(u'事件名称', max_length=100)
-    event_type_choices = (
-        (1,u'硬件变更'),
-        (2,u'新增配件'),
-        (3,u'设备下线'),
-        (4,u'设备上线'),
-        (5,u'定期维护'),
-        (6,u'业务上线\更新\变更'),
-        (7,u'其它'),
-    )
-    event_type = models.SmallIntegerField(u'事件类型', choices= event_type_choices)
-    asset = models.ForeignKey('Asset')
-    component = models.CharField('事件子项',max_length=255, blank=True,null=True)
-    detail = models.TextField(u'事件详情')
-    date = models.DateTimeField(u'事件时间',auto_now_add=True)
-    # user = models.ForeignKey('UserProfile',verbose_name=u'事件源')
-    memo = models.TextField(u'备注', blank=True,null=True)
-
-    def __unicode__(self):
-        return self.name
-    class Meta:
-        verbose_name = '事件纪录'
-        verbose_name_plural = "事件纪录"
-
-
-    def colored_event_type(self):
-        if self.event_type == 1:
-            cell_html = '<span style="background: orange;">%s</span>'
-        elif self.event_type == 2 :
-            cell_html = '<span style="background: yellowgreen;">%s</span>'
-        else:
-            cell_html = '<span >%s</span>'
-        return cell_html % self.get_event_type_display()
-    colored_event_type.allow_tags = True
-    colored_event_type.short_description = u'事件类型'
-
-
-class NewAssetApprovalZone(models.Model):
-    sn = models.CharField(u'资产SN号',max_length=128, unique=True)
-    asset_type_choices = (
-        ('server', u'服务器'),
-        ('switch', u'交换机'),
-        ('router', u'路由器'),
-        ('firewall', u'防火墙'),
-        ('storage', u'存储设备'),
-        ('NLB', u'NetScaler'),
-        ('wireless', u'无线AP'),
-        ('software', u'软件资产'),
-        ('others', u'其它类'),
-    )
-    asset_type = models.CharField(choices=asset_type_choices,max_length=64,blank=True,null=True)
-    manufactory = models.CharField(max_length=64,blank=True,null=True)
-    model = models.CharField(max_length=128,blank=True,null=True)
-    ram_size = models.IntegerField(blank=True,null=True)
-    cpu_model = models.CharField(max_length=128,blank=True,null=True)
-    cpu_count = models.IntegerField(blank=True,null=True)
-    cpu_core_count = models.IntegerField(blank=True,null=True)
-    os_distribution =  models.CharField(max_length=64,blank=True,null=True)
-    os_type =  models.CharField(max_length=64,blank=True,null=True)
-    os_release =  models.CharField(max_length=64,blank=True,null=True)
-    data = models.TextField(u'资产数据')
-    date = models.DateTimeField(u'汇报日期',auto_now_add=True)
-    approved = models.BooleanField(u'已批准',default=False)
-    # approved_by = models.ForeignKey('UserProfile',verbose_name=u'批准人',blank=True,null=True)
-    approved_date = models.DateTimeField(u'批准日期',blank=True,null=True)
-
-    def __unicode__(self):
-        return self.sn
-    class Meta:
-        verbose_name = '新上线待批准资产'
-        verbose_name_plural = "新上线待批准资产"

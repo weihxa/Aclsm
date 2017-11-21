@@ -46,27 +46,11 @@ class NicAdmin(admin.ModelAdmin):
     search_fields = ('macaddress','ipaddress')
 
 
-class EventLogAdmin(admin.ModelAdmin):
-    list_display = ('name','colored_event_type','asset','component','detail','date')
-    search_fields = ('asset',)
-    list_filter = ('event_type','component','date')
 
 
 
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
-
-
-
-
-class NewAssetApprovalZoneAdmin(admin.ModelAdmin):
-    list_display = ('sn','asset_type','manufactory','model','cpu_model','cpu_count','cpu_core_count','ram_size','os_distribution','os_release','date','approved','approved_date')
-    actions = ['approve_selected_objects']
-    def approve_selected_objects(modeladmin, request, queryset):
-        selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
-        ct = ContentType.objects.get_for_model(queryset.model)
-        return HttpResponseRedirect("/asset/new_assets/approval/?ct=%s&ids=%s" % (ct.pk, ",".join(selected)))
-    approve_selected_objects.short_description = "批准入库"
 
 # Now register the new UserAdmin...
 # admin.site.register(models.UserProfile,UserAdmin)
@@ -87,6 +71,3 @@ admin.site.register(models.RAM)
 admin.site.register(models.Manufactory)
 admin.site.register(models.Tag)
 admin.site.register(models.Knifebox)
-admin.site.register(models.Software)
-admin.site.register(models.EventLog,EventLogAdmin)
-admin.site.register(models.NewAssetApprovalZone,NewAssetApprovalZoneAdmin)

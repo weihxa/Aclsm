@@ -37,8 +37,8 @@ def fetch_asset_list():
                     'cpu_core_count' : cpu_core_count,
                     'asset_type': obj.get_asset_type_display(),
                     'management_ip': obj.management_ip,
-                    'ram_size': sum([i.capacity if i.capacity else 0 for i in obj.ram_set.select_related()]),
-                    'disk_size': sum([i.capacity if i.capacity else 0 for i in obj.disk_set.select_related()]),
+                    'ram_size': obj.mem_total,
+                    'disk_size': obj.disk_total,
                     'status': obj.get_status_display(),
                     'cabinet': None if not obj.cabinet else obj.cabinet.name,
                 }
@@ -89,23 +89,6 @@ def fetch_asset_list():
             data_list.append(data)
     return  {'data':data_list}
 
-
-def fetch_asset_event_logs(asset_id):
-    log_list = models.EventLog.objects.filter(asset_id= asset_id)
-    data_list = []
-    for log in log_list:
-        data = {
-            'id':log.id,
-            'event_type':log.get_event_type_display(),
-            'name':log.name,
-            'component':log.component,
-            'detail':log.detail,
-            'user':log.user.name,
-            'date':log.date,
-        }
-        data_list.append(data)
-
-    return {"data":data_list}
 
 def fetch_asset_Knifebox_logs(asset_id):
     log_list = models.Knifebox.objects.filter(asset_id= asset_id)
