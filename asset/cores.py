@@ -21,8 +21,7 @@ class Asset(object):
             'warning':[]
         }
         # data = json.loads(data)
-        asset_obj = models.Asset.objects.get_or_create(sn=data.get('sn'), name=data.get(
-            'sn'))  # push asset id into reporting data before doing the mandatory check
+        asset_obj = models.Asset.objects.get_or_create(sn=data.get('sn'))  # push asset id into reporting data before doing the mandatory check
         data['asset_id'] = asset_obj[0].id
         self.mandatory_check(data)
         self.clean_data = data
@@ -54,6 +53,23 @@ class Asset(object):
             self.response[msg_type].append({key:msg})
         else:
             raise ValueError
+    def data_inject(self):
+        '''save data into DB,the data_is_valid() must returns True before call this function'''
+
+        #self.reformat_components('slot',self.clean_data.get('ram'))
+        #self.reformat_components('name',self.clean_data.get('nic'))
+        if self.__is_new_asset():
+            print('\033[32;1m---new asset,going to create----\033[0m')
+            self.create_asset()
+        else:#asset already already exist , just update it
+            print('\033[33;1m---asset already exist ,going to update----\033[0m')
+
+            self.update_asset()
+    def __is_new_asset(self):
+        if not hasattr(self.asset_obj, self.clean_data['asset_type']):#new asset
+            return True
+        else:
+            return False
 
     def __verify_field(self,data_set,field_key,data_type,required=True):
         field_val = data_set.get(field_key)
@@ -103,7 +119,7 @@ class Asset(object):
         self.__create_or_update_manufactory()
 
         self.__create_cpu_component()
-        # self.__create_disk_component()
+        self.__create_disk_component()
         self.__create_nic_component()
         self.__create_ram_component()
         print self.response
@@ -111,7 +127,6 @@ class Asset(object):
         try:
             self.__verify_field(self.clean_data,'model',str)
             if not len(self.response['error']) or ignore_errs == True: #no processing when there's no error happend
-                print '123123123123'
                 data_set = {
                     'asset_id' : self.asset_obj.id,
                     'model':self.clean_data.get('model'),
@@ -161,14 +176,12 @@ class Asset(object):
             self.response_msg('error','ObjectCreationException','Object [cpu] %s' % str(e) )
     def __create_disk_component(self):
         disk_info = self.clean_data.get('physical_disk_driver')
-        print disk_info
-        print self.response
         if disk_info:
             for disk_item in disk_info:
                 try:
                     self.__verify_field(disk_item,'slot',str)
                     self.__verify_field(disk_item,'capacity',float)
-                    self.__verify_field(disk_item,'iface_type',str)
+                    # self.__verify_field(disk_item,'iface_type',str)
                     self.__verify_field(disk_item,'model',str)
                     if not len(self.response['error']): #no processing when there's no error happend
                         data_set = {
@@ -180,8 +193,6 @@ class Asset(object):
                             'iface_type':disk_item.get('iface_type'),
                             'manufactory':disk_item.get('manufactory'),
                         }
-                        print data_set
-
                         obj = models.Disk(**data_set)
                         obj.save()
 
@@ -238,7 +249,7 @@ class Asset(object):
                 self.response_msg('error','LackOfData','RAM info is not provied in your reporting data' )
 
     def __update_server_component(self):
-        update_fields = ['model','raid_type','os_type','os_distribution','os_release']
+        update_fields = ['model','os_type','os_distribution','os_release']
         if hasattr(self.asset_obj,'server'):
             self.__compare_componet(model_obj=self.asset_obj.server,
                                     fields_from_db=update_fields ,
@@ -271,7 +282,6 @@ class Asset(object):
                 objects_from_db = component_obj.select_related()
                 for obj in objects_from_db:
                     key_field_data= getattr(obj,identify_field)
-                    #use this key_field_data to find the relative data source from reporting data
                     if type(data_source) is list:
                         for source_data_item  in data_source:
                             key_field_data_from_source_data = source_data_item.get(identify_field)

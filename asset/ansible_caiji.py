@@ -17,7 +17,7 @@ def collect(image):
     data['sn'] = image['ansible_facts']['ansible_product_serial']
     data['model'] = image['ansible_facts']['ansible_product_name']
     data['uuid'] = image['ansible_facts']['ansible_product_uuid']
-    data['mem_total'] = 123
+    data['mem_total'] = 1234
     data['disk_total'] = 123
     data['wake_up_type'] = 'Power Switch'
 

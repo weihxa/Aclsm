@@ -36,7 +36,9 @@ def new_assets_approval(request):
     '''
     for i in json.loads(aaaa):
         data =  ansible_caiji.collect(json.loads(aaaa)[i])
-        cores.Asset(data=data).create_asset()
+        # cores.Asset(data=data).create_asset()
+        ass_handler = cores.Asset(data=data)
+        ass_handler.data_inject()
     return HttpResponse('ok')
 
 @login_required

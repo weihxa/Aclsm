@@ -8,7 +8,7 @@
 {% load custom_tag %}
 {% block page-content-title %}
     {% if not error %}
-     资产ID:{{ asset_obj.id  }}|{{ asset_obj.name }}
+     资产ID:{{ asset_obj.id  }}|{% if asset_obj.name %}{{ asset_obj.name }}{% else %}{{ asset_obj.sn }}{% endif %}
 
     {% else %}
      资产不存在！
