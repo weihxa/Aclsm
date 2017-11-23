@@ -207,7 +207,7 @@
                <h3>RAM Info</h3>
                <tr>
                    <td class="col-md-2 bold">总内存大小(MB)</td>
-                   <td class="col-md-4">: {{ asset_obj.ram_set.select_related | sum_size }}</td>
+                   <td class="col-md-4">: {{ asset_obj.mem_total  }}</td>
                    <td class="col-md-2 bold">内存条数</td>
                    <td class="col-md-4">:  {{ asset_obj.ram_set.select_related | list_count }}</td>
                </tr>
@@ -242,7 +242,7 @@
                <h3>Disk Info</h3>
                <tr>
                    <td class="col-md-2 bold">总硬盘大小(GB)</td>
-                   <td class="col-md-4">: {{ asset_obj.disk_set.select_related | sum_size }}</td>
+                   <td class="col-md-4">: {{ asset_obj.disk_total  }}</td>
                    <td class="col-md-2 bold">硬盘块数</td>
                    <td class="col-md-4">:  {{ asset_obj.disk_set.select_related | list_count }}</td>
                </tr>
