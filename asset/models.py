@@ -24,7 +24,7 @@ class Asset(models.Model):
         ('maintain', u'维修'),
     )
     asset_type = models.CharField(choices=asset_type_choices,max_length=64, default='server')
-    name = models.CharField(max_length=64,unique=True)
+    name = models.CharField(max_length=64)
     sn = models.CharField(u'资产SN号',max_length=128, unique=True)
     manufactory = models.ForeignKey('Manufactory',verbose_name=u'制造商',null=True, blank=True)
     management_ip = models.GenericIPAddressField(u'管理IP',blank=True,null=True)

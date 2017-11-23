@@ -1,7 +1,6 @@
 #_*_coding:utf-8_*_
 __author__ = 'weihaoxuan'
 
-import json
 from django.core.exceptions import ObjectDoesNotExist
 from asset import models
 from django.utils import timezone
@@ -121,7 +120,7 @@ class Asset(object):
         self.__create_cpu_component()
         self.__create_disk_component()
         self.__create_nic_component()
-        self.__create_ram_component()
+        # self.__create_ram_component()
         print self.response
     def __create_server_info(self,ignore_errs=False):
         try:
@@ -180,7 +179,7 @@ class Asset(object):
             for disk_item in disk_info:
                 try:
                     self.__verify_field(disk_item,'slot',str)
-                    self.__verify_field(disk_item,'capacity',float)
+                    # self.__verify_field(disk_item,'capacity',float)
                     # self.__verify_field(disk_item,'iface_type',str)
                     self.__verify_field(disk_item,'model',str)
                     if not len(self.response['error']): #no processing when there's no error happend

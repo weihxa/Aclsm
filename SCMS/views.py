@@ -2,7 +2,6 @@
 #-*- coding:utf-8 -*-
 
 # Create your views here.
-import django
 from django.shortcuts import render_to_response,render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import auth
