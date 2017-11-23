@@ -70,7 +70,7 @@
                             <a  href="#">
                                 <a class="glyphicon glyphicon-bell" href="#" data-toggle="modal"  onclick="get_Notice()"><span id="notice" class="badge"></span></a>
                             </a>
-                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal fade" id="notices" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header">
@@ -327,8 +327,7 @@ beforeSend: function(xhr, settings) {
 
     </script>
 
-    {% block  bottom-js %}
-    {% endblock %}
+
 <script>
 function showLogin()
 {
@@ -360,11 +359,11 @@ $.ajax({
                 "</tr>";
             }
             tbody.innerHTML = str;
-        $('#myModal').modal({show:true});
+        $('#notices').modal({show:true});
     }
 });
 }
-$(function () { $('#myModal').on('hide.bs.modal', function () {
+$(function () { $('#notices').on('hide.bs.modal', function () {
       $.ajax({
     url:'{% url 'get_notice_list' %}',
     type:'POST',
@@ -376,6 +375,9 @@ $(function () { $('#myModal').on('hide.bs.modal', function () {
     });
 })
 setInterval("showLogin()","10000");
+(function(){showLogin();}());
 </script>
+{% block  bottom-js %}
+    {% endblock %}
 </body>
 </html>

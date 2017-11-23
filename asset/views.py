@@ -1,22 +1,16 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
-from django.shortcuts import render,HttpResponse,render_to_response
+from django.shortcuts import render,HttpResponse
 from asset import models,utils,asset_handle
 import json
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
-# Create your views here.
 from asset import cabinet_views
 import chart_output
 from django.core import serializers
 from Integrated.plugins.Decorators import Perm_verification
-import  core,ansible_caiji
-# import tasks
+import tasks
 
-# @login_required
-# def index(request):
-#     return render(request,'index.html')
 
 @login_required
 @Perm_verification(perm='cmdb')
@@ -25,7 +19,6 @@ def index(request):
     status = chart_output.Machine_status()
     Business = chart_output.Business_Line()
 
-    #return render_to_response('index.html',{'data':data,'status':status,'Business':Business})
     return render(request,'assets/index.html',{'data':data,'status':status,'Business':Business})
 
 
@@ -61,7 +54,6 @@ def asset_list(request):
 def get_asset_list(request):
 
     asset_dic = asset_handle.fetch_asset_list()
-    # print(asset_dic)
 
     return HttpResponse(json.dumps(asset_dic,default=utils.json_date_handler))
 

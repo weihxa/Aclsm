@@ -77,6 +77,7 @@
 
 
 {% block bottom-js %}
+{#    <script type="text/javascript" src="https://cdn.datatables.net/v/bs/dt-1.10.16/datatables.min.js"></script>#}
 <script type="text/javascript" src="/static/assets/plugins/DataTables/datatables.min.js"></script>
 <script type="text/javascript">
 
@@ -156,20 +157,7 @@ $(document).ready( function () {
 } );//end doc ready
 
 </script>
-<script src="/static/scms/dist/js/jquery.cookie.js"></script>
 <script>
-var csrftoken = $.cookie('csrftoken');
-function csrfSafeMethod(method) {
-// these HTTP methods do not require CSRF protection
-return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
-$.ajaxSetup({
-beforeSend: function(xhr, settings) {
-    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-    }
-}
-});
 function generate(doc) {
 $.ajax({
     url:'{% url 'update_cmdb' %}',

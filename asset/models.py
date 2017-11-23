@@ -1,6 +1,7 @@
 #_*_coding:utf-8_*_
 __author__ = 'weihaoxuan'
 from django.db import models
+import django.utils.timezone as timezone
 # from Integrated.user_models import UserProfile
 # Create your models here.
 
@@ -269,7 +270,7 @@ class Tag(models.Model):
 class Notice(models.Model):
     name = models.CharField('通知内容', max_length=32)
     status = models.IntegerField('状态')
-    create_date = models.DateField(auto_now_add=True,blank=True)
+    create_date = models.DateTimeField(auto_now = True,blank=True)
 
     def __unicode__(self):
         return self.name

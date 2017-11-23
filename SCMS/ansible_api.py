@@ -15,7 +15,6 @@ class MyRunner(object):
 
     def __init__(self):
         pass
-        # self.__become_pass = become_pass
 
     def cmdrun(self,module_name='shell', module_args='', timeout=30, forks=10,
             pattern='*',become=False, become_user='root', transport='paramiko'):

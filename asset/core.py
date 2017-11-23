@@ -8,7 +8,7 @@ from django.utils import timezone
 
 class Asset(object):
     def __init__(self,data):
-        self.mandatory_fields = ['sn','asset_id','asset_type'] #must contains 'sn' , 'asset_id' and 'asset_type'
+        self.mandatory_fields = ['sn','asset_id','asset_type']
         self.field_sets = {
             'asset':['manufactory'],
             'server':['model','cpu_count','cpu_core_count','cpu_model','raid_type','os_type','os_distribution','os_release'],
@@ -19,7 +19,6 @@ class Asset(object):
             'info':[],
             'warning':[]
         }
-        # data = json.loads(data)
         asset_obj = models.Asset.objects.get_or_create(sn=data.get('sn'))  # push asset id into reporting data before doing the mandatory check
         data['asset_id'] = asset_obj[0].id
         self.mandatory_check(data)
@@ -55,8 +54,6 @@ class Asset(object):
     def data_inject(self):
         '''save data into DB,the data_is_valid() must returns True before call this function'''
 
-        #self.reformat_components('slot',self.clean_data.get('ram'))
-        #self.reformat_components('name',self.clean_data.get('nic'))
         if self.__is_new_asset():
             print('\033[32;1m---new asset,going to create----\033[0m')
             self.create_asset()
@@ -120,8 +117,6 @@ class Asset(object):
         self.__create_cpu_component()
         self.__create_disk_component()
         self.__create_nic_component()
-        # self.__create_ram_component()
-        print self.response
     def __create_server_info(self,ignore_errs=False):
         try:
             self.__verify_field(self.clean_data,'model',str)
@@ -179,8 +174,6 @@ class Asset(object):
             for disk_item in disk_info:
                 try:
                     self.__verify_field(disk_item,'slot',str)
-                    # self.__verify_field(disk_item,'capacity',float)
-                    # self.__verify_field(disk_item,'iface_type',str)
                     self.__verify_field(disk_item,'model',str)
                     if not len(self.response['error']): #no processing when there's no error happend
                         data_set = {
@@ -274,7 +267,6 @@ class Asset(object):
         update_fields: what fields in DB will be compared and updated
         identify_field: use this field to identify each component of an Asset , if set to None,means only use asset id to identify
          '''
-        print(data_source,update_fields,identify_field)
         try:
             component_obj = getattr(self.asset_obj,fk)
             if hasattr(component_obj,'select_related'): # this component is reverse m2m relation with Asset model
@@ -292,7 +284,6 @@ class Asset(object):
                                 self.response_msg('warning','AssetUpdateWarning',"Asset component [%s]'s key field [%s] is not provided in reporting data " % (fk,identify_field) )
 
                         else:#couldn't find any matches, the asset component must be broken or changed manually
-                            print('\033[33;1mError:cannot find any matches in source data by using key field val [%s],component data is missing in reporting data!\033[0m' %(key_field_data) )
                             self.response_msg("error","AssetUpdateWarning","Cannot find any matches in source data by using key field val [%s],component data is missing in reporting data!" %(key_field_data))
                     elif type(data_source) is dict :
                         for key,source_data_item  in data_source.items():
@@ -318,7 +309,6 @@ class Asset(object):
 
     def __filter_add_or_deleted_components(self,model_obj_name,data_from_db,data_source,identify_field):
         '''This function is filter out all  component data in db but missing in reporting data, and all the data in reporting data but not in DB'''
-        print(data_from_db,data_source,identify_field)
         data_source_key_list = [] #save all the idenified keys from client data,e.g: [macaddress1,macaddress2]
         if type(data_source) is list:
             for data in data_source:
@@ -329,15 +319,11 @@ class Asset(object):
                     data_source_key_list.append(data.get(identify_field))
                 else:#workround for some component uses key as identified field e.g: ram
                     data_source_key_list.append(key)
-        print('-->identify field [%s] from db  :',data_source_key_list)
-        print('-->identify[%s] from data source:',[getattr(obj,identify_field) for obj in data_from_db] )
 
         data_source_key_list = set(data_source_key_list)
         data_identify_val_from_db = set([getattr(obj,identify_field) for obj in data_from_db])
         data_only_in_db= data_identify_val_from_db - data_source_key_list #delete all this from db
         data_only_in_data_source=  data_source_key_list - data_identify_val_from_db #add into db
-        print('\033[31;1mdata_only_in_db:\033[0m' ,data_only_in_db)
-        print('\033[31;1mdata_only_in_data source:\033[0m' ,data_only_in_data_source)
         self.__delete_components(all_components=data_from_db, delete_list = data_only_in_db, identify_field=identify_field )
         if data_only_in_data_source:
             self.__add_components(model_obj_name=model_obj_name,all_components=data_source, add_list = data_only_in_data_source, identify_field=identify_field )
@@ -345,20 +331,16 @@ class Asset(object):
     def __add_components(self,model_obj_name,all_components,add_list,identify_field ):
         model_class = getattr(models,model_obj_name)
         will_be_creating_list = []
-        print('--add component list:',add_list)
         if type(all_components) is list:
             for data in all_components:
                 if data[identify_field] in add_list:
-                    #print data
                     will_be_creating_list.append(data)
         elif type(all_components) is dict:
             for k,data in all_components.items():
-                #workround for some components uses key as identified field ,e.g ram
                 if data.get(identify_field):
                     if data[identify_field]  in add_list:
-                        #print k,data
                         will_be_creating_list.append(data)
-                else: #if the identified field cannot be found from data set,then try to compare the dict key
+                else:
                     if k in add_list:
                         data[identify_field] = k #add this key into dict , because this dict will be used to create new component item in DB
                         will_be_creating_list.append(data)
@@ -372,18 +354,15 @@ class Asset(object):
                 data_set['asset_id'] = self.asset_obj.id
                 obj= model_class(**data_set)
                 obj.save()
-                print('\033[32;1mCreated component with data:\033[0m', data_set)
                 log_msg = "Asset[%s] --> component[%s] has justed added a new item [%s]" %(self.asset_obj,model_obj_name,data_set)
                 self.response_msg('info','NewComponentAdded',log_msg)
 
         except Exception as e:
-            print("\033[31;1m %s \033[0m"  % e )
             log_msg = "Asset[%s] --> component[%s] has error: %s" %(self.asset_obj,model_obj_name,str(e))
             self.response_msg('error',"AddingComponentException",log_msg)
     def __delete_components(self,all_components, delete_list , identify_field ):
         '''All the objects in delete list will be deleted from DB'''
         deleting_obj_list = []
-        print('--deleting components',delete_list,identify_field)
         for obj in all_components:
             val  = getattr(obj,identify_field)
             if val in delete_list:
@@ -396,21 +375,15 @@ class Asset(object):
 
 
     def __compare_componet(self,model_obj,fields_from_db,data_source):
-        #print '---going to compare:[%s]' % model_obj,fields_from_db
-        #print '---source data:', data_source
         for field in fields_from_db:
             val_from_db = getattr(model_obj,field)
             val_from_data_source = data_source.get(field)
             if val_from_data_source:
-                #if type(val_from_db) is unicode:val_from_data_source = unicode(val_from_data_source)#no unicode in py3
-                #if type(val_from_db) in (int,long):val_from_data_source = int(val_from_data_source) #no long in py3
                 if type(val_from_db) in (int,):val_from_data_source = int(val_from_data_source)
                 elif type(val_from_db) is float:val_from_data_source = float(val_from_data_source)
                 if val_from_db == val_from_data_source:# this field haven't changed since last update
                     pass
-                    #print '\033[32;1m val_from_db[%s]  == val_from_data_source[%s]\033[0m' %(val_from_db,val_from_data_source)
                 else:
-                    print('\033[34;1m val_from_db[%s]  != val_from_data_source[%s]\033[0m' %(val_from_db,val_from_data_source),type(val_from_db),type(val_from_data_source) )
                     db_field = model_obj._meta.get_field(field)
                     db_field.save_form_data(model_obj, val_from_data_source)
                     model_obj.update_date = timezone.now()
