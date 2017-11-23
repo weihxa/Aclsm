@@ -2,8 +2,19 @@
 
 {% block header-css %}
 <link rel="stylesheet" type="text/css" href="/static/assets/plugins/DataTables/datatables.min.css"/>
+<link rel="stylesheet" type="text/css" href="/static/assets/css/assets.css"/>
 {% endblock %}
 
+{% block tongzhi %}
+   <div id="tongzhi" style="display: none" class="alert alert-success alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>Success!</strong> 创建刷新资产任务成功，刷新完成后将通知.
+</div>
+    <div id="errtongzhi" style="display: none" class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>抱歉!</strong> 刷新资产任务创建失败，请刷新页面后尝试.
+</div>
+{% endblock %}
 {% block page-content-title %}
 资产列表
 {% endblock %}
@@ -22,7 +33,15 @@
 {% block page-content %}
 <div class="panel">
         <div class="panel-heading">
-            <h3 class="panel-title">所有资产</h3>
+            <h3 class="panel-title">
+                所有资产
+            <div class="update_bnt">
+                <button type="button" class="btn btn-success" title="刷新所有资产" onclick="generate(this);">刷新所有</button>
+                {% if request.user.is_admin   %}
+                    <a type="button" href="/admin/asset/asset/add/" target="_blank" class="btn btn-warning" title="创建新资产">新增资产</a>
+                {% endif %}
+            </div>
+            </h3>
         </div>
         <div class="panel-body" >
             <table id="asset_list" class="display table  table-hover">
@@ -32,7 +51,6 @@
                         <th>资产类型</th>
                         <th>Name</th>
                         <th>SN</th>
-
                         <th>IDC</th>
                         <th>所在机柜</th>
                         <th>业务线</th>
@@ -137,5 +155,42 @@ $(document).ready( function () {
 
 } );//end doc ready
 
+</script>
+<script src="/static/scms/dist/js/jquery.cookie.js"></script>
+<script>
+var csrftoken = $.cookie('csrftoken');
+function csrfSafeMethod(method) {
+// these HTTP methods do not require CSRF protection
+return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+beforeSend: function(xhr, settings) {
+    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
+}
+});
+function generate(doc) {
+$.ajax({
+    url:'{% url 'update_cmdb' %}',
+    type:'GET',
+    success:function (arg) {
+        if (arg)
+              {
+                $("#tongzhi").css('display','block');
+                setTimeout(function(){
+                $("#tongzhi").css('display','none');
+                },2000);
+              }
+            else
+              {
+              $("#errtongzhi").css('display','block');
+              }
+    },
+    error:function () {
+       $("#errtongzhi").css('display','block');
+    }
+});
+};
 </script>
 {% endblock %}

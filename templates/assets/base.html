@@ -66,7 +66,36 @@
 
 					</ul>
 					<ul class="nav navbar-top-links pull-right">
-
+                        <li class="tgl-menu-btn">
+                            <a  href="#">
+                                <a class="glyphicon glyphicon-bell" href="#" data-toggle="modal"  onclick="get_Notice()"><span id="notice" class="badge"></span></a>
+                            </a>
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">通知中心</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <table class="table table-condensed table-hover">
+                                        <thead>
+			                                <tr>
+			                                    <th class="text-center"> 时间 </th>
+			                                    <th class="text-center"> 内容</th>
+			                                </tr>
+			                            </thead>
+                                        <tbody id="tbody-result">
+                                        </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">已知悉</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </li>
 
 						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 						<!--End user dropdown-->
@@ -84,7 +113,7 @@
 		<div class="boxed">
 
 			<div id="content-container">
-
+            {% block tongzhi %}{% endblock %}
 				<div id="page-title">
 					<h1 class="page-header text-overflow">{% block page-content-title %}Your page title{% endblock %}</h1>
 
@@ -228,7 +257,7 @@
             <!-- Remove the class name "show-fixed" and "hide-fixed" to make the content always appears. -->
             <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 
-            <p class="pad-lft">&#0169; 2017 ACLSM-cmdb</p>
+            <p class="pad-lft">&#0169; 2017 ACLsm-cmdb</p>
 
 
 
@@ -269,6 +298,21 @@
 
 	<!--Nifty Admin [ RECOMMENDED ]-->
 	<script src="/static/assets/js/nifty.min.js"></script>
+    <script src="/static/scms/dist/js/jquery.cookie.js"></script>
+<script>
+var csrftoken = $.cookie('csrftoken');
+function csrfSafeMethod(method) {
+// these HTTP methods do not require CSRF protection
+return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+beforeSend: function(xhr, settings) {
+    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
+}
+});
+</script>
     <script type="text/javascript">
 
         $(document).ready(function(){
@@ -285,6 +329,53 @@
 
     {% block  bottom-js %}
     {% endblock %}
-
+<script>
+function showLogin()
+{
+$.ajax({
+    url:'{% url 'get_notice_num' %}',
+    type:'GET',
+    success:function (arg) {
+        if (arg !=='0'){
+            $("#notice").html(arg);
+        } else {
+           $("#notice").html('');
+        }
+    }
+});
+}
+function get_Notice()
+{
+    var tbody=window.document.getElementById("tbody-result");
+    var str = "";
+$.ajax({
+    url:'{% url 'get_notice_list' %}',
+    type:'GET',
+    success:function (arg) {
+        var obj = jQuery.parseJSON(arg);
+        for (i in obj) {
+                str += "<tr>" +
+                "<td class='text-center'>" + obj[i].fields.create_date + "</td>" +
+                "<td class='text-center'>" + obj[i].fields.name + "</td>" +
+                "</tr>";
+            }
+            tbody.innerHTML = str;
+        $('#myModal').modal({show:true});
+    }
+});
+}
+$(function () { $('#myModal').on('hide.bs.modal', function () {
+      $.ajax({
+    url:'{% url 'get_notice_list' %}',
+    type:'POST',
+    data:{modify:1},
+    success:function (arg) {
+        $("#notice").html('');
+    }
+});
+    });
+})
+setInterval("showLogin()","10000");
+</script>
 </body>
 </html>

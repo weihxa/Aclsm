@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 from celery import task
-import datetime,json
+import datetime
 from SCMS import ansible_api
 from asset import ansible_caiji
 from asset import core
@@ -16,16 +16,16 @@ def update_cmdb():
     begin = datetime.datetime.now()
     try:
         data = ansible_api.MyRunner().cmdrun(module_name='setup',pattern='*')['contacted']
-        for k,v in json.loads(data).items():
-            datas = ansible_caiji.collect(v)
+        for k in data:
+            datas = ansible_caiji.collect(data[k])
             try:
                 ass_handler = core.Asset(data=datas)
                 ass_handler.data_inject()
             except Exception,e:
-                print e
+                print 'ERROR',e
     except Exception, e:
-        print 'salt主机连接异常！'
-    print '开始更新cmdb更新完成'
+        print 'ERROR！',e
+    print 'cmdb更新完成'
     end = datetime.datetime.now()
     print '处理时间:%s'%str(end-begin)
     return True

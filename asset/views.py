@@ -9,9 +9,10 @@ from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 from asset import cabinet_views
 import chart_output
+from django.core import serializers
 from Integrated.plugins.Decorators import Perm_verification
 import  core,ansible_caiji
-import tasks
+# import tasks
 
 # @login_required
 # def index(request):
@@ -29,10 +30,25 @@ def index(request):
 
 
 
-
-def new_assets_approval(request):
+@login_required
+@Perm_verification(perm='cmdb')
+def update_cmdb(request):
     tasks.update_cmdb.delay()
-    return HttpResponse('ok')
+    return HttpResponse(True)
+
+
+def get_notice_num(request):
+    num = models.Notice.objects.filter(status=1).count()
+    return HttpResponse(num)
+
+def get_notice_list(request):
+    if request.method == "POST":
+        models.Notice.objects.filter(status=1).update(status=0)
+        return HttpResponse(True)
+    else:
+        data = models.Notice.objects.filter(status=1)
+        srvs_json = serializers.serialize("json", data)
+        return HttpResponse(srvs_json)
 
 @login_required
 @Perm_verification(perm='cmdb')

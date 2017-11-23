@@ -140,6 +140,10 @@ CELERYBEAT_SCHEDULE = {
         # 'schedule': crontab(minute=u'40', hour=u'17',),
         'schedule': timedelta(seconds=120),
     },
+    'update_cmdb': {
+        'task': 'asset.tasks.update_cmdb',
+        'schedule': crontab(minute=u'00', hour=u'01',),
+    },
 }
 GRAPPELLI_INDEX_DASHBOARD = 'xbmanIntegrated.dashboard.CustomIndexDashboard'
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"

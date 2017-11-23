@@ -265,3 +265,14 @@ class Tag(models.Model):
     create_date = models.DateField(auto_now_add=True)
     def __unicode__(self):
         return self.name
+
+class Notice(models.Model):
+    name = models.CharField('通知内容', max_length=32)
+    status = models.IntegerField('状态')
+    create_date = models.DateField(auto_now_add=True,blank=True)
+
+    def __unicode__(self):
+        return self.name
+    class Meta:
+        verbose_name = '通知表'
+        verbose_name_plural = "通知表"
