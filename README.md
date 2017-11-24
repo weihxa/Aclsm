@@ -33,7 +33,7 @@
 
 - 通知
 
-![tongzhi](https://gitee.com/weihaoxuan/images/raw/master/aclsm/tongzhi.jpg "tongzhi")
+![tongzhi](https://gitee.com/weihaoxuan/images/raw/master/aclsm/tonghzi.jpg "tongzhi")
 
 #### 部署方法
 
