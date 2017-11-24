@@ -3,11 +3,6 @@
 __author__ = 'weihaoxuan'
 import json
 import models
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from Integrated import user_models
-import urllib2
-from xbmanIntegrated import settings
-from django.db.models import Q
 
 def index():
     containerd = {}
@@ -15,17 +10,7 @@ def index():
     containerd['group'] = models.disk.objects.all().values('name').distinct().count()
     return containerd
 
-def report_url(msg):
-    new_url = 'http://localhost:8080/sms/inner?mobile=%s&content=%s'%(settings.p_number,msg)
-    try:
-        req = urllib2.Request(url=new_url,)
-        res_data = urllib2.urlopen(req, timeout=30)
-        callback = res_data.read()
-        print  callback
-        return '入库成功，短信已发送'
-    except urllib2.URLError, e:
-        print('url无法访问，短信发送失败！')
-        return '入库成功，但短信发送失败'
+
 
 def report(request):
     data = json.loads(request.POST.get('data'))
@@ -35,13 +20,6 @@ def report(request):
                                                     mark=data['mark'],
                                                     report_msm=json.dumps(data['data']))
     if message:
-        msg = "Active warning report：mark[%s],ip:[%s],click this link to view report：[%s]" % (
-        str(data['mark']), str(data['ipaddr']), 'http://10.66.48.7:8001/detailreport/?ip=' + str(data['ipaddr']))
-        # print msg
-        # report_url(msg=msg)
-        if settings.Notice:
-            return report_url(msg=msg)
-        else:
             return '入库成功，服务端未设置短信通知'
     else:
         return '重复上报！'
@@ -93,13 +71,3 @@ def get_disk():
             data['mark'] = i.mark
             normal.append(data)
     return normal,unusual
-
-def get_softversion():
-    data_list = []
-    for i in models.softver.objects.all().order_by('-name'):
-        data = {"name": "", "Kernel": "", "nginx": ""}
-        data['name'] = i.name
-        data['Kernel'] = i.Kernel.strip().strip("'")
-        data['nginx'] = i.nginx
-        data_list.append(data)
-    return data_list

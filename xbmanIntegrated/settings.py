@@ -49,7 +49,7 @@ INSTALLED_APPS = (
     'loghunter',
     'asset',
     'SCMS',
-    # 'gunicorn',
+    'gunicorn',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,10 +89,18 @@ WSGI_APPLICATION = 'xbmanIntegrated.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
+    "default": {
+    "ENGINE": "django.db.backends.mysql",
+    "NAME": "aclsm",
+    "USER": "aclsm",
+    "PASSWORD": "aclsm.com",
+    "HOST": "100.100.100.100",
+    "PORT": "3306",
+    },
 }
 
 
@@ -130,16 +138,10 @@ AUTH_USER_MODEL = 'Integrated.UserProfile'
 
 
 CELERYBEAT_SCHEDULE = {
-    'add-every-1-seconds': {
+    'update_disk': {
         'task': 'loghunter.tasks.get_database',
-        # 'schedule': crontab(minute=u'40', hour=u'17',),
-        'schedule': timedelta(seconds=120),
+        'schedule': timedelta(seconds=1800),
     },
-    # 'add-every-2-seconds': {
-    #     'task': 'loghunter.tasks.get_soft',
-    #     # 'schedule': crontab(minute=u'40', hour=u'17',),
-    #     'schedule': timedelta(seconds=120),
-    # },
     'update_cmdb': {
         'task': 'asset.tasks.update_cmdb',
         'schedule': crontab(minute=u'00', hour=u'01',),

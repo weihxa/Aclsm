@@ -29,8 +29,5 @@ urlpatterns = [
     url(r'^detaillogs/$', views.detaillogs, name='detaillogs'),
     url(r'^deldevall/$', views.deldevall, name='deldevall'),
     url(r'^disks/$', views.disks, name='disks'),
-    url(r'^softversion/$', views.softversion, name='softversion'),
-    url(r'^getsoft/$', views.getsoft, name='getsoft'),
-    url(r'^gettomcat/$', views.gettomcat, name='gettomcat'),
 
 ]
