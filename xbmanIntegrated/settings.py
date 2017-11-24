@@ -135,11 +135,11 @@ CELERYBEAT_SCHEDULE = {
         # 'schedule': crontab(minute=u'40', hour=u'17',),
         'schedule': timedelta(seconds=120),
     },
-    'add-every-2-seconds': {
-        'task': 'loghunter.tasks.get_soft',
-        # 'schedule': crontab(minute=u'40', hour=u'17',),
-        'schedule': timedelta(seconds=120),
-    },
+    # 'add-every-2-seconds': {
+    #     'task': 'loghunter.tasks.get_soft',
+    #     # 'schedule': crontab(minute=u'40', hour=u'17',),
+    #     'schedule': timedelta(seconds=120),
+    # },
     'update_cmdb': {
         'task': 'asset.tasks.update_cmdb',
         'schedule': crontab(minute=u'00', hour=u'01',),
@@ -148,14 +148,3 @@ CELERYBEAT_SCHEDULE = {
 GRAPPELLI_INDEX_DASHBOARD = 'xbmanIntegrated.dashboard.CustomIndexDashboard'
 ADMIN_MEDIA_PREFIX = STATIC_URL + "grappelli/"
 GRAPPELLI_ADMIN_TITLE='ACLMS管理后台'
-
-#是否发送短信通知
-Notice = True
-#短信通知电话设置
-p_number = '13500000000,13522222222'
-
-#salt服务器设置
-ipaddr = '10.10.5.150'
-port = 22
-username = 'root'
-password = 'u1m9s0k8'

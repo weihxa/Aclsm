@@ -10,9 +10,7 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 import core
 from django.core import serializers
-from plugins import paramiko_cmd
 import models
-from plugins import get_hostname
 import re
 
 @login_required
