@@ -11,6 +11,30 @@
 
 - ansible被控制端需要安装libselinux-python,执行yum install libselinux-python -y
 
+### 系统截图：
+
+- 登陆
+
+![登陆](https://gitee.com/weihaoxuan/images/raw/master/aclsm/login.jpg "login")
+
+- 首页
+
+![首页](https://gitee.com/weihaoxuan/images/raw/master/aclsm/index.jpg "首页")
+
+- 添加机器
+
+![添加机器](https://gitee.com/weihaoxuan/images/raw/master/aclsm/jiqi.jpg "添加机器")
+
+- cmdb
+
+![cmdb](https://gitee.com/weihaoxuan/images/raw/master/aclsm/cmdb.jpg "cmdb")
+
+![cmdb](https://gitee.com/weihaoxuan/images/raw/master/aclsm/cmdb2.jpg "cmdb")
+
+- 通知
+
+![tongzhi](https://gitee.com/weihaoxuan/images/raw/master/aclsm/tongzhi.jpg "tongzhi")
+
 #### 部署方法
 
 - 安装ansible(请自行安装)
