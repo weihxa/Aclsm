@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import froms
 import os
 import tasks
-import ansible_api
+# import ansible_api
 
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
