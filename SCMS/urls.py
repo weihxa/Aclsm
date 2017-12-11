@@ -39,6 +39,8 @@ urlpatterns = [
     url(r'^tomcatinstall/', views.tomcatinstall, name='tomcatinstall'),
     url(r'^generate/', views.generate, name='generate'),
     url(r'^tables/', views.tasks_tables, name='tasks_tables'),
+    url(r'^playbook/', views.playbook, name='playbook'),
+    url(r'^playbook_upload/', views.playbook_upload, name='playbook_upload'),
     url(r'^cmdrun/', views.cmdrun, name='cmdrun'),
     # url(r'^filepush/', views.filepush,name='filepush'),
 

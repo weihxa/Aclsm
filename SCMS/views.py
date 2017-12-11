@@ -9,10 +9,10 @@ from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
 from Integrated.plugins.Decorators import Perm_verification
 import json
-import logging
+import models
 import code
 import froms
-
+import os
 
 @login_required
 @Perm_verification(perm='ansible')
@@ -203,6 +203,28 @@ def cmdrun(request):
         contacts, config, group = code.tinstall_get(request)
         return render_to_response('scms/forms.html',{'contacts':contacts, 'group':group},
                                   context_instance=RequestContext(request))
+
+@login_required
+@Perm_verification(perm='ansible')
+def playbook(request):
+    contacts = models.Playbook.objects.all()
+    return render_to_response('scms/playbook.html',{'uf': froms.headImg(),'contacts':contacts},
+                              context_instance=RequestContext(request))
+
+def playbook_upload(request):
+    if request.method == "POST":
+        project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        os.system('mkdir %s' % os.path.join(project_dir, 'upload'))
+        myFile = request.FILES.get("myfile", None)
+        if os.path.exists(os.path.join(project_dir, 'upload', myFile.name)):
+            return HttpResponse(json.dumps((False,'文件已存在！')))
+        destination = open(os.path.join(project_dir ,'upload', myFile.name), 'wb+')
+        for chunk in myFile.chunks():
+            destination.write(chunk)
+        destination.close()
+        models.Playbook.objects.create(name=myFile,description=request.POST.get('description'),basedir=os.path.join(project_dir + '/upload/', myFile.name))
+        return HttpResponse(json.dumps((True,'上传成功！')))
+
 #文件推送功能
 # @login_required
 # def filepush(request):

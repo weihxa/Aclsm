@@ -79,6 +79,19 @@ class Package(models.Model):
     def __unicode__(self):
         return self.rpm_name
 
+class Playbook(models.Model):
+    name = models.CharField(u'文件名', max_length=64,blank=True,null=True)
+    description = models.CharField(u'描述',max_length=1024,blank=True,null=True)
+    basedir = models.CharField(u'存储路径',max_length=1024,blank=True,null=True)
+    create_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'playbook记录'
+        verbose_name_plural = "playbook记录"
+
+    def __unicode__(self):
+        return self.name
+
 class task(models.Model):
     event_type_choices = (
         ('1', u'成功'),
