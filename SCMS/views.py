@@ -3,7 +3,7 @@
 
 # Create your views here.
 from django.shortcuts import render_to_response,render
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect,StreamingHttpResponse
 from django.contrib import auth
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -12,7 +12,7 @@ import json
 import models
 import code
 import froms
-import os
+import os,tarfile
 
 @login_required
 @Perm_verification(perm='ansible')
@@ -210,11 +210,15 @@ def playbook(request):
     contacts = models.Playbook.objects.all()
     return render_to_response('scms/playbook.html',{'uf': froms.headImg(),'contacts':contacts},
                               context_instance=RequestContext(request))
-
+@login_required
+@Perm_verification(perm='ansible')
 def playbook_upload(request):
     if request.method == "POST":
         project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-        os.system('mkdir %s' % os.path.join(project_dir, 'upload'))
+        try:
+            os.mkdir(os.path.join(project_dir, 'upload'))
+        except OSError,e:
+            pass
         myFile = request.FILES.get("myfile", None)
         if os.path.exists(os.path.join(project_dir, 'upload', myFile.name)):
             return HttpResponse(json.dumps((False,'文件已存在！')))
@@ -222,8 +226,37 @@ def playbook_upload(request):
         for chunk in myFile.chunks():
             destination.write(chunk)
         destination.close()
-        models.Playbook.objects.create(name=myFile,description=request.POST.get('description'),basedir=os.path.join(project_dir + '/upload/', myFile.name))
+        os.mkdir(os.path.join(project_dir ,'upload', myFile.name.split('.')[0]))
+        tar = tarfile.open(os.path.join(project_dir ,'upload', myFile.name))
+        tar.extractall(os.path.join(project_dir ,'upload', myFile.name.split('.')[0]))
+        tar.close()
+        models.Playbook.objects.create(name=myFile,description=request.POST.get('description')
+                                       ,basedir=os.path.join(project_dir,'upload',myFile.name))
         return HttpResponse(json.dumps((True,'上传成功！')))
+
+@login_required
+@Perm_verification(perm='ansible')
+def delplaybook(request):
+    if code.del_playbook(request):
+        return HttpResponse(json.dumps('true'))
+
+@login_required
+@Perm_verification(perm='ansible')
+def down_playbook(request):
+    def file_iterator(file_name, chunk_size=512):
+        with open(file_name) as f:
+            while True:
+                c = f.read(chunk_size)
+                if c:
+                    yield c
+                else:
+                    break
+
+    filename = models.Playbook.objects.filter(id=request.GET.get('id'))
+    response = StreamingHttpResponse(file_iterator(filename[0].basedir))
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename="{0}"'.format(filename[0].name)
+    return response
 
 #文件推送功能
 # @login_required

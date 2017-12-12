@@ -5,7 +5,7 @@ __author__ = 'weihaoxuan'
 import models
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import froms
-import os
+import os,shutil
 import tasks
 # import ansible_api
 
@@ -258,3 +258,13 @@ def cmdrun(request):
             log.append(date[i.ipaddress]['stdout'] + '\n')
         data = {'status': 0, 'msg': '请求成功', 'data': '\n'.join(log)}
         return data
+
+def del_playbook(request):
+    filename = models.Playbook.objects.filter(id=request.POST.get('modify')).values('basedir')
+    if os.path.exists(filename[0]['basedir']):
+        os.remove(filename[0]['basedir'])
+        shutil.rmtree(filename[0]['basedir'].split('.')[0])
+        models.Playbook.objects.get(id=request.POST.get('modify')).delete()
+        return True
+    else:
+        return False
