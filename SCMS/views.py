@@ -258,6 +258,16 @@ def down_playbook(request):
     response['Content-Disposition'] = 'attachment;filename="{0}"'.format(filename[0].name)
     return response
 
+@login_required
+@Perm_verification(perm='ansible')
+def roles(request):
+    if request.method == "POST":
+        data = code.cmdrun(request)
+        return HttpResponse(json.dumps(data))
+    elif request.method == 'GET':
+        contacts = code.roles()
+        return render_to_response('scms/roles.html',{'contacts':contacts},
+                                  context_instance=RequestContext(request))
 #文件推送功能
 # @login_required
 # def filepush(request):

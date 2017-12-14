@@ -1,0 +1,159 @@
+{% extends 'scms/base.html' %}
+{% block link %}
+    <link href="/static/scms/dist/css/nginxts.css" rel="stylesheet" type="text/css">
+    <link href="/static/scms/dist/css/multi-select.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block body %}
+<div class="wrapper wrapper-content animated fadeInRight">
+   <div class="row">
+    <div class="col-lg-12">
+     <div id="zhuangtai2" class="alert alert-info alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only"></span></button>
+      <strong>任务创建成功！</strong>
+     </div>
+     <div class="ibox float-e-margins" id="all">
+      <div class="ibox-title shezhiye">
+       <h3> playbook执行页</h3>
+       <h5> *创建playbook或roles执行任务</h5>
+      </div>
+     </div>
+    </div>
+    <div class="biaoqianye">
+     <!-- Tab panes -->
+     <div class="tab-content">
+      <div role="tabpanel">
+       <div class="col-lg-12">
+        <div class="col-lg-2  pull-left">
+        </div>
+        <div class="col-lg-4 pull-left selecteds ">
+         <form class="form-horizontal" action="/scms/roles/" method="post" id="nginxgroup">
+          {% csrf_token %}
+          <input class="form-control" style="display: none;" name="mark" value="2" type="text" readonly="" />
+          <div class="kuangkuang">
+           <div class="spans">
+            <span class="spans">请选择要执行的playbook：</span>
+           </div>
+           <select name="group" class="form-control">
+               {% for item in contacts %}
+                   <option value="{{ item.id }}">{{ item.description }}-{{ item.name }}</option>
+               {% endfor %}
+           </select>
+          </div>
+          <div class="kuangkuang">
+           <div class="spans">
+            <span class="spans">请输入执行命令:</span>
+           </div>
+           <input id="textrarval" class="form-control" rows="3" name="cmd" placeholder="命令" />
+          </div>
+         </form>
+         <button id="returns" type="submit" form="nginxgroup" class="btn btn-primary pull-right" value="submit">提交任务</button>
+        </div>
+        <div class="col-lg-4  pull-right">
+         <div class="helpme">
+          <div class="alert alert-info" role="alert">
+           <span class="glyphicon glyphicon-alert"> 请慎重执行，命令格式请遵循ansible语法！ </span>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+{% endblock %}
+
+
+{% block javascript %}
+<script src="/static/scms/dist/js/jquery.cookie.js"></script>
+    <script src="/static/scms/dist/js/jquery.form.js"></script>
+    <script>
+var csrftoken = $.cookie('csrftoken');
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+function del_device(doc, id) {
+    $("#xianshi").text('正在执行，请稍后。。。');
+    $('#myModal2').modal({
+        show: true
+    });
+    $.ajax({
+        type: "POST",
+        url: "/scms/cmdrun/",
+        data: $('#nameform22').serialize(),
+        error: function(request) {
+            $("#xianshi").addClass('redxsq');
+            $("#xianshi").text('请求失败！');
+            $('#myModal2').modal({
+                show: true
+            });
+        },
+        success: function(arg) {
+            var obj = jQuery.parseJSON(arg);
+            if (obj.status == 1) {
+                $("#xianshi").addClass('redxsq');
+            } else {
+                $("#xianshi").removeClass('redxsq');
+            }
+            $("#xianshi").text(obj.data);
+
+        }
+    });
+};
+function group(doc, id) {
+    $("#xianshi").text('正在执行，请稍后。。。');
+    $('#myModal2').modal({
+        show: true
+    });
+    $.ajax({
+        type: "POST",
+        url: "/scms/cmdrun/",
+        data: $('#nameform3').serialize(),
+        error: function(request) {
+            $("#xianshi").addClass('redxsq');
+            $("#xianshi").text('请求失败！');
+
+            $('#myModal2').modal({
+                show: true
+            });
+        },
+        success: function(arg) {
+            var obj = jQuery.parseJSON(arg);
+            if (obj.status == 1) {
+                $("#xianshi").addClass('redxsq');
+            } else {
+                $("#xianshi").removeClass('redxsq');
+            }
+            $("#xianshi").text(obj.data);
+
+        }
+    });
+};
+$(document).ready(function () {
+  $("#textrarval").change(function () {
+    var filepath = $("input[name='cmd']").val();
+    var extStart = filepath.lastIndexOf(".");
+    var ext = filepath.substring(extStart, filepath.length).toUpperCase();
+    if (ext != ".GZ") {
+      $("#retune").css('color','red');
+      $("#returns").attr('disabled','disabled');
+        $("#retune").text('格式错误,仅能上传.tar.gz压缩文件！');
+      return false;
+    } else {
+        $("#retune").text('');
+        $("#returns").removeAttr('disabled');
+    }
+  });
+});
+    </script>
+
+{% endblock %}

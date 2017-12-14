@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^down_playbook/', views.down_playbook, name='down_playbook'),
     url(r'^delplaybook/', views.delplaybook, name='delplaybook'),
     url(r'^cmdrun/', views.cmdrun, name='cmdrun'),
+    url(r'^roles/', views.roles, name='roles'),
     # url(r'^filepush/', views.filepush,name='filepush'),
 
 ]

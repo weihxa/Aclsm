@@ -268,3 +268,7 @@ def del_playbook(request):
         return True
     else:
         return False
+
+def roles():
+    contacts = models.Playbook.objects.all()
+    return contacts
