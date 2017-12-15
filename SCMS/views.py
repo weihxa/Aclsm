@@ -230,6 +230,7 @@ def playbook_upload(request):
         tar = tarfile.open(os.path.join(project_dir ,'upload', myFile.name))
         tar.extractall(os.path.join(project_dir ,'upload', myFile.name.split('.')[0]))
         tar.close()
+        os.system('chmod -x %s'%os.path.join(project_dir ,'upload', myFile.name.split('.')[0],'inventory'))
         models.Playbook.objects.create(name=myFile,description=request.POST.get('description')
                                        ,basedir=os.path.join(project_dir,'upload',myFile.name))
         return HttpResponse(json.dumps((True,'上传成功！')))
@@ -262,7 +263,7 @@ def down_playbook(request):
 @Perm_verification(perm='ansible')
 def roles(request):
     if request.method == "POST":
-        data = code.cmdrun(request)
+        data = code.roles_task(request)
         return HttpResponse(json.dumps(data))
     elif request.method == 'GET':
         contacts = code.roles()

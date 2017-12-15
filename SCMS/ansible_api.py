@@ -55,7 +55,25 @@ class MyRunner(object):
             extra_vars=eval(params)
             )
         return pb.run()
-
+    def roles_execute(self,play,timeout=30, forks=10, become_user='root',inventory=os.path.join(project_dir, 'temp', 'hosts')):
+        '''
+        执行playbook模块
+        '''
+        stats = callbacks.AggregateStats()
+        playbook_cb = callbacks.PlaybookCallbacks(verbose=utils.VERBOSITY)
+        runner_cb = callbacks.PlaybookRunnerCallbacks(stats, verbose=utils.VERBOSITY)
+        pb = PlayBook(
+            playbook=play,
+            host_list=inventory,
+            stats=stats,
+            callbacks=playbook_cb,
+            timeout=timeout,
+            forks=forks,
+            runner_callbacks=runner_cb,
+            remote_user=become_user,
+            check=False
+            )
+        return pb.run()
     def deploy_key(self,server, username, password):
         '''
         添加KEY
@@ -82,4 +100,5 @@ class MyRunner(object):
 
 
 if __name__ == "__main__":
-    print MyRunner().deploy_key(server='192.168.56.102',username='root',password='123123')
+    print MyRunner().roles_execute(play='/tmp/ansible-role-percona/repl_test.yml',
+                                      inventory='/tmp/ansible-role-percona/inventory')

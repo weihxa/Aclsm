@@ -190,7 +190,8 @@ def nginxpush_get(request):
 
 def nginxpush_post(request):
     if  request.POST.get('mark') == '1':
-        tasks.nginxdev_push.delay(file=request.POST.get('file'),pclist=request.POST.getlist('pclist'),puthdir=request.POST.get('puthdir'))
+        tasks.nginxdev_push.delay(file=request.POST.get('file'),
+                                  pclist=request.POST.getlist('pclist'),puthdir=request.POST.get('puthdir'))
     elif request.POST.get('mark') == '2':
         tasks.nginxgroup_push.delay(group=request.POST.get('group'),file=request.POST.get('file'),)
     return True
@@ -203,7 +204,8 @@ def tomcatpush_get(request):
 
 def tomcatpush_post(request):
     if  request.POST.get('mark') == '1':
-        tasks.tomcatdev_push.delay(file=request.POST.get('file'),pclist=request.POST.getlist('pclist'),puthdir=request.POST.get('puthdir'))
+        tasks.tomcatdev_push.delay(file=request.POST.get('file'),
+                                   pclist=request.POST.getlist('pclist'),puthdir=request.POST.get('puthdir'))
     elif request.POST.get('mark') == '2':
         tasks.tomcatgroup_push.delay(group=request.POST.get('group'),file=request.POST.get('file'))
     return True
@@ -237,8 +239,11 @@ def tinstall_post(request):
 
 def cmdrun(request):
     log = []
-    if 'shutdown' in request.POST.get('cmd') or 'init 0' in request.POST.get('cmd') or 'init 6' in request.POST.get('cmd') or 'reboot' in request.POST.get('cmd') or len(request.POST.get('cmd').strip()) == 0:
-        data = {'status': 1, 'msg': '请求失败', 'data': '执行命令中存在shutdown,init 0,init 6,reboot等敏感命令或执行命令未填写，不允许执行！！'}
+    if 'shutdown' in request.POST.get('cmd') or\
+                    'init 0' in request.POST.get('cmd') or 'init 6' in request.POST.get('cmd') or\
+                    'reboot' in request.POST.get('cmd') or len(request.POST.get('cmd').strip()) == 0:
+        data = {'status': 1, 'msg': '请求失败',
+                'data': '执行命令中存在shutdown,init 0,init 6,reboot等敏感命令或执行命令未填写，不允许执行！！'}
         return data
     if  request.POST.get('mark') == '1':
         iplist = []
@@ -272,3 +277,8 @@ def del_playbook(request):
 def roles():
     contacts = models.Playbook.objects.all()
     return contacts
+
+def roles_task(request):
+    tasks.playbook.delay(p_id=request.POST.get('playbook'),p_name=request.POST.get('p_name'),
+                         inventory=request.POST.get('mark'))
+    return (True,'任务创建成功！')

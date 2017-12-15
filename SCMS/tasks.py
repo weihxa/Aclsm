@@ -5,6 +5,7 @@ __author__ = 'weihaoxuan'
 from celery import task
 from confile_process import process
 import models
+import os
 # import ansible_api
 
 @task
@@ -70,7 +71,8 @@ def tomcatdev_push(file,pclist,puthdir):
     for i in pclist:
         item = models.device_config.objects.get(id=i)
         ipdict[item.ipaddress] = item.password
-    obj = models.task(task_name='tomcat推送', config_name=confname, task_Operated=','.join(ipdict.keys()), task_result=3)
+    obj = models.task(task_name='tomcat推送', config_name=confname,
+                      task_Operated=','.join(ipdict.keys()), task_result=3)
     obj.save()
     obj_id = obj.id
     if len(puthdir.strip()) == 0:
@@ -121,7 +123,8 @@ def ninstall_push(pclist,id):
     for i in pclist:
         item = models.device_config.objects.get(id=i)
         ipdict[item.ipaddress] = item.password
-    obj = models.task(task_name='nginx安装', config_name=confname, task_Operated=','.join(ipdict.keys()), task_result=3)
+    obj = models.task(task_name='nginx安装', config_name=confname,
+                      task_Operated=','.join(ipdict.keys()), task_result=3)
     obj.save()
     obj_id = obj.id
     try:
@@ -131,7 +134,8 @@ def ninstall_push(pclist,id):
             log.append(str(date[k]['failures']) + '\n')
         models.task.objects.filter(id=obj_id).update(task_result=1, task_log='\n'.join(log))
     except Exception, e:
-        models.task.objects.filter(id=obj_id).update(task_result=2, task_log='被控制机没有安装libselinux-python，或网络不可达！')
+        models.task.objects.filter(id=obj_id).update(task_result=2,
+                                                     task_log='被控制机没有安装libselinux-python，或网络不可达！')
 
 @task
 def ninstallgroup_push(group_id,id):
@@ -148,7 +152,8 @@ def ninstallgroup_push(group_id,id):
             log.append(str(date[i.ipaddress]['failures']) + '\n')
         models.task.objects.filter(id=obj_id).update(task_result=1, task_log='\n'.join(log))
     except Exception, e:
-        models.task.objects.filter(id=obj_id).update(task_result=2, task_log='被控制机没有安装libselinux-python，或网络不可达！')
+        models.task.objects.filter(id=obj_id).update(task_result=2,
+                                                     task_log='被控制机没有安装libselinux-python，或网络不可达！')
 
 @task
 def tinstall_push(pclist,id):
@@ -158,7 +163,8 @@ def tinstall_push(pclist,id):
     for i in pclist:
         item = models.device_config.objects.get(id=i)
         ipdict[item.ipaddress] = item.password
-    obj = models.task(task_name='tomcat安装', config_name=confname, task_Operated=','.join(ipdict.keys()), task_result=3)
+    obj = models.task(task_name='tomcat安装', config_name=confname,
+                      task_Operated=','.join(ipdict.keys()), task_result=3)
     obj.save()
     obj_id = obj.id
     try:
@@ -168,7 +174,8 @@ def tinstall_push(pclist,id):
             log.append(str(date[k]['failures']) + '\n')
         models.task.objects.filter(id=obj_id).update(task_result=1, task_log='\n'.join(log))
     except Exception, e:
-        models.task.objects.filter(id=obj_id).update(task_result=2, task_log='被控制机没有安装libselinux-python，或网络不可达！')
+        models.task.objects.filter(id=obj_id).update(task_result=2,
+                                                     task_log='被控制机没有安装libselinux-python，或网络不可达！')
 
 @task
 def tinstallgroup_push(group_id,id):
@@ -180,10 +187,28 @@ def tinstallgroup_push(group_id,id):
     obj_id = obj.id
     try:
         for i in models.device_config.objects.filter(group=group_id):
-            date = ansible_api.MyRunner().PlayBook_execute(play=path,
-                                                                                 params='{"host": "%s"}' % i.ipaddress)
+            date = ansible_api.MyRunner().PlayBook_execute(play=path,params='{"host": "%s"}' % i.ipaddress)
             log.append(i.ipaddress + ':')
             log.append(str(date[i.ipaddress]['failures']) + '\n')
         models.task.objects.filter(id=obj_id).update(task_result=1, task_log='\n'.join(log))
     except Exception, e:
-        models.task.objects.filter(id=obj_id).update(task_result=2, task_log='被控制机没有安装libselinux-python，或网络不可达！')
+        models.task.objects.filter(id=obj_id).update(task_result=2,
+                                                     task_log='被控制机没有安装libselinux-python，或网络不可达！')
+
+@task
+def playbook(p_id,p_name,inventory=None):
+    basedir = models.Playbook.objects.get(id=p_id)
+    path = os.path.join(basedir.basedir.split('.')[0], p_name)
+    obj = models.task(task_name='playbook执行', config_name='不涉及', task_Operated='不涉及', task_result=3)
+    obj.save()
+    obj_id = obj.id
+    try:
+        if inventory:
+            date = ansible_api.MyRunner().roles_execute(play=path,
+                                                        inventory=os.path.join(basedir.basedir.split('.')[0],'inventory'))
+        else:
+            date = ansible_api.MyRunner().roles_execute(play=path)
+        models.task.objects.filter(id=obj_id).update(task_result=1, task_log=date)
+    except Exception, e:
+        models.task.objects.filter(id=obj_id).update(task_result=2,
+                                                     task_log='被控制机没有安装libselinux-python，或网络不可达！')

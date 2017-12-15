@@ -61,7 +61,7 @@
           <textarea id="textrarval" class="form-control" rows="3" name="cmd" placeholder="命令"></textarea>
          </div>
         </form>
-        <button type="button" class="btn btn-primary pull-right" onclick="del_device(this,1);">执行</button>
+        <button id="returns" type="button" class="btn btn-primary pull-right" onclick="del_device(this,1);" disabled="disabled">执行</button>
        </div>
        <div class="col-lg-3  pull-right">
         <div class="helpme">
@@ -94,10 +94,10 @@
           <div class="spans">
            <span class="spans">请输入命令:</span>
           </div>
-          <textarea id="textrarval" class="form-control" rows="3" name="gcmd" placeholder="命令"></textarea>
+          <textarea id="textrarval2" class="form-control" rows="3" name="gcmd" placeholder="命令"></textarea>
          </div>
         </form>
-        <button type="button" class="btn btn-primary pull-right" onclick="group(this,1);">执行</button>
+        <button id="g_return" type="button" class="btn btn-primary pull-right" onclick="group(this,1);" disabled="disabled">执行</button>
        </div>
        <div class="col-lg-4  pull-right">
         <div class="helpme">
@@ -117,91 +117,6 @@
 {% block javascript %}
 <script src="/static/scms/dist/js/jquery.cookie.js"></script>
 <script src="/static/scms/dist/js/jquery.multi-select.js"></script>
-    <script>
-    var csrftoken = $.cookie('csrftoken');
-	function csrfSafeMethod(method) {
-		// these HTTP methods do not require CSRF protection
-		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-	}
-	$.ajaxSetup({
-		beforeSend: function(xhr, settings) {
-			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-				xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			}
-		}
-	});
-
-    function del_device(doc,id) {
-        $("#xianshi").text('正在执行，请稍后。。。');
-        $('#myModal2').modal({show:true});
-				$.ajax({
-                type: "POST",
-                url:"/scms/cmdrun/",
-                data:$('#nameform22').serialize(),
-                error: function(request) {
-                    $("#xianshi").addClass('redxsq');
-                    $("#xianshi").text('请求失败！');
-                    $('#myModal2').modal({show:true});
-                },
-                success: function(arg) {
-                    var obj = jQuery.parseJSON(arg);
-                    console.log(obj.status)
-                    if (obj.status==1)
-                      {
-                      $("#xianshi").addClass('redxsq');
-                      }
-                    else
-                      {
-                      $("#xianshi").removeClass('redxsq');
-                      }
-                    $("#xianshi").text(obj.data);
-
-                }
-            });
-        };
-    function group(doc,id) {
-        $("#xianshi").text('正在执行，请稍后。。。');
-        $('#myModal2').modal({show:true});
-				$.ajax({
-                type: "POST",
-                url:"/scms/cmdrun/",
-                data:$('#nameform3').serialize(),
-                error: function(request) {
-                    $("#xianshi").addClass('redxsq');
-                    $("#xianshi").text('请求失败！');
-
-                    $('#myModal2').modal({show:true});
-                },
-                success: function(arg) {
-                    var obj = jQuery.parseJSON(arg);
-                    if (obj.status==1)
-                      {
-                      $("#xianshi").addClass('redxsq');
-                      }
-                    else
-                      {
-                      $("#xianshi").removeClass('redxsq');
-                      }
-                    $("#xianshi").text(obj.data);
-
-                }
-            });
-        };
-    </script>
-    <script type="text/javascript">
-		  // 初始化
-		$('#optgroup').multiSelect({
-		    selectableHeader: "<div class='custom-header'>可选主机</div>",
-		    selectionHeader: "<div class='custom-header'>已选主机</div>",
-		    selectableOptgroup: true,
-		    afterSelect: function (values) {
-		        select.modifyselectNum('#optgroup');
-		    },
-		    afterDeselect: function (values) {
-		        select.modifyselectNum('#optgroup');
-		    }
-		});
-
-  </script>
+<script src="/static/scms/dist/js/forms.js"></script>
 
 {% endblock %}
