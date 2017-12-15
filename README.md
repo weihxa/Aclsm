@@ -3,6 +3,12 @@
 
 ##### 页面化ansible实现了文件推送，添加机器后自动添加ssh key认证等功能，cmdb部分通过在ansible中添加的机器自动收集硬件信息入库
 
+##### 更新日志：
+
+- 2017.12.15 增加了pyalbook(roles)执行功能，修复部分bug
+
+* [部署文档](https://gitee.com/weihaoxuan/Aclsm/wikis/pages?title=1%E3%80%81%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95&parent=) 
+
 ##### 部署环境:
 
 - centos6版本+python2.7+django1.8
@@ -37,18 +43,4 @@
 
 #### 部署方法
 
-- 安装ansible(请自行安装)
-
-- 安装python2.7 pip
-
-- 执行pip install -r requirements.txt
-
-- 修改install.sh上部的配置，并执行sh install.sh
-
-- 请在你的ansible.cfg文件中添加 host_key_checking = False
-
-- 启动服务
-
-    - python manage.py runserver 0.0.0.0:8080
-    
-    - python manage.py celery worker -c 5 -B --loglevel=info
+* [部署文档](https://gitee.com/weihaoxuan/Aclsm/wikis/pages?title=1%E3%80%81%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95&parent=) 

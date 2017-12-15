@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 import froms
 import os,shutil
 import tasks
-# import ansible_api
+import ansible_api
 
 
 project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -239,12 +239,22 @@ def tinstall_post(request):
 
 def cmdrun(request):
     log = []
-    if 'shutdown' in request.POST.get('cmd') or\
-                    'init 0' in request.POST.get('cmd') or 'init 6' in request.POST.get('cmd') or\
-                    'reboot' in request.POST.get('cmd') or len(request.POST.get('cmd').strip()) == 0:
-        data = {'status': 1, 'msg': '请求失败',
-                'data': '执行命令中存在shutdown,init 0,init 6,reboot等敏感命令或执行命令未填写，不允许执行！！'}
-        return data
+    try:
+        if 'shutdown' in request.POST.get('cmd') or\
+                        'init 0' in request.POST.get('cmd') or 'init 6' in request.POST.get('cmd') or\
+                        'reboot' in request.POST.get('cmd') or len(request.POST.get('cmd').strip()) == 0:
+            data = {'status': 1, 'msg': '请求失败',
+                    'data': '执行命令中存在shutdown,init 0,init 6,reboot等敏感命令或执行命令未填写，不允许执行！！'}
+            return data
+    except Exception,e:
+        if 'shutdown' in request.POST.get('gcmd') or\
+                        'init 0' in request.POST.get('gcmd') or 'init 6' in request.POST.get('gcmd') or\
+                        'reboot' in request.POST.get('gcmd') or len(request.POST.get('gcmd').strip()) == 0:
+            data = {'status': 1, 'msg': '请求失败',
+                    'data': '执行命令中存在shutdown,init 0,init 6,reboot等敏感命令或执行命令未填写，不允许执行！！'}
+            return data
+    else:
+        pass
     if  request.POST.get('mark') == '1':
         iplist = []
         for i in request.POST.getlist('pclist'):

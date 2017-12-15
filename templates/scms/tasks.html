@@ -52,6 +52,7 @@
            <td class="text-center">{{ topic.task_name }}</td>
            <td class="text-center">{{ topic.task_Operated }}</td>
            <td class="text-center">{{ topic.config_name }}</td>
+           <span style="display: none" id="logs{{ topic.id }}">{{topic.task_log}}</span>
            <td class="text-center"><a class="stopfresh" href="#" onclick="logshow(this,{{ topic.id }});">查看日志</a></td>
            <td class="text-center">
                {% if topic.task_result == '1' %}
