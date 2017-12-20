@@ -10,4 +10,5 @@ django-filter==0.15.3
 Markdown==2.6.7
 pymysql==0.7.11
 graphic-verification-code==1.0.2
+tornado==4.5.2
 gunicorn
