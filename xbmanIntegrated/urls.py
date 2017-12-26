@@ -39,6 +39,7 @@ urlpatterns = [
     url(r'^scms/', include('SCMS.urls')),
     url(r'^loghunter/', include('loghunter.urls')),
     url(r'^asset/',include('asset.urls')),
+    url(r'^jump/',include('jump.urls')),
 
 
 ]

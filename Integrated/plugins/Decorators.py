@@ -7,9 +7,9 @@ from Integrated import models
 
 def get_auth(user):
     lists = []
-    r_value = {'cmdb':False,'jenkins':False,'ansible':False,'logs':False}
+    r_value = {'cmdb':False,'jenkins':False,'ansible':False,'logs':False,'jump':False}
     if user.is_admin:
-        return {'cmdb':True,'jenkins':True,'ansible':True,'logs':True}
+        return {'cmdb':True,'jenkins':True,'ansible':True,'logs':True,'jump':True}
     for item in  models.Authoritys.objects.filter(user_name=user).values('Auth_name'):
         lists.append(item['Auth_name'])
     if 'cmdb' in lists:
@@ -20,6 +20,8 @@ def get_auth(user):
         r_value['ansible'] = True
     if 'logs' in lists:
         r_value['logs'] = True
+    if 'jump' in lists:
+        r_value['jump'] = True
     return r_value
 
 def get_perm(user,perm):

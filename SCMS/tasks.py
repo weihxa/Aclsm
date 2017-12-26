@@ -6,7 +6,7 @@ from celery import task
 from confile_process import process
 import models
 import os
-import ansible_api
+# import ansible_api
 
 @task
 def nginxdev_push(file,pclist,puthdir):

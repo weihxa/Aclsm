@@ -44,13 +44,21 @@
             </a>
           </div>
         {% endif %}
+        {% if Authority.jump %}
+          <div class="col-xs-6 col-md-2">
+            <a href="/jump/index/" class="thumbnail">
+              <img src="/static/dist/img/jump.png">
+              <span>堡垒机系统</span>
+            </a>
+          </div>
+        {% endif %}
         </div>
     </div>
 {% endblock %}
 {% block javascript %}
     <script type="text/javascript">
-			$(document).ready(function(){
-				$('#indexs').addClass("active");
-		});
+        $(document).ready(function(){
+            $('#indexs').addClass("active");
+    });
     </script>
 {% endblock %}

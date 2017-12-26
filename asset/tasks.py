@@ -4,7 +4,7 @@
 from __future__ import absolute_import
 from celery import task
 import datetime
-from SCMS import ansible_api
+# from SCMS import ansible_api
 from asset import ansible_collection
 from asset import core,models
 
