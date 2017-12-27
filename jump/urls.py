@@ -20,6 +20,6 @@ import views
 
 urlpatterns = [
     # url(r'^$', views.index),
-    # url(r'^index/$', views.index, name='index'),
+    url(r'^index/$', views.index, name='jump-index'),
 
 ]
