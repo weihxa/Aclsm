@@ -1,0 +1,65 @@
+{% extends 'jump/base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/static/dist/section/css/styles.css">
+{% endblock %}
+{% block body %}
+<section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+            <h3 class="box-title">远程账户</h3>
+          <div class="box">
+            <div class="box-header">
+                <a href="#" style="margin-left: 2px;float: right;" class="btn btn-sm btn-danger " onclick="del_all();"><span class="glyphicon glyphicon-remove"></span> 删除所有日志 </a>
+            </div>
+            <div class="box-body">
+              <table id="example" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                  <th>用户名称</th>
+                  <th>权限</th>
+                  <th>创建日期</th>
+                  <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for i in data %}
+                <tr>
+                <td>{{ i.username }}</td>
+                <td>{{ i.permiss }}</td>
+                <td>{{ i.create_date }}</td>
+                <td>{{ i.id }}</td>
+            </tr>
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                </tfoot>
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+
+
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </section>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('#userul').addClass("menu-open");
+            $('#jump-users').addClass("active");
+            $('#userli').addClass("active");
+    });
+        $(document).ready(function() {
+    $('#example').dataTable();
+} );
+    </script>
+{% endblock %}
