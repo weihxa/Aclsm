@@ -5,61 +5,134 @@
 {% endblock %}
 {% block body %}
 <section class="content">
-      <div class="row">
-        <div class="col-xs-12">
-            <h3 class="box-title">远程账户</h3>
-          <div class="box">
-            <div class="box-header">
-                <a href="#" style="margin-left: 2px;float: right;" class="btn btn-sm btn-danger " onclick="del_all();"><span class="glyphicon glyphicon-remove"></span> 删除所有日志 </a>
-            </div>
-            <div class="box-body">
-              <table id="example" class="table table-bordered table-hover">
-                <thead>
-                <tr>
-                  <th>用户名称</th>
-                  <th>权限</th>
-                  <th>创建日期</th>
-                  <th>操作</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for i in data %}
-                <tr>
-                <td>{{ i.username }}</td>
-                <td>{{ i.permiss }}</td>
-                <td>{{ i.create_date }}</td>
-                <td>{{ i.id }}</td>
-            </tr>
-                {% endfor %}
-                </tbody>
-                <tfoot>
-                </tfoot>
-              </table>
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-
-
-          <!-- /.box -->
+<!--新建弹窗-->
+  <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title" id="myModalLabel">创建系统账户</h4>
+      <span style="color: red;margin-left: 40px;font-size: 13px">*账号一旦创建，账户名可以修改。且创建后将推送至所有机器</span>
+     </div>
+     <div class="modal-body">
+      <form class="form-horizontal" method="post" id="createuser">
+       {% csrf_token %}
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="username">账户名:</label>
+        <div class="col-lg-9">
+         <input type="text" id="username" class="form-control" name="username" placeholder="请输入账户名" />
         </div>
-        <!-- /.col -->
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="u_password">请输入密码:</label>
+        <div class="col-lg-9">
+         <input type="password" id="u_password" class="form-control" name="u_password" placeholder="请输入账户密码，系统不会保存密码，请妥善保存" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="description">请输入sudo权限:</label>
+        <div class="col-lg-9">
+         <textarea type="text" id="description" class="form-control" style="height: 150px;" name="description" placeholder="visudo：/etc/sudoers:例如root    ALL=(ALL)   ALL" ></textarea>
+        </div>
+       </div>
+       <div class="form-group">
+        <div class="modal-footer">
+            <span id="retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+         <button id="tijiao2" type="submit" form="creategroup" class="btn btn-primary">提交</button>
+        </div>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!--弹窗结束-->
+<!--编辑弹窗-->
+  <div class="modal fade bs-example-modal-lg" id="myModaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title" id="myModalLabel">编辑系统用户</h4>
+      <span style="color: red;margin-left: 40px">*用户名不可以修改</span>
+     </div>
+     <div class="modal-body">
+      <form class="form-horizontal" method="post" id="edituser">
+       {% csrf_token %}
+       <div class="form-group" style="display: none">
+        <label class="col-lg-2 control-label" for="userid">id:</label>
+        <div class="col-lg-9">
+         <input style="display: none" type="text" id="userid" class="form-control" name="userid" placeholder="ID" readonly="" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_username">账户名:</label>
+        <div class="col-lg-9">
+         <input type="text" id="e_username" class="form-control" name="e_username"  readonly="" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_description">请输入sudo权限:</label>
+        <div class="col-lg-9">
+            <textarea type="text" style="height: 150px;" id="e_description" class="form-control" name="e_description" placeholder="visudo：/etc/sudoers:例如root    ALL=(ALL)   ALL" ></textarea>
+        </div>
+       </div>
+       <div class="form-group">
+        <div class="modal-footer">
+            <span id="e_retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+         <button id="e_tijiao" type="submit" form="editgroup" class="btn btn-primary" >提交</button>
+        </div>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!--弹窗结束-->
+  <div class="row">
+    <div class="col-xs-12">
+        <h3 class="box-title">远程账户</h3>
+      <div class="box">
+        <div class="box-header">
+            <a href="#myModal2" style="margin-left: 2px;float: right;" class="btn btn-sm btn-info " data-toggle="modal" data-placement="bottom"><span class="glyphicon glyphicon-plus"></span> 创建账户 </a>
+        </div>
+        <div class="box-body">
+          <table id="example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th class="text-center">用户名称</th>
+              <th class="text-center">权限</th>
+              <th class="text-center">创建日期</th>
+              <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in data %}
+            <tr>
+            <td class="text-center" id="username{{ i.id }}">{{ i.username }}</td>
+            <td class="text-center" id="description{{ i.id }}">{{ i.permiss }}</td>
+            <td class="text-center">{{ i.create_date }}</td>
+            <td class="text-center">
+                <button  type="button" class="btn btn-xs btn-info " onclick="edit_users({{ i.id }})">编辑</button>
+                <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_users(this,{{ i.id }});" >删除</button>
+            </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+            <tfoot>
+            </tfoot>
+          </table>
+        </div>
       </div>
-      <!-- /.row -->
-    </section>
+    </div>
+  </div>
+</section>
 {% endblock %}
 {% block javascript %}
     <script src="/static/dist/js/jquery.cookie.js"></script>
     <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
     <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#userul').addClass("menu-open");
-            $('#jump-users').addClass("active");
-            $('#userli').addClass("active");
-    });
-        $(document).ready(function() {
-    $('#example').dataTable();
-} );
-    </script>
+    <script src="/static/jump/js/users.js"></script>
 {% endblock %}

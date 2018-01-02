@@ -8,7 +8,7 @@ from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
 from Integrated.plugins.Decorators import Perm_verification
 import json
-import models
+import models,code
 
 
 
@@ -29,6 +29,24 @@ def lists(request):
 @login_required
 @Perm_verification(perm='jump')
 def users(request):
-    data = models.Jump_user.objects.all()
-    return render(request, 'jump/users.html',{'data':data},
-                      context_instance=RequestContext(request))
+    if request.method == "GET":
+        data = models.Jump_user.objects.all()
+        return render(request, 'jump/users.html',{'data':data},
+                          context_instance=RequestContext(request))
+    elif request.method == "POST":
+        data = code.jumpuser_post(request)
+        return HttpResponse(json.dumps(data))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def deluser(request):
+    models.Jump_user.objects.filter(id=request.POST.get('modify')).delete()
+    return HttpResponse(json.dumps('true'))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def edit_users(request):
+    data = code.jumpuser_edit(request)
+    return HttpResponse(json.dumps(data))

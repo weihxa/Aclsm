@@ -23,5 +23,7 @@ urlpatterns = [
     url(r'^index/$', views.index, name='jump-index'),
     url(r'^lists/$', views.lists, name='jump-lists'),
     url(r'^users/$', views.users, name='jump-users'),
+    url(r'^deluser/$', views.deluser, name='jump-deluser'),
+    url(r'^edit_users/$', views.edit_users, name='jump-edit_users'),
 
 ]
