@@ -106,3 +106,60 @@ $('#e_tijiao').click(function(){
     });
 });
 })
+$(document).ready(function() {
+    $('#createuser')
+        .bootstrapValidator({
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                username: {
+                    validators: {
+                        notEmpty: {
+                        message: '账户名不得为空！'
+                        },
+                        stringLength:{
+                        min:0,
+                        max:15,
+                        message:'账户名应小于15个字符.'
+                    },
+                    }
+                },
+                u_password: {
+                    validators: {
+                        notEmpty: {
+                        message: '账户密码不得为空！'
+                        }
+                    }
+                },
+                description: {
+                    validators: {
+                        notEmpty: {
+                        message: '权限不得为空！'
+                        }
+                    }
+                },
+            }
+        });
+});
+$(document).ready(function() {
+$('#edituser')
+    .bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            e_description: {
+                validators: {
+                        notEmpty: {
+                        message: '权限不得为空！'
+                        }
+                    }
+            },
+        }
+    });
+})

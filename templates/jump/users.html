@@ -2,6 +2,7 @@
 {% block link %}
     <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="/static/dist/section/css/styles.css">
+    <link href="/static/scms/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
 {% endblock %}
 {% block body %}
 <section class="content">
@@ -12,7 +13,7 @@
      <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
       <h4 class="modal-title" id="myModalLabel">创建系统账户</h4>
-      <span style="color: red;margin-left: 40px;font-size: 13px">*账号一旦创建，账户名可以修改。且创建后将推送至所有机器</span>
+      <span style="color: red;margin-left: 40px;font-size: 13px">*账号一旦创建，账户名可以修改。</span>
      </div>
      <div class="modal-body">
       <form class="form-horizontal" method="post" id="createuser">
@@ -26,7 +27,7 @@
        <div class="form-group">
         <label class="col-lg-2 control-label" for="u_password">请输入密码:</label>
         <div class="col-lg-9">
-         <input type="password" id="u_password" class="form-control" name="u_password" placeholder="请输入账户密码，系统不会保存密码，请妥善保存" />
+         <input type="password" id="u_password" class="form-control" name="u_password" placeholder="请输入账户密码，系统将加密保存，请妥善保存明文密码" />
         </div>
        </div>
        <div class="form-group">
@@ -37,7 +38,7 @@
        </div>
        <div class="form-group">
         <div class="modal-footer">
-            <span id="retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <span id="retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
          <button id="tijiao2" type="submit" form="creategroup" class="btn btn-primary">提交</button>
         </div>
@@ -73,6 +74,12 @@
         </div>
        </div>
        <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_password">账户密码:</label>
+        <div class="col-lg-9">
+         <input type="text" id="e_password" class="form-control" name="e_password"  placeholder="如不修改密码，请为空" />
+        </div>
+       </div>
+       <div class="form-group">
         <label class="col-lg-2 control-label" for="e_description">请输入sudo权限:</label>
         <div class="col-lg-9">
             <textarea type="text" style="height: 150px;" id="e_description" class="form-control" name="e_description" placeholder="visudo：/etc/sudoers:例如root    ALL=(ALL)   ALL" ></textarea>
@@ -80,7 +87,7 @@
        </div>
        <div class="form-group">
         <div class="modal-footer">
-            <span id="e_retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <span id="e_retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
          <button id="e_tijiao" type="submit" form="editgroup" class="btn btn-primary" >提交</button>
         </div>
@@ -121,8 +128,6 @@
             </tr>
             {% endfor %}
             </tbody>
-            <tfoot>
-            </tfoot>
           </table>
         </div>
       </div>
@@ -134,5 +139,6 @@
     <script src="/static/dist/js/jquery.cookie.js"></script>
     <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
     <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/scms/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
     <script src="/static/jump/js/users.js"></script>
 {% endblock %}

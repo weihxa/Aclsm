@@ -8,6 +8,7 @@ from django.contrib import admin
 class Jump_user(models.Model):
     id = models.AutoField(primary_key=True)
     username = models.CharField(u'账户名称',max_length=30,blank=True, null=True)
+    password = models.CharField(u'账户密码',max_length=30,blank=True, null=True)
     permiss = models.TextField(u'sudo权限')
     create_date = models.DateTimeField(editable=True, blank=True, auto_now_add=True)
 
