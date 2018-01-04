@@ -50,3 +50,9 @@ def deluser(request):
 def edit_users(request):
     data = code.jumpuser_edit(request)
     return HttpResponse(json.dumps(data))
+
+@login_required
+@Perm_verification(perm='jump')
+def group(request):
+    return render(request, 'jump/group.html',
+                  context_instance=RequestContext(request))
