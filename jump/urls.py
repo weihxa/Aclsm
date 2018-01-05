@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^deluser/$', views.deluser, name='jump-deluser'),
     url(r'^edit_users/$', views.edit_users, name='jump-edit_users'),
     url(r'^group/$', views.group, name='jump-group'),
+    url(r'^delgroup/$', views.delgroup, name='jump-delgroup'),
 
 ]

@@ -54,5 +54,16 @@ def edit_users(request):
 @login_required
 @Perm_verification(perm='jump')
 def group(request):
-    return render(request, 'jump/group.html',
-                  context_instance=RequestContext(request))
+    if request.method == "GET":
+        group_data,user_data,dev_data = code.group_data(request)
+        return render(request, 'jump/group.html',{'group_data':group_data,'user_data':user_data,'dev_data':dev_data},
+                      context_instance=RequestContext(request))
+    elif request.method == "POST":
+        data = code.group_post(request)
+        return HttpResponse(json.dumps(data))
+
+@login_required
+@Perm_verification(perm='jump')
+def delgroup(request):
+    models.Jump_group.objects.filter(id=request.POST.get('modify')).delete()
+    return HttpResponse(json.dumps('true'))
