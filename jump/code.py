@@ -31,7 +31,6 @@ def jumpuser_edit(request):
 
 def group_data(request):
     group_data = models.Jump_group.objects.all()
-    # print group_data[0].dev_list.split(',')[0]
     user_data = models.Jump_user.objects.all()
     dev_data = scms_models.device_config.objects.all()
     return (group_data,user_data,dev_data)
@@ -47,6 +46,17 @@ def group_post(request):
                                              user=user,
                                              dev_list=','.join(request.POST.getlist('pclist')))
             return (True, '组账号创建成功')
+    except Exception,e:
+        print e
+        return (False, '未知错误，请刷新页面后尝试')
+
+def group_edit(request):
+    try:
+        user = models.Jump_user.objects.get(id=request.POST.get('e_username'))
+        models.Jump_group.objects.filter(id=request.POST.get('groupid')).update(
+                                         user=user,
+                                         dev_list=','.join(request.POST.getlist('e_pclist')))
+        return (True, '修改成功')
     except Exception,e:
         print e
         return (False, '未知错误，请刷新页面后尝试')

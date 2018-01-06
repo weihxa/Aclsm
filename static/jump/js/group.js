@@ -146,18 +146,53 @@ function edit_group(id) {
 		$("#description"+$("#description"+id).text()).attr('selected','selected');
 		var devlist = $("#dev"+id).text().split(',');
 		$.each(devlist,function(i,item){
-　　　　console.log(i, item);
-　　　　console.log($("#dev"+item).text());
-        $("#dev"+item).attr('selected','selected');
+		    console.log(item)
+        $("#dev"+item.replace(/\./g,'')).attr('selected','selected');
 　　    });
 		r_select();
         $('#myModaledit').modal({show:true});
         $('#myModaledit').on('hide.bs.modal',
           function() {
-            $("#description"+$("#description"+id).text()).removeAttr('selected');
+//             $("#description"+$("#description"+id).text()).removeAttr('selected');
+//             $.each(devlist,function(i,item){
+//         $("#dev"+item.replace(/\./g,'')).removeAttr('selected');
+// 　　    });
+           window.location.reload();
           }
         );
 }
+$(document).ready(function(){
+$('#e_tijiao').click(function(){
+    $("#retune").text('正在处理....');
+     $.ajax({
+        type:'POST',
+        url:'/jump/edit_group/',
+        data:$("#editgroup").serialize(),
+        cache:false,
+        dataType:'json',
+        success:function(data){
+            if (data[0])
+              {
+                $("#e_retune").css('color','green');
+                $("#e_retune").text(data[1]+'，2秒后刷新页面。');
+                setTimeout(function(){
+                window.location.reload();
+                },2000);
+              }
+            else
+              {
+              $("#e_retune").css('color','red');
+                $("#e_retune").text(data[1]);
+              }
+
+        },
+         error:function(){
+            $("#e_retune").css('color','red');
+            $("#e_retune").text('数据请求失败，请刷新页面尝试!');
+        }
+    });
+});
+});
 $(document).ready(function() {
   $('#createuser')
       .bootstrapValidator({

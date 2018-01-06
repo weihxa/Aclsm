@@ -67,3 +67,10 @@ def group(request):
 def delgroup(request):
     models.Jump_group.objects.filter(id=request.POST.get('modify')).delete()
     return HttpResponse(json.dumps('true'))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def edit_group(request):
+    data = code.group_edit(request)
+    return HttpResponse(json.dumps(data))
