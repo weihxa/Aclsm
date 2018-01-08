@@ -67,3 +67,46 @@ function del_group(doc,id) {
 });
 }
 }
+function edit_prem(id) {
+		$("#permid").attr("value",id);
+		$("#e_username").attr("value",$("#username"+id).text());
+		$("#group"+$("#group"+id).text()).attr('selected','selected');
+        $('#myModaledit').modal({show:true});
+        $('#myModaledit').on('hide.bs.modal',
+          function() {
+            $("#group"+$("#group"+id).text()).removeAttr('selected');
+          }
+        );
+}
+$(document).ready(function(){
+$('#e_tijiao').click(function(){
+    $("#retune").text('正在处理....');
+     $.ajax({
+        type:'POST',
+        url:'/jump/edit_prem/',
+        data:$("#editprem").serialize(),
+        cache:false,
+        dataType:'json',
+        success:function(data){
+            if (data[0])
+              {
+                $("#e_retune").css('color','green');
+                $("#e_retune").text(data[1]+'，2秒后刷新页面。');
+                setTimeout(function(){
+                window.location.reload();
+                },2000);
+              }
+            else
+              {
+              $("#e_retune").css('color','red');
+                $("#e_retune").text(data[1]);
+              }
+
+        },
+         error:function(){
+            $("#e_retune").css('color','red');
+            $("#e_retune").text('数据请求失败，请刷新页面尝试!');
+        }
+    });
+});
+});

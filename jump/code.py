@@ -85,3 +85,13 @@ def prem_post(request):
     except Exception,e:
         print e
         return (False, '未知错误，请刷新页面后尝试')
+
+def edit_prem(request):
+    try:
+        group = models.Jump_group.objects.get(id=request.POST.get('e_groupname'))
+        models.Jump_prem.objects.filter(id=request.POST.get('permid')).update(
+                                         group=group)
+        return (True, '修改成功')
+    except Exception,e:
+        print e
+        return (False, '未知错误，请刷新页面后尝试')

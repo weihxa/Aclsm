@@ -7,6 +7,10 @@
 {% endblock %}
 {% block body %}
 <section class="content">
+<div class="alert  alert-dismissible" role="alert" id="jinggao" style="display: none;">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <span id="message">Warning!</span>
+</div>
 <!--新建弹窗-->
   <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog modal-lg">
@@ -120,6 +124,7 @@
         <h3 class="box-title">机器分组设置</h3>
       <div class="box">
         <div class="box-header">
+            <a href="#" style="margin-left: 2px;float: right;" class="btn btn-sm btn-warning " data-toggle="modal" data-placement="bottom" onclick="push_group('all')"><span class="fa fa-heartbeat"></span> 推送全部 </a>
             <a href="#myModal2" style="margin-left: 2px;float: right;" class="btn btn-sm btn-info " data-toggle="modal" data-placement="bottom"><span class="glyphicon glyphicon-plus"></span> 创建账户 </a>
         </div>
         <div class="box-body">
@@ -141,6 +146,7 @@
             <td class="text-center" id="description{{ i.id }}">{{ i.user }}</td>
             <td class="text-center">{{ i.create_date }}</td>
             <td class="text-center">
+                <button  type="button" class="btn btn-xs btn-warning " onclick="push_group({{ i.id }})">推送</button>
                 <button  type="button" class="btn btn-xs btn-info " onclick="edit_group({{ i.id }})">编辑</button>
                 <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_group(this,{{ i.id }});">删除</button>
             </td>

@@ -92,3 +92,17 @@ def prem(request):
 def delprem(request):
     models.Jump_prem.objects.filter(id=request.POST.get('modify')).delete()
     return HttpResponse(json.dumps('true'))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def edit_prem(request):
+    data = code.edit_prem(request)
+    return HttpResponse(json.dumps(data))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def push_group(request):
+    print request.POST.get('modify')
+    return HttpResponse(json.dumps('true'))

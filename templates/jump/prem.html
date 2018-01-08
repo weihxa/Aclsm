@@ -58,40 +58,30 @@
     <div class="modal-content">
      <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-      <h4 class="modal-title" id="myModalLabel">编辑组</h4>
-      <span style="color: red;margin-left: 40px">*组名不可以修改</span>
+      <h4 class="modal-title" id="myModalLabel">编辑权限绑定</h4>
+      <span style="color: red;margin-left: 40px">*请重新选择需要绑定的权限组</span>
      </div>
      <div class="modal-body">
-      <form class="form-horizontal" method="post" id="editgroup">
+      <form class="form-horizontal" method="post" id="editprem">
        {% csrf_token %}
        <div class="form-group" style="display: none">
-        <label class="col-lg-2 control-label" for="userid">id:</label>
+        <label class="col-lg-2 control-label" for="permid">id:</label>
         <div class="col-lg-9">
-         <input style="display: none" type="text" id="groupid" class="form-control" name="groupid" placeholder="ID" readonly="" />
+         <input style="display: none" type="text" id="permid" class="form-control" name="permid" placeholder="ID" readonly="" />
         </div>
        </div>
        <div class="form-group">
-        <label class="col-lg-2 control-label" for="e_groupname">组名:</label>
+        <label class="col-lg-2 control-label" for="e_username">被修改用户:</label>
         <div class="col-lg-9">
-         <input type="text" id="e_groupname" class="form-control" name="e_groupname"  readonly="" />
+         <input type="text" id="e_username" class="form-control" name="e_username"  readonly="" />
         </div>
        </div>
        <div class="form-group">
-        <label class="col-lg-2 control-label" for="e_username">请选择账号:</label>
+        <label class="col-lg-2 control-label" for="e_groupname">请选择组:</label>
         <div class="col-lg-9">
-            <select name="e_username" class="form-control">
-              {% for item in user_data %}
-                    <option value="{{ item.id }}" id="description{{ item.username }}">{{ item.username }}</option>
-                {% endfor %}
-            </select>
-        </div>
-       </div>
-       <div class="form-group">
-        <label class="col-lg-2 control-label" for="e_description">请选择机器:</label>
-        <div class="col-lg-9">
-            <select name="e_pclist" id="e_optgroup" multiple="multiple">
-                {% for item in dev_data %}
-                    <option value="{{ item.ipaddress }}" id="dev{{ item.ipaddress|cut:"." }}" >{{ item.description }}|{{ item.ipaddress }}</option>
+            <select name="e_groupname" class="form-control">
+              {% for item in group_data %}
+                    <option value="{{ item.id }}" id="group{{ item.groupname }}">{{ item.groupname }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -133,7 +123,7 @@
             <td class="text-center" id="group{{ i.id }}">{{ i.group}}</td>
             <td class="text-center">{{ i.create_date }}</td>
             <td class="text-center">
-                <button  type="button" class="btn btn-xs btn-info " onclick="edit_group({{ i.id }})">编辑</button>
+                <button  type="button" class="btn btn-xs btn-info " onclick="edit_prem({{ i.id }})">编辑</button>
                 <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_group(this,{{ i.id }});">删除</button>
             </td>
             </tr>

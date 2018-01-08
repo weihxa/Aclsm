@@ -193,6 +193,38 @@ $('#e_tijiao').click(function(){
     });
 });
 });
+function push_group(id) {
+    $.ajax({
+    url:'/jump/push_group/',
+    type:'POST',
+    data:{modify:id},
+    cache:false,
+    dataType:'json',
+    success:function (data) {
+        if (data)
+              {
+                $('#message').text('推送任务创建成功，完成后会通知哦！');
+                $("#jinggao").addClass('alert-success');
+                $("#jinggao").css('display','block');
+                setTimeout(function(){
+                $("#jinggao").css('display','none');
+                $("#jinggao").removeClass('alert-success');
+                },2000);
+              }
+            else
+              {
+              $('#message').text('推送任务创建失败，请刷新后尝试！');
+              $("#jinggao").addClass('alert-danger');
+              $("#jinggao").css('display','block');
+              }
+    },
+    error:function () {
+        $('#message').text('推送任务创建失败，请刷新后尝试！');
+        $("#jinggao").addClass('alert-danger');
+       $("#jinggao").css('display','block');
+    }
+});
+};
 $(document).ready(function() {
   $('#createuser')
       .bootstrapValidator({

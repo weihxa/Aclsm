@@ -36,6 +36,14 @@
     <nav class="navbar navbar-static-top" role="navigation">
       <a href="#" class="sidebar-toggle fa fa-align-justify " data-toggle="offcanvas" role="button">
       </a>
+        <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <li class="dropdown user user-menu">
+            <a href="#" class="glyphicon glyphicon-bell"  data-toggle="modal" onclick="get_Notice()"><span id="notice" class="badge"></span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </nav>
   </header>
   <aside class="main-sidebar">
@@ -63,6 +71,31 @@
     </section>
   </aside>
   <div class="content-wrapper">
+  <div class="modal fade" id="notices" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">通知中心</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <table class="table table-condensed table-hover">
+                                        <thead>
+			                                <tr>
+			                                    <th class="text-center"> 时间 </th>
+			                                    <th class="text-center"> 内容</th>
+			                                </tr>
+			                            </thead>
+                                        <tbody id="tbody-result">
+                                        </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">已知悉</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
       {% block body %}{% endblock %}
 <button id="scroll-top" class="btn in "><i class="fa fa-chevron-up glyphicon glyphicon-chevron-up"></i></button>
   </div>
@@ -118,6 +151,26 @@
 		}, 30);
 	}
 });
+    function get_Notice()
+{
+    var tbody=window.document.getElementById("tbody-result");
+    var str = "";
+$.ajax({
+    url:'{% url 'get_notice_list' %}',
+    type:'GET',
+    success:function (arg) {
+        var obj = jQuery.parseJSON(arg);
+        for (i in obj) {
+                str += "<tr>" +
+                "<td class='text-center'>" + obj[i].fields.create_date + "</td>" +
+                "<td class='text-center'>" + obj[i].fields.name + "</td>" +
+                "</tr>";
+            }
+            tbody.innerHTML = str;
+        $('#notices').modal({show:true});
+    }
+});
+}
 </script>
 {% block javascript %}{% endblock %}
 </body>

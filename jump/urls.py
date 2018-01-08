@@ -30,5 +30,7 @@ urlpatterns = [
     url(r'^edit_group/$', views.edit_group, name='jump-edit_group'),
     url(r'^prem/$', views.prem, name='jump-prem'),
     url(r'^delprem/$', views.delprem, name='jump-delprem'),
+    url(r'^edit_prem/$', views.edit_prem, name='jump-edit_prem'),
+    url(r'^push_group/$', views.push_group, name='jump-push_group'),
 
 ]
