@@ -74,3 +74,21 @@ def delgroup(request):
 def edit_group(request):
     data = code.group_edit(request)
     return HttpResponse(json.dumps(data))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def prem(request):
+    if request.method == "GET":
+        prem_data, group_data, sys_user = code.prem_data(request)
+        return render(request, 'jump/prem.html',{'prem_data':prem_data,'group_data':group_data,'sys_user':sys_user},
+                      context_instance=RequestContext(request))
+    elif request.method == "POST":
+        data = code.prem_post(request)
+        return HttpResponse(json.dumps(data))
+
+@login_required
+@Perm_verification(perm='jump')
+def delprem(request):
+    models.Jump_prem.objects.filter(id=request.POST.get('modify')).delete()
+    return HttpResponse(json.dumps('true'))

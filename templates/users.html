@@ -223,7 +223,7 @@
 		}
 	});
 		function del_users(doc,id) {
-            if(confirm("确认要删除此用户？")){
+            if(confirm("确认要删除此用户？删除用户将自动解除用户绑定的权限和堡垒机使用权限哦！")){
                     $.ajax({
                         url:'/deluser/',
                         type:'POST',

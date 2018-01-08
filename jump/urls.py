@@ -28,5 +28,7 @@ urlpatterns = [
     url(r'^group/$', views.group, name='jump-group'),
     url(r'^delgroup/$', views.delgroup, name='jump-delgroup'),
     url(r'^edit_group/$', views.edit_group, name='jump-edit_group'),
+    url(r'^prem/$', views.prem, name='jump-prem'),
+    url(r'^delprem/$', views.delprem, name='jump-delprem'),
 
 ]

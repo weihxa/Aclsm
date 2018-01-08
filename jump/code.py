@@ -4,6 +4,10 @@ __author__ = 'weihaoxuan'
 import models
 import cryption
 from SCMS import models as scms_models
+from Integrated import user_models
+from Integrated import models as integr_models
+
+
 def jumpuser_post(request):
     try:
         if  models.Jump_user.objects.filter(username=request.POST.get('username')):
@@ -57,6 +61,27 @@ def group_edit(request):
                                          user=user,
                                          dev_list=','.join(request.POST.getlist('e_pclist')))
         return (True, '修改成功')
+    except Exception,e:
+        print e
+        return (False, '未知错误，请刷新页面后尝试')
+
+
+def prem_data(request):
+    prem_data = models.Jump_prem.objects.all()
+    group_data = models.Jump_group.objects.all()
+    sys_user = user_models.UserProfile.objects.all()
+    return (prem_data,group_data,sys_user)
+
+def prem_post(request):
+    try:
+        if  models.Jump_prem.objects.filter(username__username=request.POST.get('username')):
+            return (False,'用户权限已绑定,请确认！')
+        else:
+            user = user_models.UserProfile.objects.get(username=request.POST.get('username'))
+            group = models.Jump_group.objects.get(id=request.POST.get('group'))
+            models.Jump_prem.objects.create(username=user,
+                                            group=group)
+            return (True, '权限绑定成功！')
     except Exception,e:
         print e
         return (False, '未知错误，请刷新页面后尝试')

@@ -3,7 +3,7 @@
 __author__ = 'weihaoxuan'
 from django.db import models
 from django.contrib import admin
-
+from Integrated.user_models import UserProfile
 
 class Jump_user(models.Model):
     id = models.AutoField(primary_key=True)
@@ -31,5 +31,16 @@ class Jump_group(models.Model):
     def __unicode__(self):
         return self.groupname
 
+class Jump_prem(models.Model):
+    id = models.AutoField(primary_key=True)
+    username = models.ForeignKey(UserProfile, verbose_name=u'用户名')
+    group = models.ForeignKey(Jump_group, verbose_name=u'绑定组',null=True, blank=True)
+    create_date = models.DateTimeField(editable=True, blank=True, auto_now_add=True)
+
+    class Meta:
+        verbose_name = '用户权限绑定表'
+        verbose_name_plural = "用户权限绑定表"
+
 admin.site.register(Jump_user)
 admin.site.register(Jump_group)
+admin.site.register(Jump_prem)
