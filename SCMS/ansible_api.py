@@ -88,7 +88,8 @@ class MyRunner(object):
             client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             client.connect(server, username=username, password=password)
             client.exec_command('mkdir -p ~/.ssh/')
-            client.exec_command('echo "%s" > ~/.ssh/authorized_keys' % key)
+            client.exec_command('touch ~/.ssh/authorized_keys')
+            client.exec_command('echo "%s" >> ~/.ssh/authorized_keys' % key)
             client.exec_command('chmod 644 ~/.ssh/authorized_keys')
             client.exec_command('chmod 700 ~/.ssh/')
         except paramiko.ssh_exception.AuthenticationException, e:
@@ -102,3 +103,5 @@ class MyRunner(object):
 if __name__ == "__main__":
     print MyRunner().roles_execute(play='/tmp/ansible-role-percona/repl_test.yml',
                                       inventory='/tmp/ansible-role-percona/inventory')
+    print MyRunner().cmdrun(pattern='192.168.177.129',
+                                                 module_args='echo "dsf" ')['contacted']

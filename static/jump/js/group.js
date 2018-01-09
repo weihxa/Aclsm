@@ -194,6 +194,7 @@ $('#e_tijiao').click(function(){
 });
 });
 function push_group(id) {
+    $("#btn"+id).attr('disabled','disabled');
     $.ajax({
     url:'/jump/push_group/',
     type:'POST',
@@ -216,12 +217,14 @@ function push_group(id) {
               $('#message').text('推送任务创建失败，请刷新后尝试！');
               $("#jinggao").addClass('alert-danger');
               $("#jinggao").css('display','block');
+              $("#btn"+id).removeAttr('disabled');
               }
     },
     error:function () {
         $('#message').text('推送任务创建失败，请刷新后尝试！');
         $("#jinggao").addClass('alert-danger');
        $("#jinggao").css('display','block');
+       $("#btn"+id).removeAttr('disabled');
     }
 });
 };

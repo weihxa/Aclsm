@@ -39,7 +39,7 @@
         <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <li class="dropdown user user-menu">
-            <a href="#" class="glyphicon glyphicon-bell"  data-toggle="modal" onclick="get_Notice()"><span id="notice" class="badge"></span>
+            <a href="" class="glyphicon glyphicon-bell"  data-toggle="modal" onclick="get_Notice()" title="通知中心"><span id="notice" class="badge"></span>
             </a>
           </li>
         </ul>
@@ -72,106 +72,42 @@
   </aside>
   <div class="content-wrapper">
   <div class="modal fade" id="notices" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                              <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title" id="myModalLabel">通知中心</h4>
-                                  </div>
-                                  <div class="modal-body">
-                                    <table class="table table-condensed table-hover">
-                                        <thead>
-			                                <tr>
-			                                    <th class="text-center"> 时间 </th>
-			                                    <th class="text-center"> 内容</th>
-			                                </tr>
-			                            </thead>
-                                        <tbody id="tbody-result">
-                                        </tbody>
-                                    </table>
-                                  </div>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">已知悉</button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-      {% block body %}{% endblock %}
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">通知中心</h4>
+          </div>
+          <div class="modal-body">
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th class="text-center"> 时间 </th>
+                        <th class="text-center"> 内容</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-result">
+                </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">已知悉</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% block body %}{% endblock %}
 <button id="scroll-top" class="btn in "><i class="fa fa-chevron-up glyphicon glyphicon-chevron-up"></i></button>
   </div>
   <footer class="main-footer">
-    <strong>ACLSM &copy; 2017 <a href="https://gitee.com/weihaoxuan/Aclsm" target="_blank">github</a>.</strong> 版权所有.
+    <strong>ACLSM &copy; 2018 <a href="https://gitee.com/weihaoxuan/Aclsm" target="_blank">github</a>.</strong> 版权所有.
   </footer>
 </div>
 <script src="/static/vendor/jquery/jquery.min.js"></script>
 <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="/static/dist/js/app.min.js"></script>
 <script src="/static/dist/js/nprogress.js"></script>
-<script>
-        NProgress.start();
-    </script>
-    <script type="text/javascript">
-            $(document).ready(function(){
-                NProgress.done();
-            });
-        </script>
-<script>
-    function myEvent(obj,ev,fn){
-	if(obj.attachEvent){
-		obj.attachEvent('on'+ev,fn);
-	}else{
-		obj.addEventListener(ev,fn,false);
-	}
-}
-    myEvent(window,'load',function(){
-	var oRTT=document.getElementById('scroll-top');
-	var pH=document.documentElement.clientHeight;
-	var timer=null;
-	var scrollTop;
-	window.onscroll=function(){
-		scrollTop=document.documentElement.scrollTop||document.body.scrollTop;
-		if(scrollTop>=pH){
-			oRTT.style.display='block';
-		}else{
-			oRTT.style.display='none';
-		}
-		return scrollTop;
-	};
-	oRTT.onclick=function(){
-		clearInterval(timer);
-		timer=setInterval(function(){
-			var now=scrollTop;
-			var speed=(0-now)/10;
-			speed=speed>0?Math.ceil(speed):Math.floor(speed);
-			if(scrollTop==0){
-				clearInterval(timer);
-			}
-			document.documentElement.scrollTop=scrollTop+speed;
-			document.body.scrollTop=scrollTop+speed;
-		}, 30);
-	}
-});
-    function get_Notice()
-{
-    var tbody=window.document.getElementById("tbody-result");
-    var str = "";
-$.ajax({
-    url:'{% url 'get_notice_list' %}',
-    type:'GET',
-    success:function (arg) {
-        var obj = jQuery.parseJSON(arg);
-        for (i in obj) {
-                str += "<tr>" +
-                "<td class='text-center'>" + obj[i].fields.create_date + "</td>" +
-                "<td class='text-center'>" + obj[i].fields.name + "</td>" +
-                "</tr>";
-            }
-            tbody.innerHTML = str;
-        $('#notices').modal({show:true});
-    }
-});
-}
-</script>
+<script src="/static/jump/js/base.js"></script>
 {% block javascript %}{% endblock %}
 </body>
 </html>

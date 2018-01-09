@@ -335,6 +335,9 @@ $.ajax({
     url:'{% url 'get_notice_num' %}',
     type:'GET',
     success:function (arg) {
+        if(isNaN(arg)){
+        return false
+        }
         if (arg !=='0'){
             $("#notice").html(arg);
         } else {
@@ -377,7 +380,6 @@ $(function () { $('#notices').on('hide.bs.modal', function () {
 setInterval("showLogin()","10000");
 (function(){showLogin();}());
 </script>
-{% block  bottom-js %}
-    {% endblock %}
+{% block  bottom-js %}{% endblock %}
 </body>
 </html>

@@ -12,7 +12,7 @@ from asset import core,models
 
 @task
 def update_cmdb():
-    print '开始更新cmdb'
+    print '[cmdb]开始更新cmdb'
     begin = datetime.datetime.now()
     try:
         data = ansible_api.MyRunner().cmdrun(module_name='setup',pattern='*')['contacted']
@@ -25,7 +25,7 @@ def update_cmdb():
                 print 'ERROR',e
     except Exception, e:
         print 'ERROR！',e
-    print 'cmdb更新完成'
+    print '[cmdb]cmdb更新完成'
     end = datetime.datetime.now()
     models.Notice.objects.create(name=u'cmdb更/刷新成功',status=1)
     print '处理时间:%s'%str(end-begin)

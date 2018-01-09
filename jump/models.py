@@ -41,6 +41,18 @@ class Jump_prem(models.Model):
         verbose_name = '用户权限绑定表'
         verbose_name_plural = "用户权限绑定表"
 
+class Jump_Notice(models.Model):
+    name = models.CharField('通知内容', max_length=32)
+    status = models.IntegerField('状态')
+    create_date = models.DateTimeField(auto_now = True,blank=True)
+
+    def __unicode__(self):
+        return self.name
+    class Meta:
+        verbose_name = '通知表'
+        verbose_name_plural = "通知表"
+
 admin.site.register(Jump_user)
 admin.site.register(Jump_group)
 admin.site.register(Jump_prem)
+admin.site.register(Jump_Notice)

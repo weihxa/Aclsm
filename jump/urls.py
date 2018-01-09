@@ -32,5 +32,7 @@ urlpatterns = [
     url(r'^delprem/$', views.delprem, name='jump-delprem'),
     url(r'^edit_prem/$', views.edit_prem, name='jump-edit_prem'),
     url(r'^push_group/$', views.push_group, name='jump-push_group'),
+    url(r'^get_notice_list/$', views.get_notice_list, name='jump-get_notice_list'),
+    url(r'^get_notice_num/$', views.get_notice_num, name='jump-get_notice_num'),
 
 ]
