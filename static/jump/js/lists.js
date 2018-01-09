@@ -15,3 +15,7 @@ $('#early').addClass("active");
 $(document).ready(function() {
 $('#example').dataTable();
 } );
+
+function link_prem(ip) {
+    window.open('http://'+window.location.host+'/xterm/?'+'&hostname='+$("#username"+ip).text()+'&prem='+$("#group"+ip).text(), "_blank")
+}

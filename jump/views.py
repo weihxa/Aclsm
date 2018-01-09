@@ -10,6 +10,7 @@ from Integrated.plugins.Decorators import Perm_verification
 from django.core import serializers
 import json
 import models,code,tasks
+from SCMS import models as scms_models
 
 
 
@@ -24,15 +25,21 @@ def index(request):
 @login_required
 @Perm_verification(perm='jump')
 def lists(request):
-    print request.user
     if request.method == "GET":
-        if not request.user.is_admin:
-            pass
-        else:
-            data = models.Jump_prem.objects.filter(username__username=request.user)
-            print data[0].group
-            data2 = models.Jump_group.objects.filter(groupname=data[0].group)
-        return render(request, 'jump/lists.html',{'devlist':data2[0].dev_list.split(','),'group':data[0].group},
+        try:
+            if request.user.is_admin:
+                data2 = scms_models.device_config.objects.values_list('ipaddress',flat=True)
+                devlist = data2
+                group = 'root'
+            else:
+                data = models.Jump_prem.objects.filter(username__username=request.user)
+                data2 = models.Jump_group.objects.filter(groupname=data[0].group)
+                devlist = data2[0].dev_list.split(',')
+                group = data[0].group
+            return render(request, 'jump/lists.html',{'devlist':devlist,'group':group},
+                              context_instance=RequestContext(request))
+        except Exception, e:
+            return render(request, 'jump/lists.html', {'devlist': '', 'group': []},
                           context_instance=RequestContext(request))
 
 @login_required

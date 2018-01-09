@@ -7,6 +7,12 @@
 {% endblock %}
 {% block body %}
 <section class="content">
+{% if devlist == '' %}
+<div class="alert alert-danger alert-dismissible" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <strong>抱歉!</strong> 您未绑定任何主机，且没有访问权限，请联系管理员.
+</div>
+{% endif %}
   <div class="row">
     <div class="col-xs-12">
         <h3 class="box-title">机器列表</h3>
@@ -26,10 +32,10 @@
             <tbody>
             {% for i in devlist %}
             <tr>
-            <td class="text-center" id="username{{ i }}">{{ i }}</td>
-            <td class="text-center"><span class="badge btn-info">{{ group }}</span></td>
+            <td class="text-center" id="username{{ i|cut:"."  }}">{{ i }}</td>
+            <td class="text-center"><span class="badge btn-info" id="group{{ i|cut:"." }}">{{ group }}</span></td>
             <td class="text-center">
-                <button  type="button" class="btn btn-xs btn-warning" onclick="edit_prem({{ i }})">链接</button>
+                <button  type="button" class="btn btn-xs btn-warning" onclick="link_prem({{ i|cut:"."  }})">链接</button>
             </td>
             </tr>
             {% endfor %}

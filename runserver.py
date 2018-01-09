@@ -19,11 +19,12 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 import tornado.wsgi
+from django.contrib.auth.decorators import login_required
 from Integrated import models
 
 
 define('address', default='127.0.0.1', help='listen address')
-define('port', default=8888, help='listen port', type=int)
+define('port', default=8000, help='listen port', type=int)
 
 
 BUF_SIZE = 1024
@@ -207,9 +208,10 @@ class IndexHandler(tornado.web.RequestHandler):
         IOLoop.current().call_later(DELAY, recycle, worker)
         return worker
 
+    @login_required
     def get(self):
         items = '1.1.1.1'
-        print self.get_value('hostname')
+        print self.get_value('username')
         self.render('xterm.html', items=items)
 
     def post(self):
