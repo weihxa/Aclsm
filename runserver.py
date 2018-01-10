@@ -23,20 +23,17 @@ import tornado.httpserver
 import tornado.ioloop
 import tornado.web
 import tornado.wsgi
-from django.contrib.auth.decorators import login_required
-from xbmanIntegrated import settings
-from Integrated import models
 from django.core.signals import request_started, request_finished
-from importlib import import_module
-from django.contrib import auth
 from django.contrib.sessions.models import Session
 from Integrated.models import UserProfile
-import time
+from jump import models as jump_models
+from SCMS import models as scmd_models
 import datetime
 define('address', default='127.0.0.1', help='listen address')
 define('port', default=8000, help='listen port', type=int)
 
-import django.contrib.sessions.backends.db
+
+
 BUF_SIZE = 1024
 DELAY = 3
 base_dir = os.path.dirname(__file__)
@@ -48,7 +45,6 @@ def django_request_support(func):
         request_started.send_robust(func)
         response = func(*args, **kwargs)
         request_finished.send_robust(func)
-        print response
         return response
 
     return _deco
@@ -76,32 +72,26 @@ def require_auth(role='user'):
                 session_key = request.get_cookie('sessionid')
             else:
                 session_key = request.get_argument('sessionid', '')
-
-            print('Websocket: session_key: %s' % session_key)
             if session_key:
                 session = get_object(Session, session_key=session_key)
-                print('Websocket: session: %s' % session)
+                logging.info('Websocket: session: %s' % session)
                 if session and datetime.datetime.now() < session.expire_date:
                     user_id = session.get_decoded().get('_auth_user_id')
-                    print user_id
                     request.user_id = user_id
                     user = get_object(UserProfile, email=user_id)
                     if user:
-                        print('Websocket: user [ %s ] request websocket' % user.username)
+                        logging.info('Websocket: user [ %s ] request websocket' % user.username)
                         request.user = user
-                        print request
                         return func(request,request=request, *args, **kwargs)
                 else:
-                    print('Websocket: session expired: %s' % session_key)
+                    logging.error('Websocket: session expired: %s' % session_key)
             try:
                 request.close()
             except AttributeError:
                 pass
-            print('Websocket: Request auth failed.')
+            logging.error('Websocket: Request auth failed.')
             return func(request, request=None, *args, **kwargs)
-
         return _deco2
-
     return _deco
 
 def recycle(worker):
@@ -262,8 +252,11 @@ class IndexHandler(tornado.web.RequestHandler):
         ssh = paramiko.SSHClient()
         ssh.load_system_host_keys()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        # args = self.get_args()
-        args = (u'192.168.177.129', 22, u'root', None, paramiko.RSAKey.from_private_key_file('/root/.ssh/id_rsa'))
+        if self.get_value('prem').strip() == 'root':
+            args = (self.get_value('hostname'), 22, u'root', None, paramiko.RSAKey.from_private_key_file('/root/.ssh/id_rsa'))
+        else:
+            p_user = jump_models.Jump_group.objects.filter(groupname=self.get_value('prem'))[0].user
+            args = (self.get_value('hostname'), 22, str(p_user), None, paramiko.RSAKey.from_private_key_file('/root/.ssh/id_rsa'))
         print args
         dst_addr = '{}:{}'.format(*args[:2])
         logging.info('Connecting to {}'.format(dst_addr))
@@ -279,28 +272,29 @@ class IndexHandler(tornado.web.RequestHandler):
         IOLoop.current().call_later(DELAY, recycle, worker)
         return worker
 
-    # def get_current_user(self):
-    #     self.session_key = self.get_cookie('sessionid')
-    #     engine = import_module(settings.SESSION_ENGINE)
-    #     session = engine.SessionStore(self.session_key)
-    #     print session
-    #     # r = DummyRequest()
-    #     # r.session = session
-    #     self.user = auth.get_user(session)
-    #     return self.user
 
     @django_request_support
     @require_auth('admin')
     def get(self,request,*args, **kwargs):
-        print 'nihao'
-        print request
         if not request:
-            self.write('抱歉您的登陆失效过期请<a href="/login/">重新登陆</a>')
+            return self.write('抱歉您的登陆失效过期请<a href="/login/">重新登陆</a>')
         else:
-            print 'dsdsdfsdfsdf'
-            items = '1.1.1.1'
-            print self.get_value('username')
-            print self.get_cookie('sessionid')
+            items = self.get_value('hostname')
+            self.__username = request.user
+            try:
+                if self.get_value('prem') == 'root' and request.user.is_admin:
+                    if items.strip() not in scmd_models.device_config.objects.all().values_list('ipaddress',flat=True):
+                        return self.write('抱歉您链接的机器不在ansible列表中，请<a href="/jump/lists">返回服务器列表页</a>')
+                    self.render('xterm.html', items=items)
+                group_data = jump_models.Jump_prem.objects.filter(username=request.user)[0].group
+                if self.get_value('prem').strip() != str(group_data).strip():
+                    return self.write('对不起您链接的组和您绑定权限不一致，请<a href="/jump/lists">返回服务器列表页</a>')
+                dev_list = jump_models.Jump_group.objects.filter(groupname=group_data)[0].dev_list.split(',')
+                if items.strip() not in dev_list:
+                    return self.write('对不起您链接的机器和您绑定权限不一致，请<a href="/jump/lists">返回服务器列表页</a>')
+            except Exception, e:
+                logging.error(e)
+                return self.write('发生未知错误，请<a href="/login/">重新登陆</a>')
             self.render('xterm.html', items=items)
 
     def post(self):
@@ -361,15 +355,6 @@ class WsockHandler(tornado.websocket.WebSocketHandler):
         if worker:
             worker.close()
 
-    # def get_current_user(self):
-    #     self.session_key = self.get_cookie('sessionid')
-    #     engine = import_module(settings.SESSION_ENGINE)
-    #     session = engine.SessionStore(self.session_key)
-    #     print session
-    #     # r = DummyRequest()
-    #     # r.session = session
-    #     # self.user = auth.get_user(r)
-    #     # return self.user
 
 
 def main():
@@ -377,8 +362,6 @@ def main():
     settings = {
         'template_path': os.path.join(base_dir, 'templates'),
         'static_path': os.path.join(base_dir, 'static'),
-        # 'cookie_secret': uuid.uuid1().hex,
-        # 'debug': True
     }
 
     handlers = [
