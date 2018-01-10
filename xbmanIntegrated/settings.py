@@ -137,7 +137,7 @@ STATICFILES_DIRS = (
 )
 AUTH_USER_MODEL = 'Integrated.UserProfile'
 
-
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 CELERYBEAT_SCHEDULE = {
     'update_disk': {
         'task': 'loghunter.tasks.get_database',

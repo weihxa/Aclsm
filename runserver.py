@@ -1,9 +1,13 @@
+#!/usr/bin/env python
+#-*- coding:utf-8 -*-
+__author__ = 'weihaoxuan'
 import io
 import logging
 import os.path
 import socket
 import traceback
 import uuid
+import functools
 import weakref
 import paramiko
 import tornado.web
@@ -20,18 +24,85 @@ import tornado.ioloop
 import tornado.web
 import tornado.wsgi
 from django.contrib.auth.decorators import login_required
+from xbmanIntegrated import settings
 from Integrated import models
-
-
+from django.core.signals import request_started, request_finished
+from importlib import import_module
+from django.contrib import auth
+from django.contrib.sessions.models import Session
+from Integrated.models import UserProfile
+import time
+import datetime
 define('address', default='127.0.0.1', help='listen address')
 define('port', default=8000, help='listen port', type=int)
 
-
+import django.contrib.sessions.backends.db
 BUF_SIZE = 1024
 DELAY = 3
 base_dir = os.path.dirname(__file__)
 workers = {}
 
+def django_request_support(func):
+    @functools.wraps(func)
+    def _deco(*args, **kwargs):
+        request_started.send_robust(func)
+        response = func(*args, **kwargs)
+        request_finished.send_robust(func)
+        print response
+        return response
+
+    return _deco
+
+def get_object(model, **kwargs):
+    """
+    use this function for query
+    使用改封装函数查询数据库
+    """
+    for value in kwargs.values():
+        if not value:
+            return None
+
+    the_object = model.objects.filter(**kwargs)
+    if len(the_object) == 1:
+        the_object = the_object[0]
+    else:
+        the_object = None
+    return the_object
+
+def require_auth(role='user'):
+    def _deco(func):
+        def _deco2(request, *args, **kwargs):
+            if request.get_cookie('sessionid'):
+                session_key = request.get_cookie('sessionid')
+            else:
+                session_key = request.get_argument('sessionid', '')
+
+            print('Websocket: session_key: %s' % session_key)
+            if session_key:
+                session = get_object(Session, session_key=session_key)
+                print('Websocket: session: %s' % session)
+                if session and datetime.datetime.now() < session.expire_date:
+                    user_id = session.get_decoded().get('_auth_user_id')
+                    print user_id
+                    request.user_id = user_id
+                    user = get_object(UserProfile, email=user_id)
+                    if user:
+                        print('Websocket: user [ %s ] request websocket' % user.username)
+                        request.user = user
+                        print request
+                        return func(request,request=request, *args, **kwargs)
+                else:
+                    print('Websocket: session expired: %s' % session_key)
+            try:
+                request.close()
+            except AttributeError:
+                pass
+            print('Websocket: Request auth failed.')
+            return func(request, request=None, *args, **kwargs)
+
+        return _deco2
+
+    return _deco
 
 def recycle(worker):
     if worker.handler:
@@ -208,11 +279,29 @@ class IndexHandler(tornado.web.RequestHandler):
         IOLoop.current().call_later(DELAY, recycle, worker)
         return worker
 
-    @login_required
-    def get(self):
-        items = '1.1.1.1'
-        print self.get_value('username')
-        self.render('xterm.html', items=items)
+    # def get_current_user(self):
+    #     self.session_key = self.get_cookie('sessionid')
+    #     engine = import_module(settings.SESSION_ENGINE)
+    #     session = engine.SessionStore(self.session_key)
+    #     print session
+    #     # r = DummyRequest()
+    #     # r.session = session
+    #     self.user = auth.get_user(session)
+    #     return self.user
+
+    @django_request_support
+    @require_auth('admin')
+    def get(self,request,*args, **kwargs):
+        print 'nihao'
+        print request
+        if not request:
+            self.write('抱歉您的登陆失效过期请<a href="/login/">重新登陆</a>')
+        else:
+            print 'dsdsdfsdfsdf'
+            items = '1.1.1.1'
+            print self.get_value('username')
+            print self.get_cookie('sessionid')
+            self.render('xterm.html', items=items)
 
     def post(self):
         worker_id = None
@@ -272,13 +361,23 @@ class WsockHandler(tornado.websocket.WebSocketHandler):
         if worker:
             worker.close()
 
+    # def get_current_user(self):
+    #     self.session_key = self.get_cookie('sessionid')
+    #     engine = import_module(settings.SESSION_ENGINE)
+    #     session = engine.SessionStore(self.session_key)
+    #     print session
+    #     # r = DummyRequest()
+    #     # r.session = session
+    #     # self.user = auth.get_user(r)
+    #     # return self.user
+
 
 def main():
     wsgi_app = tornado.wsgi.WSGIContainer(get_wsgi_application())
     settings = {
         'template_path': os.path.join(base_dir, 'templates'),
         'static_path': os.path.join(base_dir, 'static'),
-        'cookie_secret': uuid.uuid1().hex,
+        # 'cookie_secret': uuid.uuid1().hex,
         # 'debug': True
     }
 
