@@ -36,6 +36,7 @@
     <nav class="navbar navbar-static-top" role="navigation">
       <a href="#" class="sidebar-toggle fa fa-align-justify " data-toggle="offcanvas" role="button">
       </a>
+        {% if request.user.is_admin   %}
         <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <li class="dropdown user user-menu">
@@ -44,6 +45,7 @@
           </li>
         </ul>
       </div>
+        {% endif %}
     </nav>
   </header>
   <aside class="main-sidebar">
@@ -66,6 +68,7 @@
           </ul>
         </li>
           {% endif %}
+        <li id="jump_log"><a href="/jump/logs/"><i class="fa fa-superpowers "></i> <span>连接记录</span></a></li>
         <li><a href="/index/"><i class="fa fa-reply"></i> <span>返回首页</span></a></li>
       </ul>
     </section>

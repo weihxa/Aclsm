@@ -5,8 +5,14 @@ import models
 import cryption
 from SCMS import models as scms_models
 from Integrated import user_models
-from Integrated import models as integr_models
 
+
+def index():
+    containerd = {}
+    containerd['user'] = models.Jump_user.objects.all().count()
+    containerd['group'] = models.Jump_group.objects.all().count()
+    containerd['prem'] = models.Jump_prem.objects.all().count()
+    return containerd
 
 def jumpuser_post(request):
     try:
@@ -95,3 +101,17 @@ def edit_prem(request):
     except Exception,e:
         print e
         return (False, '未知错误，请刷新页面后尝试')
+
+def loglist_data(request):
+    loglist = models.Jump_logs.objects.filter(username=request.user)
+    return loglist
+
+def get_deatil_logs(request):
+    try:
+        logs = models.Jump_logs.objects.filter(id=request.GET.get('modify'))
+        with open(logs[0].file_path,'r') as files:
+        # with open('D:\\a.txt','r') as files:
+            data = files.read()
+        return data
+    except Exception,e:
+        return '服务端发生未知错误！'

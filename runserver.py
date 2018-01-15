@@ -29,9 +29,11 @@ from Integrated.models import UserProfile
 from jump import models as jump_models
 from SCMS import models as scmd_models
 import datetime
-define('address', default='127.0.0.1', help='listen address')
+define('address', default='0.0.0.0', help='listen address')
 define('port', default=8000, help='listen port', type=int)
 
+
+project_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 
 
 BUF_SIZE = 1024
@@ -257,7 +259,6 @@ class IndexHandler(tornado.web.RequestHandler):
         else:
             p_user = jump_models.Jump_group.objects.filter(groupname=self.get_value('prem'))[0].user
             args = (self.get_value('hostname'), 22, str(p_user), None, paramiko.RSAKey.from_private_key_file('/root/.ssh/id_rsa'))
-        print args
         dst_addr = '{}:{}'.format(*args[:2])
         logging.info('Connecting to {}'.format(dst_addr))
         try:
@@ -318,6 +319,8 @@ class WsockHandler(tornado.websocket.WebSocketHandler):
     def __init__(self, *args, **kwargs):
         self.loop = IOLoop.current()
         self.worker_ref = None
+        self.__log=[]
+        self.__request = None
         super(self.__class__, self).__init__(*args, **kwargs)
 
     def check_origin(self, origin):
@@ -330,8 +333,10 @@ class WsockHandler(tornado.websocket.WebSocketHandler):
         if not addr:
             addr = '{}:{}'.format(*self.stream.socket.getpeername())
         return addr
-
-    def open(self):
+    @django_request_support
+    @require_auth('admin')
+    def open(self,request,*args, **kwargs):
+        self.__request = request
         self.src_addr = self.get_addr()
         logging.info('Connected from {}'.format(self.src_addr))
         worker = workers.pop(self.get_argument('id'), None)
@@ -343,7 +348,17 @@ class WsockHandler(tornado.websocket.WebSocketHandler):
         self.worker_ref = weakref.ref(worker)
         self.loop.add_handler(worker.fd, worker, IOLoop.READ)
 
+
     def on_message(self, message):
+        print self.__request.user
+        os.path.join(project_dir, 'jumplogs','time.time()')
+        with open('cc.log','w') as files:
+            if message =='\r':
+                files.write(''.join(self.__log))
+                files.write('\n')
+                self.__log = []
+            else:
+                self.__log.append(message)
         logging.debug('"{}" from {}'.format(message, self.src_addr))
         worker = self.worker_ref()
         worker.data_to_dst.append(message)
@@ -381,3 +396,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

@@ -18,7 +18,8 @@ from SCMS import models as scms_models
 @login_required
 @Perm_verification(perm='jump')
 def index(request):
-    return render(request, 'jump/index.html',
+    containerd = code.index()
+    return render(request, 'jump/index.html',{"containerd": containerd},
                       context_instance=RequestContext(request))
 
 
@@ -140,3 +141,18 @@ def get_notice_list(request):
 def get_notice_num(request):
     num = models.Jump_Notice.objects.filter(status=1).count()
     return HttpResponse(num)
+
+@login_required
+@Perm_verification(perm='jump')
+def jump_logs(request):
+    if request.method == "GET":
+        loglist = code.loglist_data(request)
+        return render(request, 'jump/julogs.html',{'loglist':loglist},
+                      context_instance=RequestContext(request))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def get_log(request):
+    data = code.get_deatil_logs(request)
+    return HttpResponse(json.dumps(data))

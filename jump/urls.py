@@ -34,5 +34,7 @@ urlpatterns = [
     url(r'^push_group/$', views.push_group, name='jump-push_group'),
     url(r'^get_notice_list/$', views.get_notice_list, name='jump-get_notice_list'),
     url(r'^get_notice_num/$', views.get_notice_num, name='jump-get_notice_num'),
+    url(r'^logs/$', views.jump_logs, name='jump-logs'),
+    url(r'^get_log/$', views.get_log, name='jump-get_log'),
 
 ]

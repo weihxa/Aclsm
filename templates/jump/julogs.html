@@ -1,0 +1,67 @@
+{% extends 'jump/base.html' %}
+
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/static/dist/section/css/styles.css">
+{% endblock %}
+{% block body %}
+<section class="content">
+<!--弹窗-->
+    <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">详细日志</h4>
+          </div>
+          <div class="modal-body" id="xianshi">
+            <pre id="logs"></pre>
+          </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!--弹窗结束-->
+  <div class="row">
+    <div class="col-xs-12">
+        <h3 class="box-title">连接记录</h3>
+      <div class="box">
+        <div class="box-header">
+{#            <a href="#myModal2" style="margin-left: 2px;float: right;" class="btn btn-sm btn-info " data-toggle="modal" data-placement="bottom"><span class="glyphicon glyphicon-plus"></span> 权限绑定 </a>#}
+        </div>
+        <div class="box-body">
+          <table id="example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th class="text-center">连接IP</th>
+              <th class="text-center">连接时间</th>
+              <th class="text-center">查看日志</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in loglist %}
+            <tr>
+            <td class="text-center" id="username{{ i.id }}">{{ i.ipaddress }}</td>
+            <td class="text-center" id="{{ i.id }}">{{ i.create_date }}</td>
+            <td class="text-center">
+                <button  type="button" class="btn btn-xs btn-warning" onclick="logshow({{ i.id }})">查看</button>
+            </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/jump/js/logs.js"></script>
+{% endblock %}

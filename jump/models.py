@@ -52,7 +52,17 @@ class Jump_Notice(models.Model):
         verbose_name = '通知表'
         verbose_name_plural = "通知表"
 
+class Jump_logs(models.Model):
+    username = models.ForeignKey(UserProfile, verbose_name=u'用户名')
+    ipaddress = models.GenericIPAddressField(u'IP', blank=True, null=True)
+    file_path = models.CharField(u'日志文件路径', max_length=30, blank=True, null=True)
+    create_date = models.DateTimeField(auto_now = True,blank=True)
+
+    class Meta:
+        verbose_name = '日志表'
+        verbose_name_plural = "日志表"
 admin.site.register(Jump_user)
 admin.site.register(Jump_group)
 admin.site.register(Jump_prem)
 admin.site.register(Jump_Notice)
+admin.site.register(Jump_logs)
