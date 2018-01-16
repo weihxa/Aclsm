@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/css/customizes/users.css">
+    <link href="/static/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+    <div class="content">
+        <!--添加工作事项弹窗-->
+        <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加工作计划</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" action="/weekly/" method="post" id="creategroup">{% csrf_token %}
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="weeklys">重点工作事项:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="weeklys" class="form-control" name="weeklys" placeholder="请输入重点工作事项" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="workplan">工作计划:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="workplan" class="form-control" name="workplan" placeholder="请输入工作计划" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="completion">本周计划完成情况:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="completion" class="form-control" name="completion" placeholder="本周计划完成情况,进行中、已完成、50%等" />
+                        </div>
+                </div>
+                        <div class="form-group">
+                    <label class="col-lg-2 control-label" for="coordination">工作难点及所需协调的资源:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="coordination" class="form-control" name="coordination" placeholder="请输入工作难点及所需协调的资源" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="nextweek">下周工作计划:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="nextweek" class="form-control" name="nextweek" placeholder="请输入下周工作计划" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="creategroup" class="btn btn-primary" value="submit">提交</button>
+              </div>
+              </div>
+                </form>
+              </div>
+
+            </div>
+        </div>
+        </div>
+        <!--弹窗结束-->
+        <!--编辑弹窗-->
+        <div class="modal fade bs-example-modal-lg" id="myModaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabe2">编辑工作计划</h4>
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" action="/editweekly/" method="post" id="editgroup">{% csrf_token %}
+                    <input style="display: none" type="text" id="eweeklyid" class="form-control" name="eweeklyid" placeholder="id" readonly/>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="eweeklys">重点工作事项:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="eweeklys" class="form-control" name="eweeklys" placeholder="请输入重点工作事项" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="eworkplan">工作计划:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="eworkplan" class="form-control" name="eworkplan" placeholder="请输入工作计划" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="ecompletion">本周计划完成情况:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="ecompletion" class="form-control" name="ecompletion" placeholder="本周计划完成情况,进行中、已完成、50%等" />
+                        </div>
+                </div>
+                        <div class="form-group">
+                    <label class="col-lg-2 control-label" for="ecoordination">工作难点及所需协调的资源:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="ecoordination" class="form-control" name="ecoordination" placeholder="请输入工作难点及所需协调的资源" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="enextweek">下周工作计划:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="enextweek" class="form-control" name="enextweek" placeholder="请输入下周工作计划" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="editgroup" class="btn btn-primary" value="submit">提交</button>
+              </div>
+              </div>
+                </form>
+              </div>
+
+            </div>
+        </div>
+        </div>
+        <!--弹窗结束-->
+    	<div class="row" style="margin-bottom: 20px">
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                      <h3 class="box-title">本周工作内容</h3>
+                        <a href="#myModal2" style="float: right" class="btn btn-sm btn-primary " data-toggle="modal" data-placement="bottom"><span class="glyphicon-plus"></span> 添加计划 </a>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                      <table id="example2" class="table table-bordered table-hover table-striped">
+                        <thead>
+                        <tr>
+                          <th class="text-center">重点工作事项</th>
+                          <th class="text-center">工作计划</th>
+                          <th class="text-center">本周计划完成情况</th>
+                          <th class="text-center">工作难点及所需协调的资源</th>
+                          <th class="text-center">下周工作计划</th>
+                          <th class="text-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for topic in This_week %}
+                                <tr>
+                                  <td class="text-center" id="tweeklys{{ topic.id }}">{{ topic.weeklys }}</td>
+                                  <td class="text-center" id="tworkplan{{ topic.id }}">{{ topic.workplan }}</td>
+                                  <td class="text-center" id="tcompletion{{ topic.id }}">{{ topic.completion }}</td>
+                                  <td class="text-center" id="tcoordination{{ topic.id }}">{{ topic.coordination }}</td>
+                                  <td class="text-center" id="tnextweek{{ topic.id }}">{{ topic.nextweek }}</td>
+                                  <td class="text-center">
+                                          <button  type="button" class="btn btn-xs btn-info " onclick="edit_users('{{ topic.id }}')">编辑</button>
+                                        <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_users(this,'{{ topic.id }}');" >删除</button>
+                                  </td>
+                                </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                <!-- /.box-body -->
+                </div>
+            </div>
+            </div>
+    <div class="row">
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                      <h3 class="box-title">上周工作内容</h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                      <table id="example3" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                          <th class="text-center">重点工作事项</th>
+                          <th class="text-center">工作计划</th>
+                          <th class="text-center">本周计划完成情况</th>
+                          <th class="text-center">工作难点及所需协调的资源</th>
+                          <th class="text-center">下周工作计划</th>
+                          <th class="text-center">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for topic in Last_week %}
+                                <tr>
+                                  <td class="text-center" id="copyweeklys{{ topic.id }}">{{ topic.weeklys }}</td>
+                                  <td class="text-center" id="copyworkplan{{ topic.id }}">{{ topic.workplan }}</td>
+                                  <td class="text-center" id="copycompletion{{ topic.id }}">{{ topic.completion }}</td>
+                                  <td class="text-center" id="copycoordination{{ topic.id }}">{{ topic.coordination }}</td>
+                                  <td class="text-center" id="copynextweek{{ topic.id }}">{{ topic.nextweek }}</td>
+                                  <td class="text-center">
+                                          <button  type="button" class="btn btn-xs btn-warning " onclick="copy_weekly('{{ topic.id }}')">复制</button>
+                                  </td>
+                                </tr>
+                        {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                <!-- /.box-body -->
+                </div>
+            </div>
+            </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
+    <script src="/static/dist/js/weekly.js"></script>
+{% endblock %}

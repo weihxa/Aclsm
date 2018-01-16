@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/css/customizes/users.css">
+    <link href="/static/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+    <div class="content">
+        <!--添加工作事项弹窗-->
+        <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">添加工作计划</h4>
+{#                  <span style="color: red;margin-left: 40px;font-size: 13px">*用户详细信息，请添加后编辑。</span>#}
+              </div>
+              <div class="modal-body">
+                <form class="form-horizontal" action="/weekly/" method="post" id="creategroup">{% csrf_token %}
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="weeklys">重点工作事项:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="weeklys" class="form-control" name="weeklys" placeholder="请输入重点工作事项" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="workplan">工作计划:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="workplan" class="form-control" name="workplan" placeholder="请输入工作计划" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="completion">本周计划完成情况:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="completion" class="form-control" name="completion" placeholder="本周计划完成情况,进行中、已完成、50%等" />
+                        </div>
+                </div>
+                        <div class="form-group">
+                    <label class="col-lg-2 control-label" for="coordination">工作难点及所需协调的资源:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="coordination" class="form-control" name="coordination" placeholder="请输入工作难点及所需协调的资源" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <label class="col-lg-2 control-label" for="nextweek">下周工作计划:</label>
+                        <div class="col-lg-9">
+                            <input type="text" id="nextweek" class="form-control" name="nextweek" placeholder="请输入下周工作计划" />
+                        </div>
+                </div>
+                    <div class="form-group">
+                    <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="submit" form="creategroup" class="btn btn-primary" value="submit">提交</button>
+              </div>
+              </div>
+                </form>
+              </div>
+
+            </div>
+        </div>
+        </div>
+        <!--弹窗结束-->
+    	<div class="row" style="margin-bottom: 20px">
+            <div class="col-lg-12">
+                <div class="box">
+                    <div class="box-header">
+                      <h3 class="box-title">部门本周工作内容</h3>
+                        <span style="float: right">周：{{ time }}</span>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                    <table align="center" class="table table-bordered table-hover table-striped">
+                <tr>
+                    <th class="text-center">姓名</th>
+                    <th class="text-center">重点工作事项</th>
+                    <th class="text-center">工作计划</th>
+                    <th class="text-center">本周计划完成情况</th>
+                    <th class="text-center">工作难点及所需协调的资源</th>
+                    <th class="text-center">下周工作计划</th>
+                </tr>
+                   {% for key,value in data.items %}
+                  <tr class="text-center">
+                    <td rowspan = "{{ value|length }}" align="center" style="vertical-align:middle;">{{ key }}</td>
+                    <td class="text-center">{{ value.0.weeklys }}</td>
+                    <td>{{ value.0.workplan }}</td>
+                    <td>{{ value.0.completion }}</td>
+                    <td>{{ value.0.coordination }}</td>
+                    <td>{{ value.0.nextweek }}</td>
+                  </tr>
+                       {% for i in value|slice:"1:" %}
+                       <tr class="text-center">
+                       <td>{{ i.weeklys }}</td>
+                    <td>{{ i.workplan }}</td>
+                    <td>{{ i.completion }}</td>
+                    <td>{{ i.coordination }}</td>
+                    <td>{{ i.nextweek }}</td>
+                       </tr>
+                           {% endfor %}
+                {% endfor %}
+
+                </table>
+
+                    </div>
+                <!-- /.box-body -->
+                </div>
+            </div>
+            </div>
+    </div>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script type="text/javascript">
+			$(document).ready(function(){
+				$('#weeklyul').addClass("menu-open");
+				$('#de_weekly').addClass("active");
+				$('#weeklyli').addClass("active");
+		});
+    </script>
+    <script>
+		var csrftoken = $.cookie('csrftoken');
+	function csrfSafeMethod(method) {
+		// these HTTP methods do not require CSRF protection
+		return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+	}
+	$.ajaxSetup({
+		beforeSend: function(xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+				xhr.setRequestHeader("X-CSRFToken", csrftoken);
+			}
+		}
+	});
+	</script>
+{% endblock %}

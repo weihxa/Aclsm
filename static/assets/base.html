@@ -1,0 +1,385 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ACLSM |  CMDB Manager</title>
+    {% block base-header %}
+
+	<!--STYLESHEET-->
+	<!--=================================================-->
+
+	<!--Bootstrap Stylesheet [ REQUIRED ]-->
+	<link href="/static/assets/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="icon" href="/static/dist/img/icon.png" mce_href="/static/assets/img/icon.png" type="image/x-icon">
+
+	<!--Nifty Stylesheet [ REQUIRED ]-->
+	<link href="/static/assets/css/nifty.min.css" rel="stylesheet">
+
+
+	<!--Font Awesome [ OPTIONAL ]-->
+	<link href="/static/assets/css/font-awesome.min.css" rel="stylesheet">
+
+
+	<link href="/static/assets/css/themes/type-c/theme-light.min.css" rel="stylesheet">
+	<link href="/static/assets/css/custom.css" rel="stylesheet">
+	<link href="/static/assets/plugins/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
+
+	<link href="/static/assets/css/pace.min.css" rel="stylesheet">
+	<script src="/static/assets/js/pace.min.js"></script>
+
+
+    {% endblock %}
+    {% block header-css %}
+
+    {% endblock %}
+		
+
+</head>
+
+<body>
+	<div id="container" class="effect mainnav-lg">
+		{% block page-container %}
+		<!--NAVBAR-->
+		<!--===================================================-->
+		<header id="navbar">
+			<div id="navbar-container" class="boxed">
+
+				<!--Brand logo & name-->
+				<!--================================-->
+				<div class="navbar-header">
+					<a href="/asset/index/" class="navbar-brand">
+							<span class="brand-text logo-text" >ACLSM-资产管理</span>
+					</a>
+
+				</div>
+
+				<div class="navbar-content clearfix">
+					<ul class="nav navbar-top-links pull-left">
+
+						<li class="tgl-menu-btn">
+							<a class="mainnav-toggle" href="#">
+								<i class="fa fa-navicon fa-lg"></i>
+							</a>
+						</li>
+
+					</ul>
+					<ul class="nav navbar-top-links pull-right">
+                        <li class="tgl-menu-btn">
+                            <a  href="#">
+                                <a class="glyphicon glyphicon-bell" href="#" data-toggle="modal"  onclick="get_Notice()"><span id="notice" class="badge"></span></a>
+                            </a>
+                            <div class="modal fade" id="notices" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">通知中心</h4>
+                                  </div>
+                                  <div class="modal-body">
+                                    <table class="table table-condensed table-hover">
+                                        <thead>
+			                                <tr>
+			                                    <th class="text-center"> 时间 </th>
+			                                    <th class="text-center"> 内容</th>
+			                                </tr>
+			                            </thead>
+                                        <tbody id="tbody-result">
+                                        </tbody>
+                                    </table>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">已知悉</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </li>
+
+						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+						<!--End user dropdown-->
+
+					</ul>
+				</div>
+				<!--================================-->
+				<!--End Navbar Dropdown-->
+
+			</div>
+		</header>
+		<!--===================================================-->
+		<!--END NAVBAR-->
+
+		<div class="boxed">
+
+			<div id="content-container">
+            {% block tongzhi %}{% endblock %}
+				<div id="page-title">
+					<h1 class="page-header text-overflow">{% block page-content-title %}Your page title{% endblock %}</h1>
+
+				</div>
+
+                {% block page-nav-tab %}
+				<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+				<ol class="breadcrumb">
+					<li><a href="/">Home</a></li>
+					<li><a href="#">Library</a></li>
+					<li class="active">Data</li>
+				</ol>
+
+
+                {% endblock %}
+
+				<div id="page-content">
+					 {% block page-content %}
+					{% endblock %}
+				</div>
+
+
+
+			</div>
+
+			<nav id="mainnav-container">
+				<div id="mainnav">
+					<div id="mainnav-menu-wrap">
+						<div class="nano">
+							<div class="nano-content">
+								<ul id="mainnav-menu" class="list-group">
+						
+									<!--Category name-->
+									<li class="list-header">菜单</li>
+						
+									<!--Menu list item-->
+									<li class="">
+										<a href="/asset/index/">
+											<i class="fa fa-home"></i>
+											<span class="menu-title">图表页</span>
+										</a>
+									</li>
+						
+									<!--Menu list item-->
+									<li>
+										<a href="#">
+											<i class="fa fa-tag"></i>
+											<span class="menu-title">
+												资产查看
+											</span>
+										</a>
+                                        <ul class="collapse">
+											<li><a href="{% url 'asset_list' %}">资产列表</a></li>
+{#											<li class=""><a href="{% url 'asset_category' %}">分类视图</a></li>#}
+											<li class=""><a href="{% url 'asset_Cabinet' %}">机柜视图</a></li>
+											<!--<li><a href="#">Another link</a></li>-->
+
+
+										</ul>
+
+									</li>
+                                    <li class="">
+										<a href="/index/">
+											<i class="fa fa-reply"></i>
+											<span class="menu-title">返回首页</span>
+										</a>
+									</li>
+
+
+								</ul>
+
+
+
+							</div>
+						</div>
+					</div>
+					<!--================================-->
+					<!--End menu-->
+
+				</div>
+			</nav>
+			<!--===================================================-->
+			<!--END MAIN NAVIGATION-->
+			
+			<!--ASIDE-->
+			<!--===================================================-->
+			<aside id="aside-container">
+				<div id="aside">
+					<div class="nano">
+						<div class="nano-content">
+                            {% block aside-content %}
+                                put your aside contents here...
+                            {% endblock %}
+						</div>
+					</div>
+				</div>
+			</aside>
+			<!--===================================================-->
+			<!--END ASIDE-->
+
+		</div>
+
+		
+
+        <!-- FOOTER -->
+        <!--===================================================-->
+        <footer id="footer">
+
+            <!-- Visible when footer positions are fixed -->
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <div class="show-fixed pull-right">
+                <ul class="footer-list list-inline">
+                    <li>
+                        <p class="text-sm">SEO Proggres</p>
+                        <div class="progress progress-sm progress-light-base">
+                            <div style="width: 80%" class="progress-bar progress-bar-danger"></div>
+                        </div>
+                    </li>
+
+                    <li>
+                        <p class="text-sm">Online Tutorial</p>
+                        <div class="progress progress-sm progress-light-base">
+                            <div style="width: 80%" class="progress-bar progress-bar-primary"></div>
+                        </div>
+                    </li>
+                    <li>
+                        <button class="btn btn-sm btn-dark btn-active-success">Checkout</button>
+                    </li>
+                </ul>
+            </div>
+
+
+
+            <!-- Visible when footer positions are static -->
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <div class="hide-fixed pull-right pad-rgt">Currently v0.0.9</div>
+
+
+
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+            <!-- Remove the class name "show-fixed" and "hide-fixed" to make the content always appears. -->
+            <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+            <p class="pad-lft">&#0169; 2017 ACLsm-cmdb</p>
+
+
+
+        </footer>
+        <!--===================================================-->
+        <!-- END FOOTER -->
+
+
+        <!-- SCROLL TOP BUTTON -->
+        <!--===================================================-->
+        <button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+        <!--===================================================-->
+
+
+    {% endblock %}
+	</div>
+	<!--===================================================-->
+	<!-- END OF CONTAINER -->
+
+
+	
+
+	<!--JAVASCRIPT-->
+	<!--=================================================-->
+
+	<!--jQuery [ REQUIRED ]-->
+	<script src="/static/assets/js/jquery-2.1.1.min.js"></script>
+
+
+	<!--BootstrapJS [ RECOMMENDED ]-->
+	<script src="/static/assets/js/bootstrap.min.js"></script>
+
+
+	<!--Fast Click [ OPTIONAL ]-->
+	<script src="/static/assets/js/fastclick.min.js"></script>
+
+	<script src="/static/assets/plugins/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+
+	<!--Nifty Admin [ RECOMMENDED ]-->
+	<script src="/static/assets/js/nifty.min.js"></script>
+    <script src="/static/scms/dist/js/jquery.cookie.js"></script>
+<script>
+var csrftoken = $.cookie('csrftoken');
+function csrfSafeMethod(method) {
+// these HTTP methods do not require CSRF protection
+return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+beforeSend: function(xhr, settings) {
+    if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+    }
+}
+});
+</script>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            var active_node = $("#mainnav-menu a[href='{{ request.path }}']");
+            active_node.parent().addClass("active-link");
+            if (active_node.parent().parent().hasClass("collapse")){
+                active_node.parent().parent().addClass("in");
+            }
+
+        });//end doc ready
+
+    </script>
+
+
+<script>
+function showLogin()
+{
+$.ajax({
+    url:'{% url 'get_notice_num' %}',
+    type:'GET',
+    success:function (arg) {
+        if(isNaN(arg)){
+        return false
+        }
+        if (arg !=='0'){
+            $("#notice").html(arg);
+        } else {
+           $("#notice").html('');
+        }
+    }
+});
+}
+function get_Notice()
+{
+    var tbody=window.document.getElementById("tbody-result");
+    var str = "";
+$.ajax({
+    url:'{% url 'get_notice_list' %}',
+    type:'GET',
+    success:function (arg) {
+        var obj = jQuery.parseJSON(arg);
+        for (i in obj) {
+                str += "<tr>" +
+                "<td class='text-center'>" + obj[i].fields.create_date + "</td>" +
+                "<td class='text-center'>" + obj[i].fields.name + "</td>" +
+                "</tr>";
+            }
+            tbody.innerHTML = str;
+        $('#notices').modal({show:true});
+    }
+});
+}
+$(function () { $('#notices').on('hide.bs.modal', function () {
+      $.ajax({
+    url:'{% url 'get_notice_list' %}',
+    type:'POST',
+    data:{modify:1},
+    success:function (arg) {
+        $("#notice").html('');
+    }
+});
+    });
+})
+setInterval("showLogin()","10000");
+(function(){showLogin();}());
+</script>
+{% block  bottom-js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title> ACLSM | SSH {{ items }} </title>
+    <link href="/static/dist/img/icon.png" rel="icon" type="image/png">
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/ms/css/xterm.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/ms/css/fullscreen.min.css" rel="stylesheet" type="text/css"/>
+    <style>
+      .container {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+        <div id="mark" style="display: block" class="alert alert-success" role="alert">正在连接服务器，请稍后.....</div>
+        <div id="status" style="display: none" class="alert alert-danger" role="alert"></div>
+      <div id="terminal"></div>
+    </div>
+    <script src="/static/vendor/jquery/jquery.min.js"></script>
+    <script src="/static/ms/js/popper.min.js"></script>
+    <script src="/static/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/ms/js/xterm.min.js"></script>
+    <script src="/static/ms/js/fullscreen.min.js"></script>
+    <script src="/static/ms/js/main.js"></script>
+  </body>
+</html>

@@ -5,6 +5,7 @@ import models
 import cryption
 from SCMS import models as scms_models
 from Integrated import user_models
+from django.db.models import Count,Max
 
 
 def index():
@@ -12,6 +13,8 @@ def index():
     containerd['user'] = models.Jump_user.objects.all().count()
     containerd['group'] = models.Jump_group.objects.all().count()
     containerd['prem'] = models.Jump_prem.objects.all().count()
+    data = models.Jump_logs.objects.filter(create_date__year ='2018').filter(create_date__month ='01').filter(create_date__day  ='16')
+    print data
     return containerd
 
 def jumpuser_post(request):
@@ -110,8 +113,16 @@ def get_deatil_logs(request):
     try:
         logs = models.Jump_logs.objects.filter(id=request.GET.get('modify'))
         with open(logs[0].file_path,'r') as files:
-        # with open('D:\\a.txt','r') as files:
             data = files.read()
         return data
     except Exception,e:
-        return '服务端发生未知错误！'
+        return '服务端发生未知错误！或日志文件不存在！'
+
+def all_loglist(request):
+    data = models.Jump_logs.objects.values('username__username').annotate(counts=Count('ipaddress'),dtime=Max('create_date'))
+    return data
+
+def userlogs_data(request):
+    user = user_models.UserProfile.objects.get(username=request.GET.get('username'))
+    loglist = models.Jump_logs.objects.filter(username=user)
+    return loglist

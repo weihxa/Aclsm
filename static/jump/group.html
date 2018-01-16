@@ -1,0 +1,171 @@
+{% extends 'jump/base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/static/dist/section/css/styles.css">
+    <link href="/static/scms/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+    <link href="/static/scms/dist/css/multi-select.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block body %}
+<section class="content">
+<div class="alert  alert-dismissible" role="alert" id="jinggao" style="display: none;">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+  <span id="message">Warning!</span>
+</div>
+<!--新建弹窗-->
+  <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title" id="myModalLabel">创建组</h4>
+      <span style="color: red;margin-left: 40px;font-size: 13px">*组一旦创建，组名可以修改。</span>
+     </div>
+     <div class="modal-body">
+      <form class="form-horizontal" method="post" id="createuser">
+       {% csrf_token %}
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="groupname">组名:</label>
+        <div class="col-lg-9">
+         <input type="text" id="groupname" class="form-control" name="groupname" placeholder="请输入组名" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="username">请选择账号:</label>
+        <div class="col-lg-9">
+            <select name="username" class="form-control">
+              {% for item in user_data %}
+                    <option value="{{ item.id }}">{{ item.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="description">请选择机器:</label>
+        <div class="col-lg-9">
+            <select name="pclist" id="optgroup" multiple="multiple">
+                {% for item in dev_data %}
+                    <option value="{{ item.ipaddress }}">{{ item.description }}|{{ item.ipaddress }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       </div>
+       <div class="form-group">
+        <div class="modal-footer">
+         <span id="retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+         <button id="tijiao2" type="submit" form="createusersdf" class="btn btn-primary" disabled="disabled">提交</button>
+        </div>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!--弹窗结束-->
+<!--编辑弹窗-->
+  <div class="modal fade bs-example-modal-lg" id="myModaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title" id="myModalLabel">编辑组</h4>
+      <span style="color: red;margin-left: 40px">*组名不可以修改</span>
+     </div>
+     <div class="modal-body">
+      <form class="form-horizontal" method="post" id="editgroup">
+       {% csrf_token %}
+       <div class="form-group" style="display: none">
+        <label class="col-lg-2 control-label" for="userid">id:</label>
+        <div class="col-lg-9">
+         <input style="display: none" type="text" id="groupid" class="form-control" name="groupid" placeholder="ID" readonly="" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_groupname">组名:</label>
+        <div class="col-lg-9">
+         <input type="text" id="e_groupname" class="form-control" name="e_groupname"  readonly="" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_username">请选择账号:</label>
+        <div class="col-lg-9">
+            <select name="e_username" class="form-control">
+              {% for item in user_data %}
+                    <option value="{{ item.id }}" id="description{{ item.username }}">{{ item.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_description">请选择机器:</label>
+        <div class="col-lg-9">
+            <select name="e_pclist" id="e_optgroup" multiple="multiple">
+                {% for item in dev_data %}
+                    <option value="{{ item.ipaddress }}" id="dev{{ item.ipaddress|cut:"." }}" >{{ item.description }}|{{ item.ipaddress }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       </div>
+       <div class="form-group">
+        <div class="modal-footer">
+         <span id="e_retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+         <button id="e_tijiao" type="submit" form="editgroups" class="btn btn-primary" >提交</button>
+        </div>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!--弹窗结束-->
+  <div class="row">
+    <div class="col-xs-12">
+        <h3 class="box-title">机器分组设置</h3>
+      <div class="box">
+        <div class="box-header">
+            <a id="btnall" href="" style="margin-left: 2px;float: right;" class="btn btn-sm btn-warning " data-toggle="modal" data-placement="bottom" onclick="push_group('all')"><span class="fa fa-heartbeat"></span> 推送全部 </a>
+            <a href="#myModal2" style="margin-left: 2px;float: right;" class="btn btn-sm btn-info " data-toggle="modal" data-placement="bottom"><span class="glyphicon glyphicon-plus"></span> 创建分组 </a>
+        </div>
+        <div class="box-body">
+          <table id="example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th class="text-center">组名</th>
+              <th class="text-center">组内机器</th>
+              <th class="text-center">绑定系统账号</th>
+              <th class="text-center">创建日期</th>
+              <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in group_data %}
+            <tr>
+            <td class="text-center" id="groupname{{ i.id }}">{{ i.groupname }}</td>
+            <td class="text-center" id="dev{{ i.id }}">{{ i.dev_list}}</td>
+            <td class="text-center" id="description{{ i.id }}">{{ i.user }}</td>
+            <td class="text-center">{{ i.create_date }}</td>
+            <td class="text-center">
+                <button id="btn{{ i.id }}"  type="button" class="btn btn-xs btn-warning " onclick="push_group({{ i.id }})">推送</button>
+                <button  type="button" class="btn btn-xs btn-info " onclick="edit_group({{ i.id }})">编辑</button>
+                <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_group(this,{{ i.id }});">删除</button>
+            </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/scms/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
+    <script src="/static/scms/dist/js/jquery.multi-select.js"></script>
+    <script src="/static/scms/dist/js/jquery.quicksearch.js"></script>
+    <script src="/static/jump/js/group.js"></script>
+{% endblock %}

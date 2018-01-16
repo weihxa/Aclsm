@@ -28,7 +28,7 @@ from django.contrib.sessions.models import Session
 from Integrated.models import UserProfile
 from jump import models as jump_models
 from SCMS import models as scmd_models
-import datetime
+import datetime,time
 define('address', default='0.0.0.0', help='listen address')
 define('port', default=8000, help='listen port', type=int)
 
@@ -123,6 +123,9 @@ class Worker(object):
             self.on_write()
         if events & IOLoop.ERROR:
             self.close()
+
+    def get_hostname(self):
+        return self.dst_addr.split(':')[0]
 
     def set_handler(self, handler):
         if not self.handler:
@@ -337,6 +340,14 @@ class WsockHandler(tornado.websocket.WebSocketHandler):
     @require_auth('admin')
     def open(self,request,*args, **kwargs):
         self.__request = request
+        self.__filename = os.path.join(project_dir, 'jumplogs', str(int(time.time())) + 'jump.log')
+        user = UserProfile.objects.get(email=str(request.user))
+        jump_models.Jump_logs.objects.create(username=user,ipaddress=workers[self.get_argument('id')].get_hostname(),file_path=self.__filename)
+        try:
+            self.__openfile =  open(self.__filename,'w')
+        except IOError,e:
+            self.__openfile = False
+            logging.error('日志存储目录未创建，无法存储日志。请创建jumplogs目录')
         self.src_addr = self.get_addr()
         logging.info('Connected from {}'.format(self.src_addr))
         worker = workers.pop(self.get_argument('id'), None)
@@ -350,21 +361,20 @@ class WsockHandler(tornado.websocket.WebSocketHandler):
 
 
     def on_message(self, message):
-        print self.__request.user
-        os.path.join(project_dir, 'jumplogs','time.time()')
-        with open('cc.log','w') as files:
-            if message =='\r':
-                files.write(''.join(self.__log))
-                files.write('\n')
-                self.__log = []
-            else:
-                self.__log.append(message)
+        if message == '\r' and not self.__openfile :
+            self.__openfile.write(''.join(self.__log))
+            self.__openfile.write('\n')
+            self.__openfile.flush()
+            self.__log = []
+        else:
+            self.__log.append(message)
         logging.debug('"{}" from {}'.format(message, self.src_addr))
         worker = self.worker_ref()
         worker.data_to_dst.append(message)
         worker.on_write()
 
     def on_close(self):
+        self.__openfile.close()
         logging.info('Disconnected from {}'.format(self.src_addr))
         worker = self.worker_ref() if self.worker_ref else None
         if worker:

@@ -1,0 +1,46 @@
+{% extends 'jump/base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/static/dist/section/css/styles.css">
+{% endblock %}
+{% block body %}
+<section class="content">
+  <div class="row">
+    <div class="col-xs-12">
+        <h3 class="box-title">全员日志查看</h3>
+      <div class="box">
+        <div class="box-body">
+          <table id="example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th class="text-center">用户名</th>
+              <th class="text-center">总链接次数</th>
+              <th class="text-center">最后一次链接时间</th>
+              <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in loglist %}
+            <tr>
+            <td class="text-center" id="username{{ i }}">{{ i.username__username }}</td>
+            <td class="text-center">{{ i.counts }}</td>
+            <td class="text-center">{{ i.dtime }}</td>
+            <td class="text-center">
+                <a href="{% url 'jump-get_all_logs' %}?username={{ i.username__username }}"  type="button" class="btn btn-xs btn-info " target="_blank">详情查看</a>
+            </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/jump/js/jalogs.js"></script>
+{% endblock %}

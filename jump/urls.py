@@ -36,5 +36,7 @@ urlpatterns = [
     url(r'^get_notice_num/$', views.get_notice_num, name='jump-get_notice_num'),
     url(r'^logs/$', views.jump_logs, name='jump-logs'),
     url(r'^get_log/$', views.get_log, name='jump-get_log'),
+    url(r'^all_logs/$', views.all_logs, name='jump-all_logs'),
+    url(r'^get_all_logs/$', views.get_all_logs, name='jump-get_all_logs'),
 
 ]

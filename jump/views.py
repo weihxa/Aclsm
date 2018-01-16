@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect,StreamingHttpResponse
 from django.contrib import auth
 from django.template.context import RequestContext
 from django.contrib.auth.decorators import login_required
-from Integrated.plugins.Decorators import Perm_verification
+from Integrated.plugins.Decorators import Perm_verification,admin_Auth
 from django.core import serializers
 import json
 import models,code,tasks
@@ -156,3 +156,19 @@ def jump_logs(request):
 def get_log(request):
     data = code.get_deatil_logs(request)
     return HttpResponse(json.dumps(data))
+
+
+@login_required
+@Perm_verification(perm='jump')
+def all_logs(request):
+    if request.method == "GET":
+        loglist = code.all_loglist(request)
+        return render(request, 'jump/jalogs.html',{'loglist':loglist},
+                      context_instance=RequestContext(request))
+
+@admin_Auth
+def get_all_logs(request):
+    if request.method == "GET":
+        loglist = code.userlogs_data(request)
+        return render(request, 'jump/userlogs.html', {"ipaddress": request.GET.get('username'),'loglist':loglist},
+                      context_instance=RequestContext(request))

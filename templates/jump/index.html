@@ -10,6 +10,14 @@
         </div>
       </div>
     </div>
+      <div class="col-xs-12" style="margin-top: 10px" >
+  <div class="col-md-6">
+      <div id="mainnn" style=" min-width: 152px; height: 400px; margin: 0 auto"></div>
+  </div>
+  <div class="col-md-6">
+      <div id="business" style=" min-width: 153px; height: 400px; margin: 0 auto"></div>
+  </div>
+</div>
   </div>
 </section>
 
@@ -67,4 +75,160 @@
     });
 });
 	</script>
+    	<script type="text/javascript">
+
+$( function () {
+    var chart = Highcharts.chart('mainnn', {
+        chart: {
+            zoomType: 'x'
+        },
+        title: {
+            text: '系统使用频率'
+        },
+        subtitle: {
+            text: document.ontouchstart === undefined ?
+            '鼠标拖动可以进行缩放' : '手势操作进行缩放'
+        },
+        xAxis: {
+            type: 'datetime',
+            dateTimeLabelFormats: {
+                millisecond: '%H:%M:%S.%L',
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+                hour: '%H:%M',
+                day: '%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        tooltip: {
+            dateTimeLabelFormats: {
+                millisecond: '%H:%M:%S.%L',
+                second: '%H:%M:%S',
+                minute: '%H:%M',
+                hour: '%H:%M',
+                day: '%Y-%m-%d',
+                week: '%m-%d',
+                month: '%Y-%m',
+                year: '%Y'
+            }
+        },
+        yAxis: {
+            title: {
+                text: '次数'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            area: {
+                fillColor: {
+                    linearGradient: {
+                        x1: 0,
+                        y1: 0,
+                        x2: 0,
+                        y2: 1
+                    },
+                    stops: [
+                        [0, Highcharts.getOptions().colors[0]],
+                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                    ]
+                },
+                marker: {
+                    radius: 2
+                },
+                lineWidth: 1,
+                states: {
+                    hover: {
+                        lineWidth: 1
+                    }
+                },
+                threshold: null
+            }
+        },
+        series: [{
+            type: 'area',
+            name: '系统使用频率',
+            data: ([
+[Date.UTC(2013,5,2),0.7695],
+[Date.UTC(2013,5,3),0.7648],
+[Date.UTC(2013,5,4),0.7645],
+[Date.UTC(2013,5,5),0.7638],
+[Date.UTC(2013,5,6),0.7549],
+[Date.UTC(2013,5,7),0.7562],
+[Date.UTC(2013,5,9),0.7574],
+[Date.UTC(2013,5,10),0.7543],
+[Date.UTC(2013,5,11),0.7510],
+[Date.UTC(2013,5,12),0.7498],
+[Date.UTC(2013,5,13),0.7477],
+[Date.UTC(2013,5,14),0.7492],
+[Date.UTC(2013,5,16),0.7487],
+[Date.UTC(2013,5,17),0.7480],
+[Date.UTC(2013,5,18),0.7466],
+[Date.UTC(2013,5,19),0.7521],
+[Date.UTC(2013,5,20),0.7564],
+[Date.UTC(2013,5,21),0.7621],
+[Date.UTC(2013,5,23),0.7630],
+[Date.UTC(2013,5,24),0.7623],
+[Date.UTC(2013,5,25),0.7644],
+[Date.UTC(2013,5,26),0.7685],
+[Date.UTC(2013,5,27),0.7671],
+[Date.UTC(2013,5,28),0.7687],
+[Date.UTC(2013,5,30),0.7687],
+[Date.UTC(2013,6,1),0.7654],
+[Date.UTC(2013,6,2),0.7705],
+[Date.UTC(2013,6,3),0.7687],
+[Date.UTC(2013,6,4),0.7744],
+[Date.UTC(2013,6,5),0.7793],
+[Date.UTC(2013,6,7),0.7804],
+[Date.UTC(2013,6,8),0.7770],
+[Date.UTC(2013,6,9),0.7824]])
+        }]
+    });
+});
+		</script>
+		<script>
+$(function () {
+    $('#business').highcharts({
+
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '配置文件数量概览'
+        },
+        subtitle: {
+            text: 'form：根据数据库记录绘制'
+        },
+        xAxis: {
+            categories: ['nginx', 'tomcat', 'nginx安装', 'tomcat安装']
+        },
+          yAxis: {
+            min: 0,
+            title: {
+                text: '数量'
+            }
+        },
+        plotOptions: {
+            series: {
+                colorByPoint: true,
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.0f} 个</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        series: [{
+        	name:'数量',
+            data: [{{ business.nginx }},{{ business.tomcat }},{{ business.ninstall }},{{ business.tinstall }}]
+        }]
+    });
+});
+		</script>
 {% endblock %}

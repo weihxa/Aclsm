@@ -1,0 +1,147 @@
+{% extends 'jump/base.html' %}
+{% block link %}
+    <link rel="stylesheet" href="/static/dist/datatables/dataTables.bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="/static/dist/section/css/styles.css">
+    <link href="/static/scms/vendor/bootstrap/css/bootstrapValidator.min.css" rel="stylesheet">
+    <link href="/static/scms/dist/css/multi-select.css" rel="stylesheet" type="text/css">
+{% endblock %}
+{% block body %}
+<section class="content">
+<!--新建弹窗-->
+  <div class="modal fade bs-example-modal-lg" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title" id="myModalLabel">绑定权限</h4>
+{#      <span style="color: red;margin-left: 40px;font-size: 13px">*组一旦创建，组名可以修改。</span>#}
+     </div>
+     <div class="modal-body">
+      <form class="form-horizontal" method="post" id="createuser">
+       {% csrf_token %}
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="groupname">请选择用户:</label>
+        <div class="col-lg-9">
+            <select name="username" class="form-control">
+              {% for item in sys_user %}
+                    <option value="{{ item.username }}">{{ item.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="group">请选择组:</label>
+        <div class="col-lg-9">
+            <select name="group" class="form-control">
+              {% for item in group_data %}
+                    <option value="{{ item.id }}">{{ item.groupname }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       </div>
+       <div class="form-group">
+        <div class="modal-footer">
+         <span id="retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+         <button id="tijiao2" type="submit" form="createusersdf" class="btn btn-primary">提交</button>
+        </div>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!--弹窗结束-->
+<!--编辑弹窗-->
+  <div class="modal fade bs-example-modal-lg" id="myModaledit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+     <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      <h4 class="modal-title" id="myModalLabel">编辑权限绑定</h4>
+      <span style="color: red;margin-left: 40px">*请重新选择需要绑定的权限组</span>
+     </div>
+     <div class="modal-body">
+      <form class="form-horizontal" method="post" id="editprem">
+       {% csrf_token %}
+       <div class="form-group" style="display: none">
+        <label class="col-lg-2 control-label" for="permid">id:</label>
+        <div class="col-lg-9">
+         <input style="display: none" type="text" id="permid" class="form-control" name="permid" placeholder="ID" readonly="" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_username">被修改用户:</label>
+        <div class="col-lg-9">
+         <input type="text" id="e_username" class="form-control" name="e_username"  readonly="" />
+        </div>
+       </div>
+       <div class="form-group">
+        <label class="col-lg-2 control-label" for="e_groupname">请选择组:</label>
+        <div class="col-lg-9">
+            <select name="e_groupname" class="form-control">
+              {% for item in group_data %}
+                    <option value="{{ item.id }}" id="group{{ item.groupname }}">{{ item.groupname }}</option>
+                {% endfor %}
+            </select>
+        </div>
+       </div>
+       <div class="form-group">
+        <div class="modal-footer">
+         <span id="e_retune" style="float: left;font-size: 17px;margin-left: 20px"></span>
+         <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+         <button id="e_tijiao" type="submit" form="editgroups" class="btn btn-primary" >提交</button>
+        </div>
+       </div>
+      </form>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!--弹窗结束-->
+  <div class="row">
+    <div class="col-xs-12">
+        <h3 class="box-title">人员权限配置</h3>
+      <div class="box">
+        <div class="box-header">
+            <a href="#myModal2" style="margin-left: 2px;float: right;" class="btn btn-sm btn-info " data-toggle="modal" data-placement="bottom"><span class="glyphicon glyphicon-plus"></span> 权限绑定 </a>
+        </div>
+        <div class="box-body">
+          <table id="example" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+              <th class="text-center">系统用户名</th>
+              <th class="text-center">绑定组</th>
+              <th class="text-center">创建日期</th>
+              <th class="text-center">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for i in prem_data %}
+            <tr>
+            <td class="text-center" id="username{{ i.id }}">{{ i.username }}</td>
+            <td class="text-center" id="group{{ i.id }}">{{ i.group}}</td>
+            <td class="text-center">{{ i.create_date }}</td>
+            <td class="text-center">
+                <button  type="button" class="btn btn-xs btn-info " onclick="edit_prem({{ i.id }})">编辑</button>
+                <button  type="button" class="btn btn-xs btn-danger asset_del" onclick="del_group(this,{{ i.id }});">删除</button>
+            </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block javascript %}
+    <script src="/static/dist/js/jquery.cookie.js"></script>
+    <script src="/static/dist/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/dist/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="/static/scms/vendor/bootstrap/js/bootstrapValidator.min.js"></script>
+    <script src="/static/scms/dist/js/jquery.multi-select.js"></script>
+    <script src="/static/scms/dist/js/jquery.quicksearch.js"></script>
+    <script src="/static/jump/js/prem.js"></script>
+{% endblock %}

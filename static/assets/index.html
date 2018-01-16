@@ -1,0 +1,231 @@
+{% extends 'assets/base.html' %}
+{% block page-content-title %}图表页{% endblock %}
+
+{% block page-nav-tab %}
+<ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li class="active">charts</li>
+</ol>
+{% endblock %}
+
+{% block page-content %}
+
+<div id="containerss" style="border: 1px #CFCFCF solid ;min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div class="row" style="margin-top: 10px" >
+  <div class="col-md-6">
+      <div id="mainnn" style="border: 1px #CFCFCF solid ; min-width: 152px; height: 400px; margin: 0 auto"></div>
+  </div>
+  <div class="col-md-6">
+      <div id="business" style="border: 1px #CFCFCF solid ; min-width: 153px; height: 400px; margin: 0 auto"></div>
+  </div>
+</div>
+
+{%endblock%}
+
+{% block  bottom-js %}
+		<script type="text/javascript">
+$(function () {
+    $('#containerss').highcharts({
+        chart: {
+            type: 'column',
+            backgroundColor: 'rgba(0,0,0,0)'
+        },
+        credits: {
+          enabled:false
+        },
+        exporting: { enabled:false },
+        title: {
+            text: '机房及服务器信息'
+        },
+        subtitle: {
+            text: 'from:根据数据库数据绘制'
+        },
+        xAxis: {
+            categories: [
+            {% for child in data.room %}
+                '{{ child }}',
+            {% endfor %}
+            ],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+                    allowDecimals:false,
+            title: {
+                text: '机器数量(台)'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.0f} 台</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: '总数',
+//            data: [49.9, 71.5,]
+            data: {{ data.sum}},
+
+        },{
+            name: '在线',
+//            data: [49.9, 71.5,]
+            data: {{ data.online}},
+            color : "#90ED7D",
+
+        }, {
+            name: '停用未下架',
+//            data: [83.6, 78.8,]
+            data: {{ data.shdown}},
+            color : "#8B5F65",
+
+        }, {
+            name: '停用已下架',
+//            data: [48.9, 38.8, ]
+            data: {{ data.down}},
+            color : "#607B8B",
+        }, {
+            name: '维修',
+//            data: [42.4, 33.2, ]
+            data: {{ data.maintain}},
+            color : "#EEB422",
+        }]
+    });
+});
+		</script>
+<script type="text/javascript">
+$(function () {
+    $('#mainnn').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            backgroundColor: 'rgba(0,0,0,0)'
+        },
+        credits: {
+          enabled:false
+        },
+        title: {
+            text: '服务器状态概览图'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>',
+        },
+        exporting: { enabled:false },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                innerSize:'70%',
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            name: 'Brands',
+            colorByPoint: true,
+            data: [{
+                name: '在线',
+                y: {{ status.online}},
+                color : "#90ED7D",
+                sliced: true,
+                selected: true
+            }, {
+                name: '停用未下线',
+                y: {{ status.shdown}},
+                color : "#8B5F65",
+
+            }, {
+                name: '停用已下线',
+                y: {{ status.down}},
+                color : "#607B8B",
+            }, {
+                name: '维修',
+                y: {{ status.maintain}},
+                color : "#EEB422",
+            }]
+        }]
+    });
+});
+		</script>
+<script type="text/javascript">
+$(function () {
+    $('#business').highcharts({
+        chart: {
+            type: 'column',
+            backgroundColor: 'rgba(0,0,0,0)',
+        },
+        title: {
+            text: '业务使用服务器情况'
+        },
+        subtitle: {
+            text: 'from:根据资产业务线情况绘制'
+        },
+        xAxis: {
+            type: 'category',
+            labels: {
+                rotation: -45,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                    text: '机器数量(台)'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        credits: {
+          enabled:false
+        },
+        exporting: { enabled:false },
+        tooltip: {
+            pointFormat: '使用: <b>{point.y:.0f} 台</b>'
+        },
+        series: [{
+            name: 'Population',
+            colorByPoint: true,
+            data: [
+                {%for key,values in Business.items%}
+                ['{{key}}',{{values}}],
+            {%endfor%}
+            ],
+            dataLabels: {
+                enabled: true,
+                rotation: 0,
+                color: '#ddddd',
+                align: 'center',
+                format: '{point.y:.0f} 台', // one decimal
+                y: 10, // 10 pixels down from the top
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Microsoft YaHei'
+                }
+            }
+        }]
+    });
+});
+		</script>
+
+<script src="/static/assets/js/highcharts.js"></script>
+<script src="/static/assets/js/exporting.js"></script>
+
+{% endblock %}
