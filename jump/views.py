@@ -19,6 +19,7 @@ from SCMS import models as scms_models
 @Perm_verification(perm='jump')
 def index(request):
     containerd = code.index()
+    print containerd
     return render(request, 'jump/index.html',{"containerd": containerd},
                       context_instance=RequestContext(request))
 

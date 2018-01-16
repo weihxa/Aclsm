@@ -6,15 +6,27 @@ import cryption
 from SCMS import models as scms_models
 from Integrated import user_models
 from django.db.models import Count,Max
-
+import datetime
 
 def index():
     containerd = {}
     containerd['user'] = models.Jump_user.objects.all().count()
     containerd['group'] = models.Jump_group.objects.all().count()
     containerd['prem'] = models.Jump_prem.objects.all().count()
-    data = models.Jump_logs.objects.filter(create_date__year ='2018').filter(create_date__month ='01').filter(create_date__day  ='16')
-    print data
+    list_tup = []
+    for i in range(1,31):
+        sys_list = []
+        now = datetime.datetime.now()
+        delta = datetime.timedelta(days=-int(i))
+        n_days = now + delta
+        print n_days.strftime('%Y-%m-%d')
+        data = models.Jump_logs.objects.filter(create_date__year=n_days.strftime('%Y')).filter(create_date__month=n_days.strftime('%m')).filter(
+            create_date__day=n_days.strftime('%d')).count()
+        sys_list.append(str(n_days.strftime('%Y-%m-%d')))
+        sys_list.append(data)
+        list_tup.append(sys_list)
+    list_tup.reverse()
+    containerd['syslist'] = (list_tup)
     return containerd
 
 def jumpuser_post(request):

@@ -3,6 +3,57 @@
 {% block body %}
 <section class="content">
   <div class="row">
+      <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="fa fa-id-card"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">历史登录最多用户</span>
+              <span class="info-box-number">90<small>%</small></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+      <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-thermometer-empty"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">历史最热机器</span>
+              <span class="info-box-number">41,410</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+      <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="fa fa-database"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">本机存储空间剩余</span>
+              <span class="info-box-number">760</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+      <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-yellow"><i class="fa fa-heartbeat"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">系统时间</span>
+              <span id="current-time" class="info-box-number">00:00:00</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+      </div>
+    <div class="row">
     <div class="col-xs-12">
       <div class="box">
         <div class="box-body">
@@ -10,14 +61,15 @@
         </div>
       </div>
     </div>
-      <div class="col-xs-12" style="margin-top: 10px" >
-  <div class="col-md-6">
+{#      <div class="col-xs-12" style="margin-top: 10px" >#}
+  <div class="col-xs-12">
       <div id="mainnn" style=" min-width: 152px; height: 400px; margin: 0 auto"></div>
   </div>
-  <div class="col-md-6">
-      <div id="business" style=" min-width: 153px; height: 400px; margin: 0 auto"></div>
+{#  <div class="col-md-6">#}
+{#      <div id="business" style=" min-width: 153px; height: 400px; margin: 0 auto"></div>#}
+{#  </div>#}
+{#</div>#}
   </div>
-</div>
   </div>
 </section>
 
@@ -83,36 +135,18 @@ $( function () {
             zoomType: 'x'
         },
         title: {
-            text: '系统使用频率'
+            text: '一个月内系统使用频率'
         },
         subtitle: {
             text: document.ontouchstart === undefined ?
             '鼠标拖动可以进行缩放' : '手势操作进行缩放'
         },
         xAxis: {
-            type: 'datetime',
-            dateTimeLabelFormats: {
-                millisecond: '%H:%M:%S.%L',
-                second: '%H:%M:%S',
-                minute: '%H:%M',
-                hour: '%H:%M',
-                day: '%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
-        },
-        tooltip: {
-            dateTimeLabelFormats: {
-                millisecond: '%H:%M:%S.%L',
-                second: '%H:%M:%S',
-                minute: '%H:%M',
-                hour: '%H:%M',
-                day: '%Y-%m-%d',
-                week: '%m-%d',
-                month: '%Y-%m',
-                year: '%Y'
-            }
+            categories:[
+                {% for i in containerd.syslist %}
+                    ['{{ i.0 }}'],
+                {% endfor %}
+            ]
         },
         yAxis: {
             title: {
@@ -152,39 +186,10 @@ $( function () {
             type: 'area',
             name: '系统使用频率',
             data: ([
-[Date.UTC(2013,5,2),0.7695],
-[Date.UTC(2013,5,3),0.7648],
-[Date.UTC(2013,5,4),0.7645],
-[Date.UTC(2013,5,5),0.7638],
-[Date.UTC(2013,5,6),0.7549],
-[Date.UTC(2013,5,7),0.7562],
-[Date.UTC(2013,5,9),0.7574],
-[Date.UTC(2013,5,10),0.7543],
-[Date.UTC(2013,5,11),0.7510],
-[Date.UTC(2013,5,12),0.7498],
-[Date.UTC(2013,5,13),0.7477],
-[Date.UTC(2013,5,14),0.7492],
-[Date.UTC(2013,5,16),0.7487],
-[Date.UTC(2013,5,17),0.7480],
-[Date.UTC(2013,5,18),0.7466],
-[Date.UTC(2013,5,19),0.7521],
-[Date.UTC(2013,5,20),0.7564],
-[Date.UTC(2013,5,21),0.7621],
-[Date.UTC(2013,5,23),0.7630],
-[Date.UTC(2013,5,24),0.7623],
-[Date.UTC(2013,5,25),0.7644],
-[Date.UTC(2013,5,26),0.7685],
-[Date.UTC(2013,5,27),0.7671],
-[Date.UTC(2013,5,28),0.7687],
-[Date.UTC(2013,5,30),0.7687],
-[Date.UTC(2013,6,1),0.7654],
-[Date.UTC(2013,6,2),0.7705],
-[Date.UTC(2013,6,3),0.7687],
-[Date.UTC(2013,6,4),0.7744],
-[Date.UTC(2013,6,5),0.7793],
-[Date.UTC(2013,6,7),0.7804],
-[Date.UTC(2013,6,8),0.7770],
-[Date.UTC(2013,6,9),0.7824]])
+                {% for i in containerd.syslist %}
+                    ['{{ i.0  }}',{{ i.1 }}],
+                {% endfor %}
+            ])
         }]
     });
 });
@@ -231,4 +236,10 @@ $(function () {
     });
 });
 		</script>
+    <script type="text/javascript">
+        setInterval(function() {
+        var now = (new Date()).toLocaleTimeString();
+        $('#current-time').text(now);
+        }, 1000);
+    </script>
 {% endblock %}
