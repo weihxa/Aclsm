@@ -1,4 +1,5 @@
 {% extends 'jump/base.html' %}
+{% load custom_filter %}
 
 {% block body %}
 <section class="content">
@@ -6,52 +7,39 @@
       <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="info-box">
             <span class="info-box-icon bg-aqua"><i class="fa fa-id-card"></i></span>
-
             <div class="info-box-content">
               <span class="info-box-text">历史登录最多用户</span>
-              <span class="info-box-number">90<small>%</small></span>
+              <span class="info-box-number">{{ containerd.max_user.username__username }} <small>({{ containerd.max_user.counts }}次)</small></span>
             </div>
-            <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
       <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="info-box">
             <span class="info-box-icon bg-red"><i class="fa fa-thermometer-empty"></i></span>
-
             <div class="info-box-content">
               <span class="info-box-text">历史最热机器</span>
-              <span class="info-box-number">41,410</span>
+              <span class="info-box-number">{{ containerd.max_ip.ipaddress }} <small>({{ containerd.max_ip.counts }}次)</small></span>
             </div>
-            <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
       <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="info-box">
             <span class="info-box-icon bg-green"><i class="fa fa-database"></i></span>
-
             <div class="info-box-content">
               <span class="info-box-text">本机存储空间剩余</span>
-              <span class="info-box-number">760</span>
+              <span class="info-box-number">{{ containerd.available }} <small>(GB)</small></span>
             </div>
-            <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
       <div class="col-md-3 col-sm-6 col-xs-12">
           <div class="info-box">
             <span class="info-box-icon bg-yellow"><i class="fa fa-heartbeat"></i></span>
-
             <div class="info-box-content">
               <span class="info-box-text">系统时间</span>
               <span id="current-time" class="info-box-number">00:00:00</span>
             </div>
-            <!-- /.info-box-content -->
           </div>
-          <!-- /.info-box -->
         </div>
-        <!-- /.col -->
       </div>
     <div class="row">
     <div class="col-xs-12">
@@ -61,14 +49,9 @@
         </div>
       </div>
     </div>
-{#      <div class="col-xs-12" style="margin-top: 10px" >#}
   <div class="col-xs-12">
       <div id="mainnn" style=" min-width: 152px; height: 400px; margin: 0 auto"></div>
   </div>
-{#  <div class="col-md-6">#}
-{#      <div id="business" style=" min-width: 153px; height: 400px; margin: 0 auto"></div>#}
-{#  </div>#}
-{#</div>#}
   </div>
   </div>
 </section>
@@ -126,120 +109,80 @@
         }]
     });
 });
-	</script>
-    	<script type="text/javascript">
-
+</script>
+<script type="text/javascript">
 $( function () {
-    var chart = Highcharts.chart('mainnn', {
-        chart: {
-            zoomType: 'x'
-        },
+var chart = Highcharts.chart('mainnn', {
+    chart: {
+        zoomType: 'x'
+    },
+    title: {
+        text: '一个月内系统使用频率'
+    },
+    subtitle: {
+        text: document.ontouchstart === undefined ?
+        '鼠标拖动可以进行缩放' : '手势操作进行缩放'
+    },
+    xAxis: {
         title: {
-            text: '一个月内系统使用频率'
+            text: '日期'
         },
-        subtitle: {
-            text: document.ontouchstart === undefined ?
-            '鼠标拖动可以进行缩放' : '手势操作进行缩放'
-        },
-        xAxis: {
-            categories:[
-                {% for i in containerd.syslist %}
-                    ['{{ i.0 }}'],
-                {% endfor %}
-            ]
-        },
-        yAxis: {
-            title: {
-                text: '次数'
-            }
-        },
-        legend: {
-            enabled: false
-        },
-        plotOptions: {
-            area: {
-                fillColor: {
-                    linearGradient: {
-                        x1: 0,
-                        y1: 0,
-                        x2: 0,
-                        y2: 1
-                    },
-                    stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-                    ]
-                },
-                marker: {
-                    radius: 2
-                },
-                lineWidth: 1,
-                states: {
-                    hover: {
-                        lineWidth: 1
-                    }
-                },
-                threshold: null
-            }
-        },
-        series: [{
-            type: 'area',
-            name: '系统使用频率',
-            data: ([
-                {% for i in containerd.syslist %}
-                    ['{{ i.0  }}',{{ i.1 }}],
-                {% endfor %}
-            ])
-        }]
-    });
-});
-		</script>
-		<script>
-$(function () {
-    $('#business').highcharts({
-
-        chart: {
-            type: 'column'
-        },
+        categories:[
+            {% for i in containerd.syslist %}
+                ['{{ i.0|m_date }}'],
+            {% endfor %}
+        ]
+    },
+    yAxis: {
         title: {
-            text: '配置文件数量概览'
-        },
-        subtitle: {
-            text: 'form：根据数据库记录绘制'
-        },
-        xAxis: {
-            categories: ['nginx', 'tomcat', 'nginx安装', 'tomcat安装']
-        },
-          yAxis: {
-            min: 0,
-            title: {
-                text: '数量'
-            }
-        },
-        plotOptions: {
-            series: {
-                colorByPoint: true,
-            }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-            '<td style="padding:0"><b>{point.y:.0f} 个</b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
-        series: [{
-        	name:'数量',
-            data: [{{ business.nginx }},{{ business.tomcat }},{{ business.ninstall }},{{ business.tinstall }}]
-        }]
-    });
+            text: '次数'
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        area: {
+            fillColor: {
+                linearGradient: {
+                    x1: 0,
+                    y1: 0,
+                    x2: 0,
+                    y2: 1
+                },
+                stops: [
+                    [0, Highcharts.getOptions().colors[0]],
+                    [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                ]
+            },
+            marker: {
+                radius: 2
+            },
+            lineWidth: 1,
+            states: {
+                hover: {
+                    lineWidth: 1
+                }
+            },
+            threshold: null
+        }
+    },
+    series: [{
+        type: 'area',
+        name: '系统使用频率',
+        data: ([
+            {% for i in containerd.syslist %}
+                ['{{ i.0  }}',{{ i.1 }}],
+            {% endfor %}
+        ])
+    }]
 });
-		</script>
-    <script type="text/javascript">
-        setInterval(function() {
-        var now = (new Date()).toLocaleTimeString();
-        $('#current-time').text(now);
-        }, 1000);
-    </script>
+});
+</script>
+<script type="text/javascript">
+    setInterval(function() {
+    var now = (new Date()).toLocaleTimeString();
+    $('#current-time').text(now);
+    }, 1000);
+</script>
 {% endblock %}

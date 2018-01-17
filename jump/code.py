@@ -7,6 +7,7 @@ from SCMS import models as scms_models
 from Integrated import user_models
 from django.db.models import Count,Max
 import datetime
+import os
 
 def index():
     containerd = {}
@@ -19,7 +20,6 @@ def index():
         now = datetime.datetime.now()
         delta = datetime.timedelta(days=-int(i))
         n_days = now + delta
-        print n_days.strftime('%Y-%m-%d')
         data = models.Jump_logs.objects.filter(create_date__year=n_days.strftime('%Y')).filter(create_date__month=n_days.strftime('%m')).filter(
             create_date__day=n_days.strftime('%d')).count()
         sys_list.append(str(n_days.strftime('%Y-%m-%d')))
@@ -27,6 +27,16 @@ def index():
         list_tup.append(sys_list)
     list_tup.reverse()
     containerd['syslist'] = (list_tup)
+    max_ip = models.Jump_logs.objects.values('ipaddress').annotate(counts=Count('ipaddress')).latest('counts')
+    containerd['max_ip'] = max_ip
+    max_user = models.Jump_logs.objects.values('username__username').annotate(counts=Count('username')).latest('counts')
+    containerd['max_user'] = max_user
+    try:
+        disk = os.statvfs("/")
+        available = disk.f_bsize * disk.f_bavail/1024/1024/1024
+        containerd['available'] = available
+    except AttributeError,e:
+        containerd['available'] = '获取失败'
     return containerd
 
 def jumpuser_post(request):

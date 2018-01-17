@@ -1,13 +1,18 @@
 # Aclsm
-#### 基于ansible开发的ansible web管理工具，集成了cmdb，和系统信息展示功能。
+
+### 全新上线跳板机功能！！！
+
+#### 基于ansible开发的ansible web管理工具，集成了cmdb，和系统信息展示，跳板机功能功能。
 
 ##### 页面化ansible实现了文件推送，添加机器后自动添加ssh key认证等功能，cmdb部分通过在ansible中添加的机器自动收集硬件信息入库
 
 ##### 更新日志：
 
+- 2018.1.17 上线跳板机系统，修复已知bug
+
 - 2017.12.15 增加了pyalbook(roles)执行功能，修复部分bug
 
-* [部署文档](https://gitee.com/weihaoxuan/Aclsm/wikis/pages?title=1%E3%80%81%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95&parent=) 
+* [部署文档](https://gitee.com/weihaoxuan/Aclsm/wikis/pages?title=1%E3%80%81%E9%83%A8%E7%BD%B2%E6%96%B9%E6%B3%95&parent=)
 
 ##### 部署环境:
 
@@ -40,6 +45,14 @@
 - 通知
 
 ![tongzhi](https://gitee.com/weihaoxuan/images/raw/master/aclsm/tonghzi.jpg "tongzhi")
+
+- 堡垒机首页
+
+![bljindex](https://gitee.com/weihaoxuan/images/raw/master/aclsm/bljindex.gif "bljindex")
+
+- 堡垒机连接
+
+![blj](https://gitee.com/weihaoxuan/images/raw/master/aclsm/blj.gif "blj")
 
 #### 部署方法
 
